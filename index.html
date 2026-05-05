@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlueLab | Blueprint Integrations Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Alkatra:wght@700&family=Inter:wght@300;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-left: #bc8abf;
+            --color-right: #96e8da;
+            --deep-space: #0a0e17;
+            --glass: rgba(255, 255, 255, 0.03);
+        }
+        body {
+            margin: 0;
+            /* Degradado de punta a punta usando tus colores */
+            background: linear-gradient(135deg, var(--color-left) 0%, var(--deep-space) 40%, var(--deep-space) 60%, var(--color-right) 100%);
+            background-attachment: fixed;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        header {
+            margin-top: 80px;
+            text-align: center;
+        }
+        h1 {
+            font-family: 'Alkatra', cursive;
+            font-size: 4.5rem;
+            margin: 0;
+            background: linear-gradient(to right, var(--color-left), var(--color-right));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(188, 138, 191, 0.4));
+        }
+        .subtitle {
+            font-size: 1rem;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            opacity: 0.6;
+            margin-top: 10px;
+            font-weight: 300;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            width: 90%;
+            max-width: 1100px;
+            margin-top: 80px;
+            padding-bottom: 80px;
+        }
+        .card {
+            background: var(--glass);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 40px;
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+        .card:hover {
+            transform: translateY(-15px);
+            border-color: var(--color-right);
+            box-shadow: 0 20px 40px rgba(150, 232, 218, 0.1);
+        }
+        .tag {
+            background: linear-gradient(to right, var(--color-left), var(--color-right));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            display: block;
+        }
+        h2 { margin: 10px 0; font-size: 2rem; font-weight: 600; }
+        p { line-height: 1.7; opacity: 0.6; font-weight: 300; font-size: 0.95rem; }
+        
+        .btn-lore {
+            margin-top: 30px;
+            display: inline-block;
+            padding: 12px 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            transition: 0.3s;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .btn-lore:hover {
+            background: white;
+            color: var(--deep-space);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>BlueLab</h1>
+        <div class="subtitle">Blueprint Integrations Lab</div>
+    </header>
+
+    <div class="grid">
+        <div class="card">
+            <span class="tag">OPERACIÓN: RECLUTAMIENTO</span>
+            <h2>Irina Hire</h2>
+            <p>Sustituyendo el screening manual por algoritmos de ranking de alta precisión. Eficiencia total en la captura de talento.</p>
+            <a href="#" class="btn-lore">Ver Misión</a>
+        </div>
+
+        <div class="card">
+            <span class="tag">OPERACIÓN: RETAIL AR</span>
+            <h2>Donny SB</h2>
+            <p>Realidad aumentada aplicada al punto de venta. Precios dinámicos y experiencias inmersivas de usuario.</p>
+            <a href="#" class="btn-lore">Próximo Episodio</a>
+        </div>
+
+        <div class="card">
+            <span class="tag">OPERACIÓN: ANALYTICS</span>
+            <h2>Sqore</h2>
+            <p>Motor de scoring predictivo y visualización estratégica para la toma de decisiones críticas en tiempo real.</p>
+            <a href="#" class="btn-lore">Explorar Roadmap</a>
+        </div>
+    </div>
+
+</body>
+</html>
