@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlueLab | Blueprint Integrations Lab</title>
+    <title>Blueprint Integrations Lab</title>
     <link href="https://fonts.googleapis.com/css2?family=Alkatra:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --pink-irina: #bc8abf;
             --mint-irina: #96e8da;
-            --bg-outer: #e5e5e5;
+            --bg-outer: #f0f2f5;
         }
 
         body {
             margin: 0;
-            padding: 20px;
+            padding: 0;
             background-color: var(--bg-outer);
             font-family: 'Inter', sans-serif;
             display: flex;
@@ -22,119 +22,122 @@
             min-height: 100vh;
         }
 
-        /* El Marco Estilo Reporte Irina */
+        /* El Marco del Reporte */
         .report-frame {
             background: white;
-            width: 100%;
-            max-width: 1000px;
-            padding: 5px; 
+            width: 95%;
+            max-width: 1200px;
+            margin: 20px 0;
+            padding: 4px; 
             border-radius: 20px;
             background: linear-gradient(135deg, var(--pink-irina), var(--mint-irina));
-            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.1);
         }
 
         .report-content {
             background: white;
-            border-radius: 16px;
-            padding: 40px;
+            border-radius: 17px;
             min-height: 100%;
+            display: flex;
+            flex-direction: column;
         }
 
+        /* Banda Superior de Impacto (Header) */
         header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #f0f0f0;
-            padding-bottom: 25px;
-            margin-bottom: 40px;
+            background: linear-gradient(to right, var(--pink-irina), var(--mint-irina));
+            padding: 40px 60px;
+            border-radius: 16px 16px 0 0;
+            color: white;
         }
 
         .brand h1 {
             font-family: 'Alkatra', cursive;
-            font-size: 2.5rem;
+            font-size: 3.5rem;
             margin: 0;
-            color: var(--pink-irina);
+            letter-spacing: -1px;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1));
         }
 
         .brand span {
-            font-size: 0.8rem;
-            letter-spacing: 4px;
+            font-size: 1rem;
+            letter-spacing: 6px;
             text-transform: uppercase;
-            color: #999;
-            font-weight: 700;
+            font-weight: 600;
+            opacity: 0.9;
         }
 
-        /* Las Cartas Modernas de Proyectos */
+        /* Contenedor de Naipes */
         .project-grid {
+            padding: 60px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            justify-content: center;
         }
 
+        /* Formato Naipe (Vertical) */
         .card {
-            border-radius: 20px;
-            padding: 30px;
+            aspect-ratio: 2 / 3.5; /* Esto le da la forma alargada de naipe */
+            border-radius: 25px;
+            padding: 20px;
             color: white;
+            display: flex;
+            flex-direction: column;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             position: relative;
             overflow: hidden;
-            transition: 0.3s;
-            cursor: pointer;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
         }
 
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+            transform: translateY(-15px) rotate(1deg);
+        }
+
+        /* Espacio para la imagen de IMGBB */
+        .card-image-placeholder {
+            width: 100%;
+            height: 50%;
+            background: rgba(255,255,255,0.15);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card-image-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .card h2 {
             margin: 0 0 10px 0;
-            font-size: 1.4rem;
+            font-size: 1.6rem;
             font-weight: 700;
+            font-family: 'Alkatra', cursive;
         }
 
         .card p {
-            font-size: 0.9rem;
-            line-height: 1.5;
-            opacity: 0.9;
-            margin-bottom: 20px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            opacity: 0.95;
+            flex-grow: 1;
         }
 
-        /* Botón estilo Glass dentro de la carta */
         .card-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            color: white;
-            padding: 8px 20px;
-            border-radius: 10px;
+            background: white;
+            color: #333;
+            padding: 12px;
+            border-radius: 12px;
             text-decoration: none;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             font-weight: 700;
             text-transform: uppercase;
-            backdrop-filter: blur(5px);
-        }
-
-        /* Footer del Reporte */
-        .actions {
-            margin-top: 50px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .btn-main {
-            padding: 15px;
-            border-radius: 12px;
             text-align: center;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 0.9rem;
-            color: white;
-            transition: 0.3s;
+            margin-top: 10px;
         }
-
-        .bg-dark { background: #2c3e50; }
-        .bg-orange { background: #e67e22; }
     </style>
 </head>
 <body>
@@ -144,37 +147,42 @@
             
             <header>
                 <div class="brand">
-                    <h1>BlueLab</h1>
-                    <span>Blueprint Integrations Lab</span>
+                    <h1>Blueprint Integrations Lab</h1>
+                    <span>BlueLab</span>
                 </div>
             </header>
 
             <div class="project-grid">
-                <!-- IRINA HIRE -->
-                <div class="card" style="background: linear-gradient(135deg, #bc8abf, #a18cd1);">
+                <!-- NAIPE IRINA -->
+                <div class="card" style="background: linear-gradient(180deg, #bc8abf, #8e44ad);">
+                    <div class="card-image-placeholder">
+                        <!-- Aquí pones el link directo de tu imagen de IMGBB -->
+                        <img src="URL_DE_TU_IMAGEN_IRINA" alt="Irina">
+                    </div>
                     <h2>Irina Hire</h2>
-                    <p>Automatización de ranking de talento y selección de alta fidelidad.</p>
-                    <a href="#" class="card-btn">Ver Reporte</a>
+                    <p>Ranking de talento mediante IA para eliminar techos de cristal operativos.</p>
+                    <a href="#" class="card-btn">Ver Módulo</a>
                 </div>
 
-                <!-- DONNY SB -->
-                <div class="card" style="background: linear-gradient(135deg, #96e8da, #74ebd5);">
+                <!-- NAIPE DONNY SB -->
+                <div class="card" style="background: linear-gradient(180deg, #96e8da, #1abc9c);">
+                    <div class="card-image-placeholder">
+                        <img src="URL_DE_TU_IMAGEN_DONNY" alt="Donny SB">
+                    </div>
                     <h2>Donny SB</h2>
-                    <p>Estrategia de Realidad Aumentada para retail y hospitality interactivo.</p>
+                    <p>Realidad Aumentada aplicada a la automatización del sector retail.</p>
                     <a href="#" class="card-btn">Lanzar AR</a>
                 </div>
 
-                <!-- SQORE -->
-                <div class="card" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                <!-- NAIPE SQORE -->
+                <div class="card" style="background: linear-gradient(180deg, #3498db, #2980b9);">
+                    <div class="card-image-placeholder">
+                        <img src="URL_DE_TU_IMAGEN_SQORE" alt="Sqore">
+                    </div>
                     <h2>Sqore</h2>
-                    <p>Motor predictivo de scoring para optimización de procesos de negocio.</p>
-                    <a href="#" class="card-btn">Analizar Data</a>
+                    <p>Inteligencia de datos y scoring predictivo para toma de decisiones.</p>
+                    <a href="#" class="card-btn">Data View</a>
                 </div>
-            </div>
-
-            <div class="actions">
-                <a href="#" class="btn-main bg-dark">DESCARGAR CV WALTER</a>
-                <a href="#" class="btn-main bg-orange">SOLICITAR CONSULTORÍA</a>
             </div>
 
         </div>
