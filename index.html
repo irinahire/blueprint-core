@@ -41,7 +41,6 @@
             flex-direction: column;
         }
 
-        /* Volvemos a la cabecera original con banda de color completa */
         header {
             background: linear-gradient(to right, var(--pink-irina), var(--mint-irina));
             padding: 50px 60px;
@@ -51,7 +50,7 @@
 
         .brand h1 {
             font-family: 'Alkatra', cursive;
-            font-size: 4rem; /* BlueLab bien grande */
+            font-size: 4rem;
             margin: 0;
             line-height: 0.9;
         }
@@ -69,42 +68,52 @@
         .project-grid {
             padding: 60px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
             justify-content: center;
         }
 
-        /* NAIPE ESTILIZADO */
         .card {
-            aspect-ratio: 2 / 3.4;
+            aspect-ratio: 2 / 3.2; /* Proporción de naipe para todas */
             border-radius: 25px;
             padding: 25px;
-            color: white;
             display: flex;
             flex-direction: column;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            position: relative;
+            transition: 0.4s ease;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            background: #fdfdfd; /* Fondo neutro para las otras dos */
+            color: #333;
+            border: 1px solid #eee;
         }
 
-        .card:hover {
-            transform: translateY(-15px);
+        /* Solo la tarjeta de Irina con el degradado y texto blanco */
+        .card-irina {
+            background: linear-gradient(-45deg, var(--pink-irina), var(--mint-irina));
+            color: white;
+            border: none;
+            box-shadow: 0 10px 25px rgba(188, 138, 191, 0.3);
         }
 
-        /* Espacio para la imagen */
+        .card:hover { transform: translateY(-10px); }
+
         .card-image-placeholder {
             width: 100%;
-            height: 55%;
-            background: rgba(255,255,255,0.2);
+            height: 50%;
+            background: rgba(0,0,0,0.05);
             border-radius: 18px;
             margin-bottom: 20px;
             overflow: hidden;
+        }
+
+        .card-irina .card-image-placeholder {
+            background: rgba(255,255,255,0.2);
         }
 
         .card-image-placeholder img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            object-position: center top;
         }
 
         .card h2 {
@@ -116,13 +125,12 @@
         .card p {
             font-size: 0.9rem;
             line-height: 1.5;
-            opacity: 0.95;
             flex-grow: 1;
         }
 
         .card-btn {
-            background: rgba(255, 255, 255, 0.9);
-            color: #333;
+            background: #2c3e50;
+            color: white;
             padding: 12px;
             border-radius: 12px;
             text-decoration: none;
@@ -130,6 +138,11 @@
             font-weight: 700;
             text-transform: uppercase;
             text-align: center;
+        }
+
+        .card-irina .card-btn {
+            background: white;
+            color: var(--pink-irina);
         }
     </style>
 </head>
@@ -146,17 +159,32 @@
             </header>
 
             <div class="project-grid">
-                <!-- NAIPE IRINA HIRE SELECTION -->
-                <div class="card" style="background: linear-gradient(-45deg, #bc8abf, #96e8da);">
+                <!-- TARJETA IRINA (CON DEGRADADO) -->
+                <div class="card card-irina">
                     <div class="card-image-placeholder">
-                        <img src="URL_AQUÍ" alt="Irina Hire Selection">
+                        <!-- URL de la imagen que me pases -->
+                        <img src="URL_IMGBB_AQUÍ" alt="Irina Hire">
                     </div>
                     <h2>Irina Hire</h2>
-                    <p>Especialista en selección técnica mediante IA y automatización de ranking de talento.</p>
+                    <p>Especialista en selección técnica mediante IA y automatización de procesos de ranking.</p>
                     <a href="#" class="card-btn">Lanzar Protocolo</a>
                 </div>
 
-                <!-- Las otras cartas seguirán el mismo formato con sus respectivos colores -->
+                <!-- TARJETA DONNY SB (NEUTRA) -->
+                <div class="card">
+                    <div class="card-image-placeholder"></div>
+                    <h2>Donny SB</h2>
+                    <p>Integración estratégica de Realidad Aumentada para el sector retail y hospitality.</p>
+                    <a href="#" class="card-btn" style="background:#eee; color:#666;">En Desarrollo</a>
+                </div>
+
+                <!-- TARJETA QORE (NEUTRA) -->
+                <div class="card">
+                    <div class="card-image-placeholder"></div>
+                    <h2>Sqore</h2>
+                    <p>Sistema de scoring predictivo y análisis de datos para optimización de negocios.</p>
+                    <a href="#" class="card-btn" style="background:#eee; color:#666;">Ver Roadmap</a>
+                </div>
             </div>
 
         </div>
