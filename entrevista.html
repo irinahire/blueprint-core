@@ -134,6 +134,42 @@
             font-size: 10px; color: #9ca3af; font-weight: 600;
             z-index: 5;
         }
+
+
+        /* --- ESTILO PARA TRANSFORMAR EL BOTÓN VERDE DE VAPI --- */
+
+/* 1. Seleccionamos el botón que crea el script */
+.vapi-btn {
+    /* Quitamos el círculo y lo hacemos rectangular */
+    border-radius: 14px !important; 
+    width: 280px !important; 
+    height: 60px !important;
+    
+    /* Aplicamos tu branding (Fucsia a Turquesa) */
+    background: linear-gradient(to right, #bc8abf, #96e8da) !important;
+    
+    /* Lo posicionamos flotando abajo al centro */
+    position: fixed !important;
+    bottom: 5vh !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    
+    /* Estética de la sombra */
+    box-shadow: 0 15px 35px rgba(188, 138, 191, 0.4) !important;
+    
+    /* Animación para que no aparezca de golpe */
+    transition: all 0.3s ease-in-out !important;
+    
+    /* Importante: para que se vea sobre todo lo demás */
+    z-index: 999999 !important;
+}
+
+/* Opcional: Cambiamos el color del icono dentro del botón si es necesario */
+.vapi-btn svg {
+    fill: white !important;
+    width: 25px !important;
+    height: 25px !important;
+}
     </style>
 </head>
 <body>
