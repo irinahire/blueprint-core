@@ -81,10 +81,14 @@
             flex-direction: column;
             transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             color: white;
-            position: relative;
+            border: none;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
         }
 
-        .card:hover { transform: translateY(-15px); }
+        .card:hover { 
+            transform: translateY(-15px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
 
         .card-image-placeholder {
             width: 100%;
@@ -126,21 +130,22 @@
             transition: 0.3s;
         }
 
-        /* PALETA DE COLORES POR CARTA */
-        .c-irina { background: linear-gradient(45deg, #bc8abf, #96e8da); color: white; }
+        /* PALETA DE DEGRADADOS DINÁMICOS */
+        .c-irina { background: linear-gradient(45deg, #bc8abf, #96e8da); }
         .c-irina .card-btn { color: #bc8abf; }
 
-        .c-donny { background: linear-gradient(45deg, #4facfe, #00f2fe); }
-        .c-donny .card-btn { color: #4facfe; }
+        .c-donny { background: linear-gradient(45deg, #2193b0, #6dd5ed); } /* Azul Profundo a Celeste */
+        .c-donny .card-btn { color: #2193b0; }
 
-        .c-companion { background: linear-gradient(45deg, #667eea, #764ba2); }
-        .c-companion .card-btn { color: #667eea; }
+        .c-companion { background: linear-gradient(45deg, #8e2de2, #4a00e0); } /* Violeta Eléctrico */
+        .c-companion .card-btn { color: #8e2de2; }
 
-        .c-qore { background: linear-gradient(45deg, #f093fb, #f5576c); }
-        .c-qore .card-btn { color: #f5576c; }
+        .c-qore { background: linear-gradient(45deg, #ee0979, #ff6a00); } /* Naranja a Rosa Intenso */
+        .c-qore .card-btn { color: #ee0979; }
 
-        .c-pulse { background: linear-gradient(45deg, #43e97b, #38f9d7); }
-        .c-pulse .card-btn { color: #43e97b; }
+        .c-pulse { background: linear-gradient(45deg, #11998e, #38ef7d); } /* Verde Esmeralda */
+        .c-pulse .card-btn { color: #11998e; }
+
     </style>
 </head>
 <body>
@@ -169,15 +174,15 @@
                 <div class="card c-donny">
                     <div class="card-image-placeholder"></div>
                     <h2>Donny SB</h2>
-                    <p>Tutoría adaptativa y soporte corporativo con memoria de progreso y gestión personalizada de conocimiento.</p>
+                    <p>Tutoría adaptativa con memoria de progreso por tablas y soporte de conocimiento corporativo interno.</p>
                     <a href="#" class="card-btn">SOLICITAR DEMO</a>
                 </div>
 
-                <!-- 3. COMPANION 24/7 -->
+                <!-- 3. COMPANION -->
                 <div class="card c-companion">
                     <div class="card-image-placeholder"></div>
                     <h2>Companion</h2>
-                    <p>Asistente de acompañamiento integral con reportes de bienestar y geolocalización inteligente para el cuidado diario.</p>
+                    <p>Acompañamiento integral con reportes automáticos, recordatorios de salud e integración con Google Maps.</p>
                     <a href="#" class="card-btn">VER PROTOCOLO</a>
                 </div>
 
@@ -185,7 +190,7 @@
                 <div class="card c-qore">
                     <div class="card-image-placeholder"></div>
                     <h2>Qore</h2>
-                    <p>Ecosistema centralizado de precios y ofertas en tiempo real. Integración fluida entre proveedores, comercios y clientes.</p>
+                    <p>Ecosistema centralizado de precios y ofertas en tiempo real con integración de Google Maps Roads API.</p>
                     <a href="#" class="card-btn">EXPLORAR MAPA</a>
                 </div>
 
@@ -193,7 +198,7 @@
                 <div class="card c-pulse">
                     <div class="card-image-placeholder"></div>
                     <h2>Pulse Insight</h2>
-                    <p>Plataforma de feedback y escucha activa para potenciar el bienestar laboral y la comunicación estratégica interna.</p>
+                    <p>Plataforma de escucha activa y feedback estratégico para potenciar la comunicación interna y el bienestar.</p>
                     <a href="#" class="card-btn">SOLICITAR ANÁLISIS</a>
                 </div>
             </div>
