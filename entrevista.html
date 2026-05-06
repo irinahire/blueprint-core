@@ -8,230 +8,171 @@
     <style>
         :root {
             --irina-gradient: linear-gradient(135deg, #96e8da 0%, #bc8abf 100%);
-            --bg-index: #05070a; 
+            --irina-green: #10b981;
+            --bg-dark: #05070a;
             --text-dark: #111827;
             --text-gray: #4b5563;
         }
 
         body {
             margin: 0; padding: 0;
-            background: var(--bg-index);
+            background: var(--bg-dark);
             font-family: 'Inter', sans-serif;
             height: 100vh;
             display: flex; align-items: center; justify-content: center;
             overflow: hidden;
         }
 
-        /* EL MARCO GRUESO DEGRADÉ */
+        /* MARCO DEGRADÉ */
         .outer-frame {
-            padding: 8px; /* Grosor del borde */
+            padding: 10px;
             background: var(--irina-gradient);
-            border-radius: 46px;
-            width: 92%;
-            max-width: 1050px;
-            height: 82vh;
+            border-radius: 50px;
+            width: 94%; max-width: 1150px;
+            height: 85vh;
             display: flex;
-            box-shadow: 0 0 60px rgba(150, 232, 218, 0.25);
+            box-shadow: 0 0 80px rgba(150, 232, 218, 0.3);
         }
 
         .app-container {
-            background: white; /* Fondo blanco interno */
-            width: 100%;
-            height: 100%;
-            border-radius: 40px; 
-            display: flex;
-            flex-direction: column; /* Para la vincha superior */
+            background: white;
+            width: 100%; height: 100%;
+            border-radius: 42px;
+            display: flex; flex-direction: column;
             overflow: hidden;
             position: relative;
         }
 
-        /* LA "VINCHA" SUPERIOR CON DEGRADÉ Y LOGO */
-        .top-bar {
-            width: 100%;
-            height: 70px; /* Altura de la vincha */
+        /* VINCHA SUPERIOR CON LOGO */
+        .top-vincha {
+            width: 100%; height: 85px;
             background: var(--irina-gradient);
-            display: flex;
-            align-items: center;
-            padding: 0 30px;
-            box-sizing: border-box;
+            display: flex; align-items: center;
+            padding: 0 45px; box-sizing: border-box;
             z-index: 20;
         }
 
-        .logo-img {
-            height: 40px; /* Tamaño del logo en la vincha */
-            width: auto;
+        .logo-ihs {
+            height: 50px; width: auto;
+            border-radius: 10px;
         }
 
-        /* CUERPO PRINCIPAL (2 COLUMNAS) */
-        .main-content {
-            flex: 1;
-            display: flex;
-            width: 100%;
-            overflow: hidden;
+        .main-body {
+            flex: 1; display: flex;
+            position: relative;
         }
 
-        /* PANEL IZQUIERDO: TEXTO */
+        /* PANEL IZQUIERDO */
         .info-side {
-            flex: 1.1;
-            padding: 50px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            z-index: 5;
+            flex: 1.2; padding: 60px;
+            display: flex; flex-direction: column;
+            justify-content: center; z-index: 5;
         }
 
         .brand-title {
-            font-size: 42px;
-            font-weight: 800;
+            font-size: 40px; font-weight: 800;
             background: var(--irina-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin: 0 0 20px 0;
-            letter-spacing: -1.5px;
-            text-transform: uppercase;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 25px;
         }
 
-        .section-box h3 { font-size: 14px; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 8px; color: var(--bg-index); font-weight: 800; }
-        .section-box p { font-size: 13px; color: var(--text-gray); margin-bottom: 25px; line-height: 1.6; }
-
-        .checklist li { font-size: 12px; margin-bottom: 10px; color: var(--text-gray); display: flex; align-items: center; }
-        .checklist b { color: var(--text-dark); margin-right: 5px; }
-
-        /* PANEL DERECHO: IRINA + DNI */
+        /* PANEL DERECHO */
         .visual-side {
-            flex: 1;
-            background: url('https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg') center center / cover no-repeat;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            flex: 1; position: relative;
+            background: #fdfdfd;
             border-left: 1px solid #f3f4f6;
+            display: flex; align-items: center; justify-content: center;
         }
 
-        /* Overlay para la imagen (sutil) */
-        .visual-side::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(to right, white 0%, transparent 15%);
-            z-index: 1;
+        .irina-bg {
+            position: absolute; bottom: 0; right: 0;
+            height: 95%; /* Ajustada para no chocar con la vincha */
+            object-fit: contain; z-index: 1;
         }
 
-        /* TARJETA DE DNI (Lógica original funcional) */
+        /* TARJETA DNI Y BOTÓN XL */
         .dni-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 35px;
-            border-radius: 24px;
-            width: 280px;
-            text-align: center;
-            z-index: 15;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            background: rgba(255, 255, 255, 0.98);
+            padding: 45px; border-radius: 35px;
+            width: 320px; text-align: center;
+            z-index: 10; border: 1px solid #e5e7eb;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.12);
         }
 
         input {
-            width: 100%;
-            background: #f9fafb;
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 15px;
-            color: var(--text-dark);
-            text-align: center;
-            font-size: 18px;
-            margin-bottom: 20px;
-            outline: none;
-            box-sizing: border-box;
-            font-weight: 700;
+            width: 100%; padding: 22px;
+            border: 2px solid #e5e7eb; border-radius: 16px;
+            font-size: 24px; text-align: center;
+            margin-bottom: 30px; font-weight: 700;
+            box-sizing: border-box; background: #f9fafb;
         }
 
-        /* EL BOTÓN (Fijo, estático, sin movimiento al hover) */
+        /* EL BOTÓN SUPER ANCHO Y ALTO */
         #call-irina-btn {
-            width: 100%;
-            padding: 15px;
-            background: #10b981; /* Verde base */
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-weight: 800;
-            cursor: pointer;
+            width: 100%; height: 80px; /* ALTURA REFORZADA */
+            background: var(--irina-green);
+            border: none; border-radius: 18px;
+            color: white; font-weight: 800;
+            font-size: 18px; cursor: pointer;
             transition: background 0.3s;
-            display: block; /* Asegura área de clic total */
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        #call-irina-btn:hover {
-            background: #059669; /* Verde más oscuro sin moverse */
-        }
+        #call-irina-btn:hover { background: #059669; }
 
-        /* SOPORTE TÉCNICO */
-        .support-tag {
-            position: absolute;
-            bottom: 30px;
-            left: 50px;
-            font-size: 10px;
-            color: #9ca3af;
-            text-decoration: none;
+        .footer-info {
+            position: absolute; bottom: 30px; left: 65px;
+            font-size: 10px; color: #9ca3af; text-decoration: none;
             font-weight: 600;
-            z-index: 10;
         }
-
-        /* Estilos para el botón que inyecta Vapi (si aparece) */
-        .vapi-btn {
-            border-radius: 14px !important; 
-            background: var(--irina-gradient) !important;
-            transform: none !important; /* Eliminamos cualquier movimiento forzado */
-            cursor: pointer !important;
-        }
-
     </style>
 </head>
 <body>
-
     <div class="outer-frame">
         <div class="app-container">
             
-            <div class="top-bar">
-                <img src="https://i.ibb.co/JFMJBm0S/logo-ihs.jpg" class="logo-img" alt="IHS Logo">
+            <div class="top-vincha">
+                <img src="https://i.ibb.co/JFMJBm0S/logo-ihs.jpg" class="logo-ihs" alt="Logo IHS">
             </div>
-            
-            <div class="main-content">
+
+            <div class="main-body">
                 <div class="info-side">
                     <h1 class="brand-title">IRINA HIRE</h1>
-                    <div class="section-box">
-                        <h3>Protocolo de Acceso</h3>
-                        <p>Al presionar comenzar, usted acepta los Términos y la Política de Privacidad de Irina Hire Selection.</p>
+                    <div style="margin-bottom:35px">
+                        <p style="font-size:15px; color:var(--text-gray); line-height:1.7">
+                            Portal oficial de evaluación de <b>Blueprint Integrations Lab</b>. 
+                            La inteligencia artificial validará su perfil profesional en tiempo real.
+                        </p>
                     </div>
-                    <div class="section-box">
-                        <h3>Checklist de Validación</h3>
-                        <ul style="list-style:none; padding:0;" class="checklist">
-                            <li>🎧 <b>Headset:</b> Requerido para nitidez de audio.</li>
-                            <li>💡 <b>Luz:</b> El sistema valida rasgos biométricos.</li>
-                            <li>👤 <b>Privacidad:</b> Debe estar solo en la sala.</li>
-                            <li>🚫 <b>No Assist:</b> Detección de movimiento ocular activa.</li>
-                        </ul>
-                    </div>
-                    <a href="mailto:soporte@bluelab.online" class="support-tag">SOPORTE TÉCNICO: soporte@bluelab.online</a>
+                    <ul style="list-style:none; padding:0; font-size:13px; color:var(--text-dark)">
+                        <li style="margin-bottom:12px">🎧 <b>Audio:</b> Se requiere uso de headset.</li>
+                        <li style="margin-bottom:12px">👤 <b>Entorno:</b> Espacio privado y libre de ruidos.</li>
+                        <li style="margin-bottom:12px">⚖️ <b>Legal:</b> Al iniciar acepta términos y condiciones.</li>
+                    </ul>
                 </div>
 
                 <div class="visual-side">
+                    <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg">
                     <div class="dni-card">
-                        <div style="font-size: 10px; letter-spacing: 2px; margin-bottom: 20px; color: var(--text-gray); font-weight: 700;">DNI DEL POSTULANTE</div>
-                        <input type="text" id="dni-input-center" placeholder="00.000.000">
-                        <button id="call-irina-btn">VALIDAR Y COMENZAR</button>
+                        <div style="font-size:12px; font-weight:800; color:#9ca3af; margin-bottom:25px; letter-spacing:1.5px">VALIDACIÓN DE POSTULANTE</div>
+                        <input type="text" id="dni-input" placeholder="DNI / PASAPORTE">
+                        <button id="call-irina-btn">INICIAR LLAMADA</button>
                     </div>
                 </div>
             </div>
 
+            <a href="mailto:soporte@bluelab.online" class="footer-info">
+                SOPORTE: soporte@bluelab.online | POWERED BY BLUE LAB
+            </a>
         </div>
     </div>
 
     <script>
     (function(){
-      // LÓGICA ORIGINAL FUNCIONAL (NO TOCAR)
       var KEY = "403b3e01-61b7-4bc2-9c23-67a1f29c564d";
       var ASST = "183129be-11c6-479d-87d3-bc390c593600";
-      var VAR_NAME = "customer_dni";
-
+      
       function loadVapi(){
         if(window.vapiSDK) return Promise.resolve();
         return new Promise(function(res){
@@ -243,26 +184,11 @@
       }
 
       var btn = document.getElementById("call-irina-btn");
-      var input = document.getElementById("dni-input-center");
-
       btn.onclick = function(){
-        var v = (input.value || "").replace(/\D/g, "");
-        if(v.length < 6) return alert("DNI no válido");
-        
         btn.innerText = "CONECTANDO...";
         btn.style.background = "#bc8abf";
-
         loadVapi().then(function(){
-          // Invocamos a Vapi (esto hará aparecer el botón flotante oficial)
-          window.vapiSDK.run({ 
-            apiKey: KEY, 
-            assistant: ASST,
-            assistantOverrides: { variableValues: { [VAR_NAME]: v } }
-          });
-          
-          window.vapiSDK.on('call-start', () => {
-              btn.innerText = "EN LLAMADA";
-          });
+          window.vapiSDK.run({ apiKey: KEY, assistant: ASST });
         });
       };
     })();
