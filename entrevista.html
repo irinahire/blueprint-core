@@ -123,11 +123,10 @@
             height: 100%; width: auto; object-fit: cover;
         }
 
-        /* SOPORTE: Reubicado bien a la izquierda para no pisar la imagen */
         .support-white-zone {
             position: absolute;
             bottom: 30px;
-            right: 170px; 
+            right: 220px; 
             font-size: 10px;
             font-weight: 700;
             color: #9ca3af;
@@ -170,6 +169,7 @@
             letter-spacing: 0.5px;
         }
 
+        /* CLASE REINTEGRADA PARA EL BOTÓN DE VAPI CON EL EFECTO DE RAYO DE LUZ */
         .vapi-btn {
             border-radius: 14px !important; 
             width: 280px !important; 
@@ -180,7 +180,17 @@
             left: 50% !important;
             transform: translateX(-50%) !important;
             box-shadow: 0 15px 35px rgba(188, 138, 191, 0.4) !important;
+            transition: all 0.3s ease-in-out !important;
             z-index: 999999 !important;
+        }
+
+        /* EFECTO DE RAYO DE LUZ AL PASAR EL MOUSE (HOVER) */
+        .vapi-btn:hover {
+            /* Luz "glow": rayo nítido turquesa/fucsia que recorre el borde */
+            box-shadow: 
+                0 15px 35px rgba(188, 138, 191, 0.4), 
+                0 0 20px 8px rgba(150, 232, 218, 0.8) !important;
+            transform: translateX(-50%) scale(1.03) !important;
         }
     </style>
 </head>
@@ -190,7 +200,7 @@
         <div class="app-container">
             <div class="dni-card">
                 <div style="font-size:9px; font-weight:800; color:#9ca3af; margin-bottom:15px; letter-spacing:1px;">VALIDACIÓN DNI DE POSTULANTE</div>
-                <input id="dni-input-center" placeholder="Ejemplo DNI: 41514387" inputmode="numeric">
+                <input id="dni-input-center" placeholder="Ejemplo DNI: 43825914" inputmode="numeric">
                 <button id="call-irina-center">VALIDAR Y COMENZAR</button>
             </div>
 
