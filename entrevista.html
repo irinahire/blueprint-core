@@ -107,9 +107,8 @@
             width: 135px; display: inline-block; flex-shrink: 0;
         }
 
-        /* AVISO LEGAL: Con margen inferior para no pisar el footer */
         .legal-notice {
-            margin-top: 25px; margin-bottom: 50px;
+            margin-top: 25px;
             padding-top: 15px; border-top: 1px solid #f3f4f6;
             font-size: 10px; color: #9ca3af; line-height: 1.5;
         }
@@ -124,7 +123,17 @@
             height: 100%; width: auto; object-fit: cover;
         }
 
-        /* CAJA DNI: Ajustada un poco más a la derecha y arriba */
+        .support-white-zone {
+            position: absolute;
+            bottom: 30px;
+            right: 40px;
+            font-size: 10px;
+            font-weight: 700;
+            color: #9ca3af;
+            z-index: 15;
+            text-align: right;
+        }
+
         .dni-card {
             background: white; padding: 30px; border-radius: 25px;
             width: 270px; text-align: center; z-index: 100;
@@ -137,8 +146,9 @@
 
         #dni-input-center {
             width: 100%; padding: 15px; border: 2px solid #f3f4f6;
-            border-radius: 14px; font-size: 18px; text-align: center;
-            margin-bottom: 5px; font-weight: 700; outline: none;
+            border-radius: 14px; font-size: 17px; text-align: center;
+            margin-bottom: 15px; font-weight: 700; outline: none;
+            background: #fafafa;
         }
 
         #call-irina-center {
@@ -147,17 +157,11 @@
             font-weight: 800; cursor: pointer; text-transform: uppercase;
         }
 
-        /* FOOTER: Posicionamiento absoluto al fondo sin pisarse */
-        .footer-container {
-            position: absolute; bottom: 20px; left: 60px; right: 60px;
-            display: flex; justify-content: space-between; align-items: center;
-            font-size: 9px; color: #9ca3af; font-weight: 600;
-            z-index: 10; border-top: 1px solid rgba(243, 244, 246, 0.5);
-            padding-top: 10px;
+        .footer-brand-complete {
+            position: absolute; bottom: 20px; left: 60px;
+            font-size: 9px; color: #d1d5db; font-weight: 700;
+            letter-spacing: 0.5px;
         }
-
-        .footer-brand { letter-spacing: 0.5px; }
-        .footer-support { color: #6b7280; }
     </style>
 </head>
 <body>
@@ -165,8 +169,8 @@
     <div class="outer-frame">
         <div class="app-container">
             <div class="dni-card">
-                <div style="font-size:9px; font-weight:800; color:#9ca3af; margin-bottom:15px; letter-spacing:1px;">VALIDACIÓN DE POSTULANTE</div>
-                <input id="dni-input-center" placeholder="DNI del Postulante" inputmode="numeric">
+                <div style="font-size:9px; font-weight:800; color:#9ca3af; margin-bottom:15px; letter-spacing:1px;">VALIDACIÓN DNI DE POSTULANTE</div>
+                <input id="dni-input-center" placeholder="Ejemplo DNI: 27582588" inputmode="numeric">
                 <button id="call-irina-center">VALIDAR Y COMENZAR</button>
             </div>
 
@@ -200,14 +204,48 @@
 
                 <div class="visual-side">
                     <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg">
+                    <div class="support-white-zone">
+                        SOPORTE TÉCNICO: SOPORTE@BLUELAB.ONLINE
+                    </div>
                 </div>
             </div>
 
-            <div class="footer-container">
-                <div class="footer-brand">POWERED BY BLUEPRINT INTEGRATIONS LAB | BLUE LAB</div>
-                <div class="footer-support">SOPORTE TÉCNICO: soporte@bluelab.online</div>
+            <div class="footer-brand-complete">
+                POWERED BY BLUEPRINT INTEGRATIONS LAB | BLUE LAB
             </div>
         </div>
     </div>
-    </body>
+
+    <script>
+    (function(){
+      var KEY = "403b3e01-61b7-4bc2-9c23-67a1f29c564d";
+      var ASST = "183129be-11c6-479d-87d3-bc390c593600";
+      var VAR_NAME = "customer_dni";
+      function loadVapi(){
+        if(window.vapiSDK) return Promise.resolve();
+        return new Promise(function(res){
+          var s=document.createElement("script");
+          s.src="https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
+          s.async=true; s.onload=res;
+          document.head.appendChild(s);
+        });
+      }
+      setTimeout(function(){
+        var btn = document.getElementById("call-irina-center");
+        var input = document.getElementById("dni-input-center");
+        btn.onclick = function(){
+          var v = (input.value || "").replace(/\D/g, "");
+          if(v.length < 6){ alert("Por favor, ingrese un DNI válido."); return; }
+          btn.innerText = "CONECTANDO...";
+          loadVapi().then(function(){
+            window.vapiSDK.run({ 
+              apiKey: KEY, assistant: ASST,
+              assistantOverrides: { variableValues: { [VAR_NAME]: v } }
+            });
+          });
+        };
+      }, 1000);
+    })();
+    </script>
+</body>
 </html>
