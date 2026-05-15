@@ -1,10 +1,5 @@
 {
   "version": 2,
-  "functions": {
-    "api/chat.js": {
-      "runtime": "vc-node-20"
-    }
-  },
   "rewrites": [
     {
       "source": "/api/chat",
