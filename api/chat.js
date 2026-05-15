@@ -1,46 +1,39 @@
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
-
 export default async function handler(req, res) {
-    // 1. Configuración de CORS para que el navegador no bloquee la llamada
+    // Headers de CORS
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
     res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
 
-    // 2. Manejo de Pre-vuelo (esto evita el error 405 en muchas situaciones)
-    if (req.method === 'OPTIONS') {
-        return res.status(200).end();
-    }
-
-    // 3. Solo permitimos POST
+    if (req.method === 'OPTIONS') return res.status(200).end();
+    
     if (req.method !== 'POST') {
-        return res.status(405).json({ error: `Método ${req.method} no permitido. Usá POST.` });
+        return res.status(405).json({ error: "Solo se permite POST" });
     }
-
-    const GOOGLE_API_KEY = "AIzaSyAYG9a-HvaGSK1bYMEw7sNebFcFVlr7_nA";
-    const DEEPGRAM_KEY = "90d3ca39a1dd6c4ff959df9d21ea654254b9e0d6";
 
     try {
         const { text } = req.body;
-        const prompt = text === "INICIO_AUTOMATICO" ? "Saludá a Walter de forma muy breve y decile que estás lista." : text;
+        if (!text) return res.status(400).json({ error: "No hay texto" });
 
-        // --- LLAMADA A GEMINI (Cerebro) ---
-        const googleRes = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GOOGLE_API_KEY}`, {
+        const prompt = text === "INICIO_AUTOMATICO" ? "Saludá brevemente." : text;
+
+        // 1. Gemini
+        const googleRes = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=AIzaSyAYG9a-HvaGSK1bYMEw7sNebFcFVlr7_nA`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                contents: [{ parts: [{ text: `Sos Irina de Blue Lab. Hablás en español rioplatense (Argentina). Sé breve, máximo 12 palabras. Usuario dice: ${prompt}` }] }]
+                contents: [{ parts: [{ text: `Sos Irina. Respondé corto (10 palabras) en español argentino: ${prompt}` }] }]
             })
         });
 
         const googleData = await googleRes.json();
         const aiText = googleData.candidates[0].content.parts[0].text;
 
-        // --- LLAMADA A DEEPGRAM (Voz) ---
+        // 2. Deepgram
         const ttsRes = await fetch("https://api.deepgram.com/v1/speak?model=aura-2-antonia-es", {
             method: "POST",
             headers: {
-                "Authorization": `Token ${DEEPGRAM_KEY}`,
+                "Authorization": "Token 90d3ca39a1dd6c4ff959df9d21ea654254b9e0d6",
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({ text: aiText })
@@ -49,14 +42,12 @@ export default async function handler(req, res) {
         const audioBuffer = await ttsRes.arrayBuffer();
         const base64Audio = Buffer.from(audioBuffer).toString('base64');
 
-        // 4. Respuesta final al navegador
         return res.status(200).json({
             texto: aiText,
             audio: `data:audio/mp3;base64,${base64Audio}`
         });
 
     } catch (error) {
-        console.error("Error en la API:", error);
         return res.status(500).json({ error: error.message });
     }
 }
