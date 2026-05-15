@@ -20,18 +20,12 @@ async function hablarIrina(texto) {
             body: JSON.stringify({ text: texto })
         });
 
-        if (!response.ok) throw new Error("Error en el servidor");
-
         const data = await response.json();
+        if (data.error) throw new Error(data.error);
         
         if (data.audio) {
             statusDisplay.innerHTML = `<div style="color:#bc8abf; font-weight:800;">Irina: "${data.texto}"</div>`;
-            
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio = null;
-            }
-
+            if (currentAudio) currentAudio.pause();
             currentAudio = new Audio(data.audio);
             currentAudio.onended = () => {
                 isProcessing = false;
@@ -40,7 +34,7 @@ async function hablarIrina(texto) {
             await currentAudio.play();
         }
     } catch (e) { 
-        console.error("Error al hablar:", e);
+        console.error("Error Irina:", e);
         isProcessing = false; 
         statusDisplay.innerText = "ERROR DE CONEXIÓN";
     }
@@ -55,39 +49,27 @@ async function iniciarLlamada() {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         streamGlobal = stream;
-
-        // Conexión con Deepgram para transcripción en vivo
         socket = new WebSocket('wss://api.deepgram.com/v1/listen?model=nova-2&language=es-419&smart_format=true', ['token', DEEPGRAM_KEY]);
 
         socket.onopen = () => {
             statusDisplay.innerText = "SISTEMA ACTIVO";
             mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
-            
             mediaRecorder.ondataavailable = (e) => {
-                if (e.data.size > 0 && socket.readyState === 1 && !isProcessing) {
-                    socket.send(e.data);
-                }
+                if (e.data.size > 0 && socket.readyState === 1 && !isProcessing) socket.send(e.data);
             };
             mediaRecorder.start(250);
-            
-            // Saludo de bienvenida automático
             setTimeout(() => hablarIrina("INICIO_AUTOMATICO"), 500);
         };
 
         socket.onmessage = async (msg) => {
             const res = JSON.parse(msg.data);
             const transcript = res.channel.alternatives[0].transcript;
-            
             if (transcript && res.is_final && !isProcessing) {
                 statusDisplay.innerHTML = `<div style="color:#4b5563">Vos: "${transcript}"</div>`;
                 await hablarIrina(transcript);
             }
         };
-
-        socket.onerror = (err) => console.error("WebSocket Error:", err);
-
     } catch (err) {
-        alert("Permiso de micrófono denegado.");
         cortarLlamada();
     }
 }
@@ -98,7 +80,6 @@ function cortarLlamada() {
     if (socket) socket.close();
     if (streamGlobal) streamGlobal.getTracks().forEach(t => t.stop());
     if (currentAudio) currentAudio.pause();
-    
     startBtn.innerText = "HABLAR CON IRINA";
     startBtn.style.backgroundColor = "#bc8abf";
     statusDisplay.innerText = "LLAMADA FINALIZADA";
