@@ -1,9 +1,5 @@
 {
-  "functions": {
-    "api/chat.js": {
-      "runtime": "vercel-node@latest"
-    }
-  },
+  "version": 2,
   "rewrites": [
     {
       "source": "/api/chat",
