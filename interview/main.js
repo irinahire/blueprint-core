@@ -1,70 +1,71 @@
-const startBtn = document.getElementById('start-btn');
-const statusDisplay = document.getElementById('status-display');
-const DEEPGRAM_KEY = '90d3ca39a1dd6c4ff959df9d21ea654254b9e0d6'; 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Entrevista - Irina (v5.0)</title>
+    <script src="https://cdn.jsdelivr.net/npm/retell-client-js-sdk@2.0.1/dist/bundle.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f4f6f9; }
+        .card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: inline-block; max-width: 400px; }
+        button { background: #00F2FE; color: black; border: none; padding: 15px 30px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; }
+        #status { margin-top: 20px; font-weight: bold; color: #333; }
+    </style>
+</head>
+<body>
 
-let socket, isProcessing = false, isCallActive = false, streamGlobal, mediaRecorder, currentAudio = null;
+    <div class="card">
+        <h2>Entrevista con Irina</h2>
+        <p>Presioná el botón para iniciar la conversación por voz.</p>
+        <button id="btn-hablar" onclick="conectarConIrina()">Iniciar llamada (v5.0)</button>
+        <div id="status">Verificando credenciales...</div>
+    </div>
 
-async function hablarIrina(texto) {
-    isProcessing = true;
-    statusDisplay.innerText = "IRINA PENSANDO...";
-    try {
-        const response = await fetch('/api/chat', { 
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text: texto })
-        });
-        const data = await response.json();
-        if (data.audio) {
-            statusDisplay.innerHTML = `<div style="color:#bc8abf; font-weight:800;">Irina: "${data.texto}"</div>`;
-            if (currentAudio) currentAudio.pause();
-            currentAudio = new Audio(data.audio);
-            currentAudio.onended = () => {
-                isProcessing = false;
-                if(isCallActive) statusDisplay.innerText = "TE ESCUCHO...";
-            };
-            await currentAudio.play();
-        }
-    } catch (e) { 
-        isProcessing = false; 
-        statusDisplay.innerText = "ERROR DE CONEXIÓN";
-    }
-}
+    <script>
+        const parametros = new URLSearchParams(window.location.search);
+        const tokenRecibido = parametros.get('token');
+        const statusDiv = document.getElementById("status");
 
-async function iniciarLlamada() {
-    isCallActive = true;
-    startBtn.innerText = "CORTAR LLAMADA";
-    startBtn.style.backgroundColor = "#ef4444";
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        streamGlobal = stream;
-        socket = new WebSocket('wss://api.deepgram.com/v1/listen?model=nova-2&language=es-419', ['token', DEEPGRAM_KEY]);
-        socket.onopen = () => {
-            mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
-            mediaRecorder.ondataavailable = (e) => {
-                if (e.data.size > 0 && socket.readyState === 1 && !isProcessing) socket.send(e.data);
-            };
-            mediaRecorder.start(250);
-            setTimeout(() => hablarIrina("INICIO_AUTOMATICO"), 500);
-        };
-        socket.onmessage = async (msg) => {
-            const res = JSON.parse(msg.data);
-            const transcript = res.channel.alternatives[0].transcript;
-            if (transcript && res.is_final && !isProcessing) {
-                statusDisplay.innerHTML = `<div style="color:#4b5563">Vos: "${transcript}"</div>`;
-                await hablarIrina(transcript);
+        window.onload = function() {
+            if (tokenRecibido) {
+                statusDiv.innerText = "🔑 Token detectado. Listo para iniciar.";
+            } else {
+                statusDiv.innerText = "🚨 Error: No se detectó ningún token en la URL.";
             }
         };
-    } catch (err) { cortarLlamada(); }
-}
 
-function cortarLlamada() {
-    isCallActive = false; isProcessing = false;
-    if (socket) socket.close();
-    if (streamGlobal) streamGlobal.getTracks().forEach(t => t.stop());
-    if (currentAudio) currentAudio.pause();
-    startBtn.innerText = "HABLAR CON IRINA";
-    startBtn.style.backgroundColor = "#bc8abf";
-    statusDisplay.innerText = "LLAMADA FINALIZADA";
-}
+        function conectarConIrina() {
+            if (!tokenRecibido) return;
 
-startBtn.addEventListener('click', () => isCallActive ? cortarLlamada() : iniciarLlamada());
+            try {
+                statusDiv.innerText = "Conectando micrófono con Irina...";
+                
+                let sdkVoz = window.Retell?.RetellWebClient || window.Retell?.Retell || window.RetellWebClient || window.Retell;
+                
+                if (!sdkVoz) {
+                    statusDiv.innerText = "🚨 Error: No se pudo cargar la librería de Retell.";
+                    return;
+                }
+
+                const client = (sdkVoz.prototype && sdkVoz.prototype.constructor) ? new sdkVoz() : sdkVoz();
+                
+                client.on("call_started", () => { 
+                    statusDiv.innerText = "🟢 ¡En línea! Irina te está escuchando."; 
+                });
+                
+                client.on("call_ended", () => { 
+                    statusDiv.innerText = "🔴 Llamada finalizada."; 
+                });
+                
+                client.on("error", (err) => { 
+                    statusDiv.innerText = "🚨 Error de conexión: " + (err.message || JSON.stringify(err)); 
+                });
+
+                client.startCall({ accessToken: tokenRecibido });
+
+            } catch (error) {
+                statusDiv.innerText = "🚨 Falló la inicialización: " + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
