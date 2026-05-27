@@ -36,6 +36,7 @@
                         <div class="input-group"><label>Email</label><input type="email" id="email" required></div>
                         <div class="input-group"><label>WhatsApp</label><input type="tel" id="telefono" required></div>
                         <div class="input-group"><label>LinkedIn URL</label><input type="url" id="linkedin"></div>
+                        <div class="input-group"><label>Foto Personal (Imagen)</label><input type="file" id="foto" accept="image/*" required></div>
                         <div class="input-group"><label>Adjuntar Currículum (PDF)</label><input type="file" id="cv" accept=".pdf" required></div>
                         <button type="submit" id="submit-btn">ENVIAR Y PREPARAR ENTREVISTA</button>
                     </form>
@@ -53,26 +54,30 @@
         
         const sb = supabase.createClient(MY_SUPABASE_URL, MY_SUPABASE_ANON_KEY);
 
+        const subirArchivo = async (archivo, carpeta) => {
+            const nombreArchivo = `${Date.now()}_${archivo.name}`;
+            const { error: uploadError } = await sb.storage
+                .from('curriculums')
+                .upload(`${carpeta}/${nombreArchivo}`, archivo);
+            
+            if (uploadError) throw uploadError;
+            
+            const { data: urlData } = sb.storage.from('curriculums').getPublicUrl(`${carpeta}/${nombreArchivo}`);
+            return urlData.publicUrl;
+        };
+
         document.getElementById('postulacion-form').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submit-btn');
-            btn.innerText = "SUBIENDO ARCHIVO...";
+            btn.innerText = "SUBIENDO ARCHIVOS...";
             btn.disabled = true;
 
-            const archivoCv = document.getElementById('cv').files[0];
-            const nombreArchivo = `${Date.now()}_${archivoCv.name}`;
-
             try {
-                // 1. Subir archivo al bucket 'curriculums'
-                const { error: uploadError } = await sb.storage
-                    .from('curriculums')
-                    .upload(`cvs/${nombreArchivo}`, archivoCv);
-                
-                if (uploadError) throw uploadError;
+                // 1. Subimos los dos archivos
+                const urlFoto = await subirArchivo(document.getElementById('foto').files[0], 'fotos');
+                const urlCv = await subirArchivo(document.getElementById('cv').files[0], 'cvs');
 
-                const { data: urlData } = sb.storage.from('curriculums').getPublicUrl(`cvs/${nombreArchivo}`);
-
-                // 2. Insertar datos en la base
+                // 2. Guardamos todo en Supabase
                 const { error: insertError } = await sb.from('blueprint_ecosystem').insert([{ 
                     unique_id: "postulante_" + Date.now(), 
                     dna_content: {
@@ -80,20 +85,20 @@
                         email: document.getElementById('email').value,
                         telefono: document.getElementById('telefono').value,
                         linkedin: document.getElementById('linkedin').value,
-                        urlCv: urlData.publicUrl
+                        urlFoto: urlFoto,
+                        urlCv: urlCv
                     }
                 }]);
 
                 if (insertError) throw insertError;
 
-                alert("¡Postulación y currículum enviados con éxito!");
+                alert("¡Postulación completada con éxito!");
                 document.getElementById('postulacion-form').reset();
-                btn.innerText = "ENVIAR Y PREPARAR ENTREVISTA";
-                btn.disabled = false;
             } catch (err) {
                 console.error("Error:", err);
                 alert("Error al enviar: " + err.message);
-                btn.innerText = "REINTENTAR";
+            } finally {
+                btn.innerText = "ENVIAR Y PREPARAR ENTREVISTA";
                 btn.disabled = false;
             }
         };
