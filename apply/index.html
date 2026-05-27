@@ -13,21 +13,23 @@
         .top-vincha { width: 100%; height: 90px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 45px; box-sizing: border-box; }
         .vincha-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 24px; text-transform: uppercase; color: white; }
         
-        .main-body { flex: 1; display: flex; overflow: hidden; padding: 40px; gap: 40px; }
+        .main-body { flex: 1; display: flex; padding: 40px; gap: 40px; overflow: hidden; }
         
-        /* Contenedor dividido */
         .form-fields { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-        .photo-side { width: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         
-        .foto-preview-box { width: 150px; height: 150px; border: 2px dashed #bc8abf; border-radius: 20px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #f9f9f9; cursor: pointer; margin-bottom: 10px; }
-        #preview-img { width: 100%; height: 100%; object-fit: cover; display: none; }
+        /* Ajuste de foto: 10% menos (135px) y subida */
+        .photo-side { width: 150px; display: flex; flex-direction: column; align-items: center; margin-top: 20px; }
+        .foto-preview-box { width: 135px; height: 135px; border: 2px dashed #bc8abf; border-radius: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #f9f9f9; cursor: pointer; margin-bottom: 8px; }
         
-        .input-group { margin-bottom: 15px; }
-        label { display: block; font-size: 10px; font-weight: 800; color: #6b7280; text-transform: uppercase; margin-bottom: 5px; }
-        input { width: 100%; padding: 12px; border: 2px solid #f3f4f6; border-radius: 12px; box-sizing: border-box; }
+        /* Fuente un poco más grande */
+        label { display: block; font-size: 11px; font-weight: 800; color: #6b7280; text-transform: uppercase; margin-bottom: 6px; }
+        .input-group { margin-bottom: 18px; }
+        input { width: 100%; padding: 12px; border: 2px solid #f3f4f6; border-radius: 12px; }
+        
         #submit-btn { width: 100%; height: 50px; background: var(--fucsia-solid); color: white; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; margin-top: 10px; }
         
-        .visual-side { width: 30%; height: 100%; position: relative; }
+        /* Irina recupera tamaño */
+        .visual-side { width: 35%; height: 100%; position: relative; }
         .irina-bg { width: 100%; height: 100%; object-fit: cover; object-position: right; border-radius: 0 0 40px 0; }
     </style>
 </head>
@@ -51,8 +53,8 @@
                 <div class="photo-side">
                     <label>Subir Foto</label>
                     <div class="foto-preview-box" onclick="document.getElementById('foto').click()">
-                        <img id="preview-img" src="#" alt="Previsualización">
-                        <span id="placeholder-text" style="color:#bc8abf; font-size: 30px;">+</span>
+                        <img id="preview-img" src="#" alt="Previsualización" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                        <span id="placeholder-text" style="color:#bc8abf; font-size: 24px;">+</span>
                     </div>
                     <input type="file" id="foto" accept="image/*" style="display:none" required>
                 </div>
