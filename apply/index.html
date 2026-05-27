@@ -56,29 +56,40 @@
         document.getElementById('postulacion-form').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submit-btn');
-            btn.innerText = "PROCESANDO...";
+            btn.innerText = "SUBIENDO ARCHIVO...";
             btn.disabled = true;
 
-            const datos = {
-                nombre: document.getElementById('nombre').value,
-                email: document.getElementById('email').value,
-                telefono: document.getElementById('telefono').value,
-                linkedin: document.getElementById('linkedin').value
-            };
+            const archivoCv = document.getElementById('cv').files[0];
+            const nombreArchivo = `${Date.now()}_${archivoCv.name}`;
 
             try {
-                // 1. Insertamos en la tabla (Ahora sabemos que esto funciona)
-                const { data, error } = await sb
-                    .from('blueprint_ecosystem')
-                    .insert([{ 
-                        unique_id: "postulante_" + Date.now(), 
-                        dna_content: datos 
-                    }]);
+                // 1. Subir archivo al bucket 'curriculums'
+                const { error: uploadError } = await sb.storage
+                    .from('curriculums')
+                    .upload(`cvs/${nombreArchivo}`, archivoCv);
+                
+                if (uploadError) throw uploadError;
 
-                if (error) throw error;
+                const { data: urlData } = sb.storage.from('curriculums').getPublicUrl(`cvs/${nombreArchivo}`);
 
-                alert("¡Postulación enviada con éxito!");
-                btn.innerText = "ENVIADO";
+                // 2. Insertar datos en la base
+                const { error: insertError } = await sb.from('blueprint_ecosystem').insert([{ 
+                    unique_id: "postulante_" + Date.now(), 
+                    dna_content: {
+                        nombre: document.getElementById('nombre').value,
+                        email: document.getElementById('email').value,
+                        telefono: document.getElementById('telefono').value,
+                        linkedin: document.getElementById('linkedin').value,
+                        urlCv: urlData.publicUrl
+                    }
+                }]);
+
+                if (insertError) throw insertError;
+
+                alert("¡Postulación y currículum enviados con éxito!");
+                document.getElementById('postulacion-form').reset();
+                btn.innerText = "ENVIAR Y PREPARAR ENTREVISTA";
+                btn.disabled = false;
             } catch (err) {
                 console.error("Error:", err);
                 alert("Error al enviar: " + err.message);
