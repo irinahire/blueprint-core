@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Irina Hire Selection | Portal de Postulación</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
     <style>
         :root { --irina-gradient: linear-gradient(to right, #bc8abf 0%, #96e8da 100%); --fucsia-solid: #bc8abf; --bg-dark: #05070a; }
@@ -21,7 +22,6 @@
         input { width: 100%; padding: 12px; border: 2px solid #f3f4f6; border-radius: 12px; box-sizing: border-box; }
         #submit-btn { width: 100%; height: 50px; background: var(--fucsia-solid); color: white; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; margin-top: 10px; }
         
-        /* Ajuste para que Irina toque el borde derecho perfectamente */
         .visual-side { width: 35%; height: 100%; position: relative; overflow: hidden; border-radius: 0 0 40px 0; }
         .irina-bg { width: 100%; height: 100%; object-fit: cover; object-position: right; display: block; }
     </style>
@@ -65,5 +65,56 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Inicializa con tus datos de Supabase
+        const supabase = supabase.createClient('TU_SUPABASE_URL', 'TU_SUPABASE_ANON_KEY');
+
+        document.getElementById('postulacion-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            btn.innerText = "SUBIENDO ARCHIVO...";
+            btn.disabled = true;
+
+            try {
+                const fileInput = document.getElementById('cv');
+                const file = fileInput.files[0];
+                const fileName = `${crypto.randomUUID()}.pdf`;
+
+                // 1. Subir PDF a Storage
+                const { data: uploadData, error: uploadError } = await supabase.storage
+                    .from('curriculums')
+                    .upload(fileName, file);
+
+                if (uploadError) throw uploadError;
+
+                // 2. Obtener la URL pública
+                const { data: { publicUrl } } = supabase.storage.from('curriculums').getPublicUrl(fileName);
+
+                // 3. Enviar a tu Edge Function
+                const response = await fetch('URL_DE_TU_EDGE_FUNCTION', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        nombre: document.getElementById('nombre').value,
+                        email: document.getElementById('email').value,
+                        telefono: document.getElementById('telefono').value,
+                        linkedin: document.getElementById('linkedin').value,
+                        cvUrl: publicUrl
+                    })
+                });
+
+                if (!response.ok) throw new Error("Error en la Edge Function");
+
+                alert("¡Postulación enviada con éxito!");
+                document.getElementById('postulacion-form').reset();
+            } catch (error) {
+                alert("Hubo un error: " + error.message);
+            } finally {
+                btn.innerText = "ENVIAR Y PREPARAR ENTREVISTA";
+                btn.disabled = false;
+            }
+        };
+    </script>
 </body>
 </html>
