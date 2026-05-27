@@ -2,55 +2,54 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Irina Hire Selection | Registro y Postulación</title>
+    <title>Irina Hire Selection | Portal de Postulación</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --irina-gradient: linear-gradient(to right, #bc8abf 0%, #96e8da 100%); --fucsia-solid: #bc8abf; --bg-dark: #05070a; --text-dark: #111827; }
+        :root { --irina-gradient: linear-gradient(to right, #bc8abf 0%, #96e8da 100%); --fucsia-solid: #bc8abf; --bg-dark: #05070a; }
         body { margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; }
         .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 92%; max-width: 1150px; height: 85vh; display: flex; position: relative; }
-        .app-container { background: white; width: 100%; height: 100%; border-radius: 40px; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+        .app-container { background: white; width: 100%; height: 100%; border-radius: 40px; display: flex; flex-direction: column; overflow: hidden; }
         
         .top-vincha { width: 100%; height: 90px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 45px; box-sizing: border-box; }
-        .blue-lab-text { font-weight: 900; font-size: 26px; color: white; }
         .vincha-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 24px; text-transform: uppercase; color: white; }
 
         .main-body { flex: 1; display: flex; padding: 40px; overflow-y: auto; }
         .form-side { flex: 1.5; padding-right: 40px; }
-        
-        .input-group { margin-bottom: 15px; }
-        label { display: block; font-size: 11px; font-weight: 800; color: #6b7280; text-transform: uppercase; margin-bottom: 5px; }
-        input, textarea { width: 100%; padding: 12px; border: 2px solid #f3f4f6; border-radius: 12px; box-sizing: border-box; font-size: 14px; }
-        
-        #submit-btn { width: 100%; height: 50px; background: var(--fucsia-solid); color: white; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; margin-top: 10px; }
-        
-        .visual-side { flex: 1; position: relative; }
-        .irina-bg { position: absolute; top: 0; right: 0; height: 100%; object-fit: cover; border-radius: 0 0 40px 0; }
+        .input-group { margin-bottom: 12px; }
+        label { display: block; font-size: 10px; font-weight: 800; color: #6b7280; text-transform: uppercase; margin-bottom: 4px; }
+        input { width: 100%; padding: 10px; border: 2px solid #f3f4f6; border-radius: 12px; box-sizing: border-box; }
+        #submit-btn { width: 100%; height: 50px; background: var(--fucsia-solid); color: white; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; margin-top: 15px; }
+        .visual-side { flex: 1; background: #fdfdfd; border-radius: 0 0 40px 0; }
+        .irina-bg { width: 100%; height: 100%; object-fit: cover; }
     </style>
 </head>
 <body>
-
     <div class="outer-frame">
         <div class="app-container">
             <div class="top-vincha">
-                <div class="brand-left"><span class="blue-lab-text">BLUE LAB</span></div>
+                <div style="color:white; font-weight:900;">BLUE LAB</div>
                 <div class="vincha-title">Irina Hire Selection</div>
             </div>
-
             <div class="main-body">
                 <div class="form-side">
-                    <h3>Registro de Postulante</h3>
                     <form id="postulacion-form">
                         <div class="input-group">
                             <label>Nombre Completo</label>
                             <input type="text" id="nombre" required>
                         </div>
-                        <div class="input-group">
-                            <label>Email de Contacto</label>
-                            <input type="email" id="email" required>
+                        <div style="display:flex; gap:10px;">
+                            <div class="input-group" style="flex:1;">
+                                <label>WhatsApp</label>
+                                <input type="tel" id="telefono" required>
+                            </div>
+                            <div class="input-group" style="flex:1;">
+                                <label>Email</label>
+                                <input type="email" id="email" required>
+                            </div>
                         </div>
                         <div class="input-group">
-                            <label>DNI (ID de Blueprint)</label>
-                            <input type="text" id="dni" required>
+                            <label>LinkedIn URL</label>
+                            <input type="url" id="linkedin">
                         </div>
                         <div class="input-group">
                             <label>Adjuntar Currículum (PDF)</label>
@@ -59,7 +58,6 @@
                         <button type="submit" id="submit-btn">ENVIAR Y PREPARAR ENTREVISTA</button>
                     </form>
                 </div>
-
                 <div class="visual-side">
                     <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg">
                 </div>
@@ -70,8 +68,12 @@
     <script>
         document.getElementById('postulacion-form').onsubmit = async (e) => {
             e.preventDefault();
-            alert("Datos recibidos. Iniciando carga a !cognitivo y !perfil...");
-            // Aquí iría la lógica para enviar al Worker y guardar en Supabase
+            const btn = document.getElementById('submit-btn');
+            btn.innerText = "PROCESANDO BLUEPRINT...";
+            
+            // Aquí llamarás a tu función de Supabase/Worker
+            console.log("Datos listos para enviar al backend...");
+            alert("Postulación recibida. El sistema generará tu ID único automáticamente.");
         };
     </script>
 </body>
