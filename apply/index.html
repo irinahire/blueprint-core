@@ -14,6 +14,11 @@
         .vincha-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 24px; text-transform: uppercase; color: white; }
         .main-body { flex: 1; display: flex; overflow: hidden; }
         .form-side { flex: 1; padding: 40px; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; }
+        
+        /* Contenedor de previsualización */
+        .foto-preview-box { width: 100px; height: 100px; border: 2px dashed #bc8abf; border-radius: 12px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #f9f9f9; cursor: pointer; }
+        #preview-img { width: 100%; height: 100%; object-fit: cover; display: none; }
+        
         .input-group { margin-bottom: 15px; }
         label { display: block; font-size: 10px; font-weight: 800; color: #6b7280; text-transform: uppercase; margin-bottom: 5px; }
         input { width: 100%; padding: 12px; border: 2px solid #f3f4f6; border-radius: 12px; box-sizing: border-box; }
@@ -32,11 +37,17 @@
             <div class="main-body">
                 <div class="form-side">
                     <form id="postulacion-form">
+                        <label>Foto de Perfil</label>
+                        <div class="foto-preview-box" onclick="document.getElementById('foto').click()">
+                            <img id="preview-img" src="#" alt="Previsualización">
+                            <span id="placeholder-text" style="font-size: 20px;">+</span>
+                        </div>
+                        <input type="file" id="foto" accept="image/*" style="display:none" required>
+
                         <div class="input-group"><label>Nombre Completo</label><input type="text" id="nombre" required></div>
                         <div class="input-group"><label>Email</label><input type="email" id="email" required></div>
                         <div class="input-group"><label>WhatsApp</label><input type="tel" id="telefono" required></div>
                         <div class="input-group"><label>LinkedIn URL</label><input type="url" id="linkedin"></div>
-                        <div class="input-group"><label>Foto Personal (Imagen)</label><input type="file" id="foto" accept="image/*" required></div>
                         <div class="input-group"><label>Adjuntar Currículum (PDF)</label><input type="file" id="cv" accept=".pdf" required></div>
                         <button type="submit" id="submit-btn">ENVIAR Y PREPARAR ENTREVISTA</button>
                     </form>
@@ -53,6 +64,18 @@
         const MY_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0';
         
         const sb = supabase.createClient(MY_SUPABASE_URL, MY_SUPABASE_ANON_KEY);
+
+        // Previsualización de imagen
+        document.getElementById('foto').onchange = function(e) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const img = document.getElementById('preview-img');
+                img.src = reader.result;
+                img.style.display = 'block';
+                document.getElementById('placeholder-text').style.display = 'none';
+            }
+            reader.readAsDataURL(e.target.files[0]);
+        };
 
         const subirArchivo = async (archivo, carpeta) => {
             const nombreArchivo = `${Date.now()}_${archivo.name}`;
@@ -73,11 +96,9 @@
             btn.disabled = true;
 
             try {
-                // 1. Subimos los dos archivos
                 const urlFoto = await subirArchivo(document.getElementById('foto').files[0], 'fotos');
                 const urlCv = await subirArchivo(document.getElementById('cv').files[0], 'cvs');
 
-                // 2. Guardamos todo en Supabase
                 const { error: insertError } = await sb.from('blueprint_ecosystem').insert([{ 
                     unique_id: "postulante_" + Date.now(), 
                     dna_content: {
@@ -93,12 +114,11 @@
                 if (insertError) throw insertError;
 
                 alert("¡Postulación completada con éxito!");
-                document.getElementById('postulacion-form').reset();
+                location.reload(); 
             } catch (err) {
                 console.error("Error:", err);
                 alert("Error al enviar: " + err.message);
-            } finally {
-                btn.innerText = "ENVIAR Y PREPARAR ENTREVISTA";
+                btn.innerText = "REINTENTAR";
                 btn.disabled = false;
             }
         };
