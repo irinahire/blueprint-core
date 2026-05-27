@@ -13,24 +13,24 @@
         .top-vincha { width: 100%; height: 90px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 45px; box-sizing: border-box; }
         .vincha-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 24px; text-transform: uppercase; color: white; }
         
-        .main-body { flex: 1; display: flex; padding: 40px; gap: 40px; overflow: hidden; }
+        /* Contenedor principal con display flex */
+        .main-body { flex: 1; display: flex; overflow: hidden; position: relative; }
         
-        .form-fields { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        /* Columna de formularios */
+        .form-side { flex: 1; padding: 40px; display: flex; flex-direction: column; justify-content: center; z-index: 1; }
         
-        /* Ajuste de foto: 10% menos (135px) y subida */
-        .photo-side { width: 150px; display: flex; flex-direction: column; align-items: center; margin-top: 20px; }
-        .foto-preview-box { width: 135px; height: 135px; border: 2px dashed #bc8abf; border-radius: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #f9f9f9; cursor: pointer; margin-bottom: 8px; }
+        /* Bloque de foto ajustado */
+        .photo-side { width: 130px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-right: 20px; }
+        .foto-preview-box { width: 120px; height: 120px; border: 2px dashed #bc8abf; border-radius: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #f9f9f9; cursor: pointer; margin-bottom: 8px; }
         
-        /* Fuente un poco más grande */
         label { display: block; font-size: 11px; font-weight: 800; color: #6b7280; text-transform: uppercase; margin-bottom: 6px; }
-        .input-group { margin-bottom: 18px; }
+        .input-group { margin-bottom: 15px; }
         input { width: 100%; padding: 12px; border: 2px solid #f3f4f6; border-radius: 12px; }
-        
         #submit-btn { width: 100%; height: 50px; background: var(--fucsia-solid); color: white; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; margin-top: 10px; }
         
-        /* Irina recupera tamaño */
-        .visual-side { width: 35%; height: 100%; position: relative; }
-        .irina-bg { width: 100%; height: 100%; object-fit: cover; object-position: right; border-radius: 0 0 40px 0; }
+        /* La imagen de Irina ahora ocupa todo el alto y está pegada a la derecha */
+        .visual-side { width: 35%; height: 100%; }
+        .irina-bg { width: 100%; height: 100%; object-fit: cover; object-position: right; border-radius: 0 0 40px 0; display: block; }
     </style>
 </head>
 <body>
@@ -41,7 +41,7 @@
                 <div class="vincha-title">Irina Hire Selection</div>
             </div>
             <form id="postulacion-form" class="main-body">
-                <div class="form-fields">
+                <div class="form-side">
                     <div class="input-group"><label>Nombre Completo</label><input type="text" id="nombre" required></div>
                     <div class="input-group"><label>Email</label><input type="email" id="email" required></div>
                     <div class="input-group"><label>WhatsApp</label><input type="tel" id="telefono" required></div>
@@ -65,60 +65,6 @@
             </form>
         </div>
     </div>
-
-    <script>
-        const MY_SUPABASE_URL = 'https://zuzvozgjsppkxvdlptmk.supabase.co';
-        const MY_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0';
-        
-        const sb = supabase.createClient(MY_SUPABASE_URL, MY_SUPABASE_ANON_KEY);
-
-        document.getElementById('foto').onchange = function(e) {
-            const reader = new FileReader();
-            reader.onload = function() {
-                const img = document.getElementById('preview-img');
-                img.src = reader.result;
-                img.style.display = 'block';
-                document.getElementById('placeholder-text').style.display = 'none';
-            }
-            reader.readAsDataURL(e.target.files[0]);
-        };
-
-        const subirArchivo = async (archivo, carpeta) => {
-            const nombreArchivo = `${Date.now()}_${archivo.name}`;
-            const { error: uploadError } = await sb.storage.from('curriculums').upload(`${carpeta}/${nombreArchivo}`, archivo);
-            if (uploadError) throw uploadError;
-            const { data: urlData } = sb.storage.from('curriculums').getPublicUrl(`${carpeta}/${nombreArchivo}`);
-            return urlData.publicUrl;
-        };
-
-        document.getElementById('postulacion-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('submit-btn');
-            btn.innerText = "PROCESANDO...";
-            
-            try {
-                const urlFoto = await subirArchivo(document.getElementById('foto').files[0], 'fotos');
-                const urlCv = await subirArchivo(document.getElementById('cv').files[0], 'cvs');
-
-                await sb.from('blueprint_ecosystem').insert([{ 
-                    unique_id: "postulante_" + Date.now(), 
-                    dna_content: {
-                        nombre: document.getElementById('nombre').value,
-                        email: document.getElementById('email').value,
-                        telefono: document.getElementById('telefono').value,
-                        linkedin: document.getElementById('linkedin').value,
-                        urlFoto: urlFoto,
-                        urlCv: urlCv
-                    }
-                }]);
-
-                alert("¡Postulación enviada con éxito!");
-                location.reload(); 
-            } catch (err) {
-                alert("Error: " + err.message);
-                btn.innerText = "ENVIAR Y PREPARAR ENTREVISTA";
-            }
-        };
-    </script>
-</body>
+    
+    </body>
 </html>
