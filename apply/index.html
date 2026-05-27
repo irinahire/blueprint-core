@@ -9,22 +9,26 @@
         :root { --irina-gradient: linear-gradient(to right, #bc8abf 0%, #96e8da 100%); --fucsia-solid: #bc8abf; --bg-dark: #05070a; }
         body { margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; }
         .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 92%; max-width: 1150px; height: 85vh; display: flex; position: relative; }
-        .app-container { background: white; width: 100%; height: 100%; border-radius: 40px; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        .app-container { background: white; width: 100%; height: 100%; border-radius: 40px; display: flex; flex-direction: column; overflow: hidden; }
         .top-vincha { width: 100%; height: 90px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 45px; box-sizing: border-box; }
         .vincha-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 24px; text-transform: uppercase; color: white; }
-        .main-body { flex: 1; display: flex; overflow: hidden; }
-        .form-side { flex: 1; padding: 40px; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; }
         
-        /* Contenedor de previsualización */
-        .foto-preview-box { width: 100px; height: 100px; border: 2px dashed #bc8abf; border-radius: 12px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #f9f9f9; cursor: pointer; }
+        .main-body { flex: 1; display: flex; overflow: hidden; padding: 40px; gap: 40px; }
+        
+        /* Contenedor dividido */
+        .form-fields { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .photo-side { width: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
+        .foto-preview-box { width: 150px; height: 150px; border: 2px dashed #bc8abf; border-radius: 20px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #f9f9f9; cursor: pointer; margin-bottom: 10px; }
         #preview-img { width: 100%; height: 100%; object-fit: cover; display: none; }
         
         .input-group { margin-bottom: 15px; }
         label { display: block; font-size: 10px; font-weight: 800; color: #6b7280; text-transform: uppercase; margin-bottom: 5px; }
         input { width: 100%; padding: 12px; border: 2px solid #f3f4f6; border-radius: 12px; box-sizing: border-box; }
         #submit-btn { width: 100%; height: 50px; background: var(--fucsia-solid); color: white; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; margin-top: 10px; }
-        .visual-side { width: 35%; height: 100%; position: relative; overflow: hidden; border-radius: 0 0 40px 0; }
-        .irina-bg { width: 100%; height: 100%; object-fit: cover; object-position: right; display: block; }
+        
+        .visual-side { width: 30%; height: 100%; position: relative; }
+        .irina-bg { width: 100%; height: 100%; object-fit: cover; object-position: right; border-radius: 0 0 40px 0; }
     </style>
 </head>
 <body>
@@ -34,28 +38,29 @@
                 <div style="color:white; font-weight:900;">BLUE LAB</div>
                 <div class="vincha-title">Irina Hire Selection</div>
             </div>
-            <div class="main-body">
-                <div class="form-side">
-                    <form id="postulacion-form">
-                        <label>Foto de Perfil</label>
-                        <div class="foto-preview-box" onclick="document.getElementById('foto').click()">
-                            <img id="preview-img" src="#" alt="Previsualización">
-                            <span id="placeholder-text" style="font-size: 20px;">+</span>
-                        </div>
-                        <input type="file" id="foto" accept="image/*" style="display:none" required>
-
-                        <div class="input-group"><label>Nombre Completo</label><input type="text" id="nombre" required></div>
-                        <div class="input-group"><label>Email</label><input type="email" id="email" required></div>
-                        <div class="input-group"><label>WhatsApp</label><input type="tel" id="telefono" required></div>
-                        <div class="input-group"><label>LinkedIn URL</label><input type="url" id="linkedin"></div>
-                        <div class="input-group"><label>Adjuntar Currículum (PDF)</label><input type="file" id="cv" accept=".pdf" required></div>
-                        <button type="submit" id="submit-btn">ENVIAR Y PREPARAR ENTREVISTA</button>
-                    </form>
+            <form id="postulacion-form" class="main-body">
+                <div class="form-fields">
+                    <div class="input-group"><label>Nombre Completo</label><input type="text" id="nombre" required></div>
+                    <div class="input-group"><label>Email</label><input type="email" id="email" required></div>
+                    <div class="input-group"><label>WhatsApp</label><input type="tel" id="telefono" required></div>
+                    <div class="input-group"><label>LinkedIn URL</label><input type="url" id="linkedin"></div>
+                    <div class="input-group"><label>Adjuntar Currículum (PDF)</label><input type="file" id="cv" accept=".pdf" required></div>
+                    <button type="submit" id="submit-btn">ENVIAR Y PREPARAR ENTREVISTA</button>
                 </div>
+                
+                <div class="photo-side">
+                    <label>Subir Foto</label>
+                    <div class="foto-preview-box" onclick="document.getElementById('foto').click()">
+                        <img id="preview-img" src="#" alt="Previsualización">
+                        <span id="placeholder-text" style="color:#bc8abf; font-size: 30px;">+</span>
+                    </div>
+                    <input type="file" id="foto" accept="image/*" style="display:none" required>
+                </div>
+
                 <div class="visual-side">
                     <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg">
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 
@@ -65,7 +70,6 @@
         
         const sb = supabase.createClient(MY_SUPABASE_URL, MY_SUPABASE_ANON_KEY);
 
-        // Previsualización de imagen
         document.getElementById('foto').onchange = function(e) {
             const reader = new FileReader();
             reader.onload = function() {
@@ -79,12 +83,8 @@
 
         const subirArchivo = async (archivo, carpeta) => {
             const nombreArchivo = `${Date.now()}_${archivo.name}`;
-            const { error: uploadError } = await sb.storage
-                .from('curriculums')
-                .upload(`${carpeta}/${nombreArchivo}`, archivo);
-            
+            const { error: uploadError } = await sb.storage.from('curriculums').upload(`${carpeta}/${nombreArchivo}`, archivo);
             if (uploadError) throw uploadError;
-            
             const { data: urlData } = sb.storage.from('curriculums').getPublicUrl(`${carpeta}/${nombreArchivo}`);
             return urlData.publicUrl;
         };
@@ -92,14 +92,13 @@
         document.getElementById('postulacion-form').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submit-btn');
-            btn.innerText = "SUBIENDO ARCHIVOS...";
-            btn.disabled = true;
-
+            btn.innerText = "PROCESANDO...";
+            
             try {
                 const urlFoto = await subirArchivo(document.getElementById('foto').files[0], 'fotos');
                 const urlCv = await subirArchivo(document.getElementById('cv').files[0], 'cvs');
 
-                const { error: insertError } = await sb.from('blueprint_ecosystem').insert([{ 
+                await sb.from('blueprint_ecosystem').insert([{ 
                     unique_id: "postulante_" + Date.now(), 
                     dna_content: {
                         nombre: document.getElementById('nombre').value,
@@ -111,15 +110,11 @@
                     }
                 }]);
 
-                if (insertError) throw insertError;
-
-                alert("¡Postulación completada con éxito!");
+                alert("¡Postulación enviada con éxito!");
                 location.reload(); 
             } catch (err) {
-                console.error("Error:", err);
-                alert("Error al enviar: " + err.message);
-                btn.innerText = "REINTENTAR";
-                btn.disabled = false;
+                alert("Error: " + err.message);
+                btn.innerText = "ENVIAR Y PREPARAR ENTREVISTA";
             }
         };
     </script>
