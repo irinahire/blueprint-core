@@ -33,9 +33,14 @@
         .input-group { margin-bottom: 15px; }
         input { width: 100%; padding: 12px; border: 2px solid #f3f4f6; border-radius: 12px; }
         
-        /* CORRECCIÓN AQUÍ: Eliminado el posible corte de la imagen */
         .visual-side { width: 35%; height: 100%; position: relative; }
-        .irina-bg { width: 100%; height: 100%; object-fit: cover; object-position: center; border-radius: 0 0 40px 0; display: block; }
+        
+        /* AQUÍ ESTÁ EL CAMBIO: Aplicamos mask-image para el efecto de difuminado suave */
+        .irina-bg { 
+            width: 100%; height: 100%; object-fit: cover; object-position: right; border-radius: 0 0 40px 0; display: block; 
+            mask-image: linear-gradient(to right, transparent 0%, black 15%);
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%);
+        }
     </style>
 </head>
 <body>
