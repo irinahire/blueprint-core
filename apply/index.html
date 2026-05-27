@@ -32,11 +32,12 @@
             <div class="main-body">
                 <div class="form-side">
                     <form id="postulacion-form">
-                        <div class="input-group">
-                            <label>Nombre Completo</label>
-                            <input type="text" id="nombre" required>
-                        </div>
-                        <button type="submit" id="submit-btn">PROBAR CONEXIÓN</button>
+                        <div class="input-group"><label>Nombre Completo</label><input type="text" id="nombre" required></div>
+                        <div class="input-group"><label>Email</label><input type="email" id="email" required></div>
+                        <div class="input-group"><label>WhatsApp</label><input type="tel" id="telefono" required></div>
+                        <div class="input-group"><label>LinkedIn URL</label><input type="url" id="linkedin"></div>
+                        <div class="input-group"><label>Adjuntar Currículum (PDF)</label><input type="file" id="cv" accept=".pdf" required></div>
+                        <button type="submit" id="submit-btn">ENVIAR Y PREPARAR ENTREVISTA</button>
                     </form>
                 </div>
                 <div class="visual-side">
@@ -54,26 +55,35 @@
 
         document.getElementById('postulacion-form').onsubmit = async (e) => {
             e.preventDefault();
-            console.log("Iniciando prueba de conexión...");
-            
-            const nombre = document.getElementById('nombre').value;
+            const btn = document.getElementById('submit-btn');
+            btn.innerText = "PROCESANDO...";
+            btn.disabled = true;
+
+            const datos = {
+                nombre: document.getElementById('nombre').value,
+                email: document.getElementById('email').value,
+                telefono: document.getElementById('telefono').value,
+                linkedin: document.getElementById('linkedin').value
+            };
 
             try {
-                // Prueba de escritura mínima directa en la tabla
+                // 1. Insertamos en la tabla (Ahora sabemos que esto funciona)
                 const { data, error } = await sb
                     .from('blueprint_ecosystem')
                     .insert([{ 
-                        unique_id: "test_" + Date.now(), 
-                        dna_content: { "nombre": nombre } 
+                        unique_id: "postulante_" + Date.now(), 
+                        dna_content: datos 
                     }]);
 
                 if (error) throw error;
 
-                alert("¡Éxito! Registro creado en Supabase.");
-                console.log("Resultado:", data);
+                alert("¡Postulación enviada con éxito!");
+                btn.innerText = "ENVIADO";
             } catch (err) {
-                console.error("Error capturado:", err);
-                alert("Error: " + err.message);
+                console.error("Error:", err);
+                alert("Error al enviar: " + err.message);
+                btn.innerText = "REINTENTAR";
+                btn.disabled = false;
             }
         };
     </script>
