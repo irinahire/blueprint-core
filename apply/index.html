@@ -67,8 +67,14 @@
     </div>
 
     <script>
-        // Inicializa con tus datos de Supabase
-        const supabase = supabase.createClient('TU_SUPABASE_URL', 'TU_SUPABASE_ANON_KEY');
+        // --- CONFIGURACIÓN: RELLENA ESTOS 3 VALORES ---
+        const MY_SUPABASE_URL = 'https://zuzvozgjsppkxvdlptmk.supabase.co';
+        const MY_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0';
+        const MY_EDGE_FUNCTION_URL = 'https://zuzvozgjsppkxvdlptmk.supabase.co/functions/v1/dna_content';
+        // ----------------------------------------------
+
+        // Inicializamos usando 'sb' para evitar conflictos
+        const sb = supabase.createClient(MY_SUPABASE_URL, MY_SUPABASE_ANON_KEY);
 
         document.getElementById('postulacion-form').onsubmit = async (e) => {
             e.preventDefault();
@@ -81,40 +87,12 @@
                 const file = fileInput.files[0];
                 const fileName = `${crypto.randomUUID()}.pdf`;
 
-                // 1. Subir PDF a Storage
-                const { data: uploadData, error: uploadError } = await supabase.storage
+                // 1. Subir PDF al Storage
+                const { error: uploadError } = await sb.storage
                     .from('curriculums')
                     .upload(fileName, file);
 
                 if (uploadError) throw uploadError;
 
                 // 2. Obtener la URL pública
-                const { data: { publicUrl } } = supabase.storage.from('curriculums').getPublicUrl(fileName);
-
-                // 3. Enviar a tu Edge Function
-                const response = await fetch('URL_DE_TU_EDGE_FUNCTION', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        nombre: document.getElementById('nombre').value,
-                        email: document.getElementById('email').value,
-                        telefono: document.getElementById('telefono').value,
-                        linkedin: document.getElementById('linkedin').value,
-                        cvUrl: publicUrl
-                    })
-                });
-
-                if (!response.ok) throw new Error("Error en la Edge Function");
-
-                alert("¡Postulación enviada con éxito!");
-                document.getElementById('postulacion-form').reset();
-            } catch (error) {
-                alert("Hubo un error: " + error.message);
-            } finally {
-                btn.innerText = "ENVIAR Y PREPARAR ENTREVISTA";
-                btn.disabled = false;
-            }
-        };
-    </script>
-</body>
-</html>
+                const {
