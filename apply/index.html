@@ -10,18 +10,14 @@
         body { margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; }
         .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 92%; max-width: 1150px; height: 85vh; display: flex; position: relative; }
         .app-container { background: white; width: 100%; height: 100%; border-radius: 40px; display: flex; flex-direction: column; overflow: hidden; position: relative; }
-        
         .top-vincha { width: 100%; height: 90px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 45px; box-sizing: border-box; }
         .vincha-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 24px; text-transform: uppercase; color: white; }
-
         .main-body { flex: 1; display: flex; overflow: hidden; }
         .form-side { flex: 1; padding: 40px; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; }
-        
         .input-group { margin-bottom: 15px; }
         label { display: block; font-size: 10px; font-weight: 800; color: #6b7280; text-transform: uppercase; margin-bottom: 5px; }
         input { width: 100%; padding: 12px; border: 2px solid #f3f4f6; border-radius: 12px; box-sizing: border-box; }
         #submit-btn { width: 100%; height: 50px; background: var(--fucsia-solid); color: white; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; margin-top: 10px; }
-        
         .visual-side { width: 35%; height: 100%; position: relative; overflow: hidden; border-radius: 0 0 40px 0; }
         .irina-bg { width: 100%; height: 100%; object-fit: cover; object-position: right; display: block; }
     </style>
@@ -40,23 +36,7 @@
                             <label>Nombre Completo</label>
                             <input type="text" id="nombre" required>
                         </div>
-                        <div class="input-group">
-                            <label>Email</label>
-                            <input type="email" id="email" required>
-                        </div>
-                        <div class="input-group">
-                            <label>WhatsApp</label>
-                            <input type="tel" id="telefono" required>
-                        </div>
-                        <div class="input-group">
-                            <label>LinkedIn URL</label>
-                            <input type="url" id="linkedin">
-                        </div>
-                        <div class="input-group">
-                            <label>Adjuntar Currículum (PDF)</label>
-                            <input type="file" id="cv" accept=".pdf" required>
-                        </div>
-                        <button type="submit" id="submit-btn">ENVIAR Y PREPARAR ENTREVISTA</button>
+                        <button type="submit" id="submit-btn">PROBAR CONEXIÓN</button>
                     </form>
                 </div>
                 <div class="visual-side">
@@ -67,32 +47,35 @@
     </div>
 
     <script>
-        // --- CONFIGURACIÓN: RELLENA ESTOS 3 VALORES ---
         const MY_SUPABASE_URL = 'https://zuzvozgjsppkxvdlptmk.supabase.co';
         const MY_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0';
-        const MY_EDGE_FUNCTION_URL = 'https://zuzvozgjsppkxvdlptmk.supabase.co/functions/v1/dna_content';
-        // ----------------------------------------------
-
-        // Inicializamos usando 'sb' para evitar conflictos
+        
         const sb = supabase.createClient(MY_SUPABASE_URL, MY_SUPABASE_ANON_KEY);
 
         document.getElementById('postulacion-form').onsubmit = async (e) => {
             e.preventDefault();
-            const btn = document.getElementById('submit-btn');
-            btn.innerText = "SUBIENDO ARCHIVO...";
-            btn.disabled = true;
+            console.log("Iniciando prueba de conexión...");
+            
+            const nombre = document.getElementById('nombre').value;
 
             try {
-                const fileInput = document.getElementById('cv');
-                const file = fileInput.files[0];
-                const fileName = `${crypto.randomUUID()}.pdf`;
+                // Prueba de escritura mínima directa en la tabla
+                const { data, error } = await sb
+                    .from('blueprint_ecosystem')
+                    .insert([{ 
+                        unique_id: "test_" + Date.now(), 
+                        dna_content: { "nombre": nombre } 
+                    }]);
 
-                // 1. Subir PDF al Storage
-                const { error: uploadError } = await sb.storage
-                    .from('curriculums')
-                    .upload(fileName, file);
+                if (error) throw error;
 
-                if (uploadError) throw uploadError;
-
-                // 2. Obtener la URL pública
-                const {
+                alert("¡Éxito! Registro creado en Supabase.");
+                console.log("Resultado:", data);
+            } catch (err) {
+                console.error("Error capturado:", err);
+                alert("Error: " + err.message);
+            }
+        };
+    </script>
+</body>
+</html>
