@@ -14,16 +14,22 @@
         .vincha-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 24px; text-transform: uppercase; color: white; }
         
         .main-body { flex: 1; display: flex; overflow: hidden; position: relative; }
-        
         .form-side { flex: 1; padding: 40px; display: flex; flex-direction: column; justify-content: center; z-index: 1; }
         
+        /* Efecto de luz para el botón */
+        .btn-wrapper { position: relative; padding: 3px; border-radius: 12px; margin-top: 10px; overflow: hidden; cursor: pointer; }
+        .btn-wrapper::before { content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, #bc8abf, #96e8da, transparent); animation: rotate 3s linear infinite; display: none; }
+        .btn-wrapper:hover::before { display: block; }
+        @keyframes rotate { 100% { transform: rotate(360deg); } }
+        
+        #submit-btn { position: relative; width: 100%; height: 50px; background: var(--fucsia-solid); color: white; border: none; border-radius: 10px; font-weight: 800; cursor: pointer; z-index: 1; }
+
         .photo-side { width: 130px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 40px; padding-right: 20px; }
         .foto-preview-box { width: 120px; height: 120px; border: 2px dashed #bc8abf; border-radius: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #f9f9f9; cursor: pointer; margin-bottom: 8px; }
         
         label { display: block; font-size: 11px; font-weight: 800; color: #6b7280; text-transform: uppercase; margin-bottom: 6px; }
         .input-group { margin-bottom: 15px; }
         input { width: 100%; padding: 12px; border: 2px solid #f3f4f6; border-radius: 12px; }
-        #submit-btn { width: 100%; height: 50px; background: var(--fucsia-solid); color: white; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; margin-top: 10px; }
         
         .visual-side { width: 35%; height: 100%; }
         .irina-bg { width: 100%; height: 100%; object-fit: cover; object-position: right; border-radius: 0 0 40px 0; display: block; }
@@ -43,7 +49,10 @@
                     <div class="input-group"><label>WhatsApp</label><input type="tel" id="telefono" required></div>
                     <div class="input-group"><label>LinkedIn URL</label><input type="url" id="linkedin"></div>
                     <div class="input-group"><label>Adjuntar Currículum (PDF)</label><input type="file" id="cv" accept=".pdf" required></div>
-                    <button type="submit" id="submit-btn">ENVIAR Y PREPARAR ENTREVISTA</button>
+                    
+                    <div class="btn-wrapper">
+                        <button type="submit" id="submit-btn">ENVIAR POSTULACIÓN</button>
+                    </div>
                 </div>
                 
                 <div class="photo-side">
@@ -90,7 +99,9 @@
         document.getElementById('postulacion-form').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submit-btn');
-            btn.innerText = "PROCESANDO...";
+            const originalText = btn.innerText;
+            btn.innerText = "ENVIANDO POSTULACIÓN...";
+            btn.disabled = true;
             
             try {
                 const urlFoto = await subirArchivo(document.getElementById('foto').files[0], 'fotos');
@@ -113,7 +124,7 @@
             } catch (err) {
                 console.error("Error:", err);
                 alert("Error al enviar: " + err.message);
-                btn.innerText = "ENVIAR Y PREPARAR ENTREVISTA";
+                btn.innerText = originalText;
                 btn.disabled = false;
             }
         };
