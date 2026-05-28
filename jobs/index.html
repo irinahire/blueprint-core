@@ -87,7 +87,6 @@
         btn.innerText = "Publicando...";
         btn.disabled = true;
 
-        // Empaquetado Híbrido: Planos para búsqueda, JSONF para el fractal
         const payload = {
             titulo: document.getElementById('titulo').value,
             modalidad: !document.getElementById('m1').classList.contains('disabled-input') ? document.getElementById('m1').value : null,
@@ -101,9 +100,7 @@
                     "cultura": !document.getElementById('m4').classList.contains('disabled-input') ? document.getElementById('m4').value : null,
                     "beneficios": !document.getElementById('m5').classList.contains('disabled-input') ? document.getElementById('m5').value : null
                 },
-                "sub_nodos": [
-                    { "!meta": { "id": "observatorio_stats" }, "data": { "total_postulantes": 0 } }
-                ]
+                "sub_nodos": [{ "!meta": { "id": "observatorio_stats" }, "data": { "total_postulantes": 0 } }]
             }
         };
 
@@ -114,12 +111,15 @@
                 body: JSON.stringify(payload)
             });
 
-            if (!response.ok) throw new Error('Error en la comunicación con el Blueprint');
+            if (!response.ok) {
+                const errorData = await response.text();
+                throw new Error(errorData || "Error en el servidor");
+            }
             
             alert("¡Oferta publicada exitosamente en el Ecosistema Fractal!");
         } catch (e) {
-            console.error(e);
-            alert("Error al publicar. Revisá la consola (F12).");
+            console.error("Error capturado:", e);
+            alert("Error al publicar: " + e.message);
         } finally {
             btn.innerText = "PUBLICAR";
             btn.disabled = false;
