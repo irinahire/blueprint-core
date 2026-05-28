@@ -7,9 +7,11 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { 
+            --fucsia: #bc8abf; 
+            --fucsia-light: #dcbadd;
             --irina-gradient: linear-gradient(to right, #bc8abf 0%, #96e8da 100%); 
             --btn-gradient: linear-gradient(to right, #96e8da 0%, #bc8abf 100%);
-            --fucsia: #bc8abf; --bg-dark: #05070a; 
+            --bg-dark: #05070a; 
         }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: var(--bg-dark); display: flex; align-items: center; justify-content: center; font-family: 'Inter', sans-serif; }
         
@@ -17,10 +19,12 @@
         .app-shell { width: 100%; height: 100%; background: white; border-radius: 40px; display: flex; flex-direction: column; overflow: hidden; }
         
         .header { height: 80px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; font-weight: 900; font-family: 'Montserrat', sans-serif; }
-        .sticky-controls { background: white; padding: 20px 60px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; z-index: 10; }
         
-        .content-area { flex: 1; display: flex; overflow: hidden; }
-        #form-wrapper { flex: 1; padding: 20px 60px; overflow-y: auto; }
+        .content-area { flex: 1; display: flex; overflow: hidden; position: relative; }
+        .form-container { flex: 1; padding: 30px 60px; overflow-y: auto; }
+        
+        /* Título y Botón integrados */
+        .header-section { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         
         /* Animación Botón */
         .btn-wrapper { position: relative; padding: 3px; border-radius: 12px; overflow: hidden; }
@@ -29,14 +33,15 @@
         .btn-pub { background: var(--btn-gradient); color: white; border: none; padding: 12px 25px; border-radius: 9px; font-weight: 800; cursor: pointer; position: relative; z-index: 1; }
         @keyframes rotate { 100% { transform: rotate(360deg); } }
         
-        /* Campos con animación */
+        /* Campos: Fucsia y Animados */
         .input-group { position: relative; margin-top: 25px; }
-        .input-group label { position: absolute; left: 12px; top: 14px; color: #333; font-weight: 700; transition: 0.2s; pointer-events: none; background: white; padding: 0 4px; }
-        .input-group input { width: 100%; padding: 14px; border: 2px solid #eee; border-radius: 10px; outline: none; font-size: 14px; box-sizing: border-box; }
-        .input-group input:focus + label, .input-group input:not(:placeholder-shown) + label { top: -10px; font-size: 11px; color: var(--fucsia); font-weight: 700; }
+        .input-group label { position: absolute; left: 12px; top: 14px; color: var(--fucsia); font-weight: 700; transition: 0.2s; pointer-events: none; background: white; padding: 0 4px; }
+        .input-group input { width: 100%; padding: 14px; border: 2px solid var(--fucsia-light); border-radius: 10px; outline: none; font-size: 14px; box-sizing: border-box; color: #333; }
+        .input-group input:focus + label, .input-group input:not(:placeholder-shown) + label { top: -10px; font-size: 11px; color: var(--fucsia); }
+        .input-group input::placeholder { color: var(--fucsia-light); font-weight: 400; }
         
-        .sidebar { width: 300px; }
-        .irina-bg { width: 100%; height: 100%; object-fit: cover; mask-image: linear-gradient(to right, transparent 0%, black 15%); }
+        .sidebar { width: 300px; position: relative; }
+        .irina-bg { width: 100%; height: 100%; object-fit: cover; mask-image: linear-gradient(to right, transparent 0%, black 10%); }
         #success-screen { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: center; }
     </style>
 </head>
@@ -49,22 +54,22 @@
             <div>Irina Hire Selection</div>
         </div>
         
-        <div class="sticky-controls">
-            <h2 style="color:var(--fucsia); margin:0;">Nueva Oferta Laboral</h2>
-            <div class="btn-wrapper"><button class="btn-pub" onclick="publicarOferta()">PUBLICAR</button></div>
-        </div>
-
         <div class="content-area">
             <div id="form-wrapper" class="form-container">
-                <div class="input-group"><input type="text" id="titulo" placeholder="Ej: Desarrollador Sr"><label>Título del Puesto</label></div>
-                <div class="input-group"><input type="text" id="desc" placeholder="Ej: Gestión de equipos"><label>Descripción</label></div>
-                <div class="input-group"><input type="text" id="req" placeholder="Ej: Python, SQL"><label>Requisitos</label></div>
-                <div class="input-group"><input type="text" id="m1" placeholder="Ej: Remoto, Presencial"><label>Modalidad</label></div>
-                <div class="input-group"><input type="text" id="m2" placeholder="Ej: 2000, 3500"><label>Salario</label></div>
-                <div class="input-group"><input type="text" id="m3" placeholder="Ej: 2, 5, 8+ años"><label>Experiencia</label></div>
-                <div class="input-group"><input type="text" id="m4" placeholder="Ej: Ágil, Startup"><label>Cultura</label></div>
-                <div class="input-group"><input type="text" id="m5" placeholder="Ej: Salud, Gimnasio"><label>Beneficios</label></div>
-                <div class="input-group"><input type="text" id="m6" placeholder="Ej: Buenos Aires"><label>Ubicación</label></div>
+                <div class="header-section">
+                    <h2 style="color:var(--fucsia); margin:0;">Nueva Oferta Laboral</h2>
+                    <div class="btn-wrapper"><button class="btn-pub" onclick="publicarOferta()">PUBLICAR</button></div>
+                </div>
+                
+                <div class="input-group"><input type="text" id="titulo" placeholder="(Ej: Dev Senior en Arquitectura de Alta Disponibilidad)"><label>Título del Puesto</label></div>
+                <div class="input-group"><input type="text" id="desc" placeholder="(Ej: Gestión integral de equipos ágiles, diseño de microservicios en AWS)"><label>Descripción</label></div>
+                <div class="input-group"><input type="text" id="req" placeholder="(Ej: 10+ años en Kubernetes, Certificación AWS, Inglés B2)"><label>Requisitos</label></div>
+                <div class="input-group"><input type="text" id="m1" placeholder="(Ej: Remoto, Presencial en CABA, Híbrido 3x2)"><label>Modalidad</label></div>
+                <div class="input-group"><input type="text" id="m2" placeholder="(Ej: 5000 USD, Revisión trimestral, Bonos por desempeño)"><label>Salario</label></div>
+                <div class="input-group"><input type="text" id="m3" placeholder="(Ej: 7 años de experiencia demostrable en el sector)"><label>Experiencia</label></div>
+                <div class="input-group"><input type="text" id="m4" placeholder="(Ej: Cultura startup, enfoque en entregas continuas, autonomía total)"><label>Cultura</label></div>
+                <div class="input-group"><input type="text" id="m5" placeholder="(Ej: Stock options, presupuesto para certificaciones, seguro médico)"><label>Beneficios</label></div>
+                <div class="input-group"><input type="text" id="m6" placeholder="(Ej: Oficina en Distrito Tecnológico, disponibilidad para viajar)"><label>Ubicación</label></div>
             </div>
 
             <div id="success-screen">
@@ -84,7 +89,7 @@
         document.getElementById('form-wrapper').style.display = 'block';
         document.getElementById('success-screen').style.display = 'none';
         document.querySelectorAll('input').forEach(el => el.value = '');
-        document.getElementById('form-wrapper').scrollTop = 0; // Vuelve al tope
+        document.getElementById('form-wrapper').scrollTop = 0;
     }
 
     async function publicarOferta() {
@@ -94,14 +99,10 @@
             const { error } = await sb.from('crear_oferta').insert([{
                 titulo: document.getElementById('titulo').value,
                 jsonf: { data: { 
-                    desc: document.getElementById('desc').value,
-                    req: document.getElementById('req').value,
-                    mod: document.getElementById('m1').value,
-                    sal: document.getElementById('m2').value,
-                    exp: document.getElementById('m3').value,
-                    cult: document.getElementById('m4').value,
-                    ben: document.getElementById('m5').value,
-                    ubi: document.getElementById('m6').value
+                    desc: document.getElementById('desc').value, req: document.getElementById('req').value,
+                    mod: document.getElementById('m1').value, sal: document.getElementById('m2').value,
+                    exp: document.getElementById('m3').value, cult: document.getElementById('m4').value,
+                    ben: document.getElementById('m5').value, ubi: document.getElementById('m6').value
                 }}
             }]);
             if (error) throw error;
