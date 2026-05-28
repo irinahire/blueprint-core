@@ -12,16 +12,11 @@
         }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: var(--bg-dark); font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; }
         
-        /* El marco con el degradado */
         .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 95%; max-width: 1050px; height: 92vh; display: flex; align-items: center; justify-content: center; }
-        
-        /* Contenedor interno */
         .app-shell { width: 100%; height: 100%; background: white; border-radius: 40px; position: relative; overflow: hidden; display: flex; flex-direction: column; }
-        
         .header { height: 80px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; font-weight: 900; }
         .content-area { flex: 1; display: flex; overflow: hidden; }
         .form-container { flex: 1; overflow-y: auto; padding: 0 60px; display: flex; flex-direction: column; align-items: center; }
-        
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         input[type=number] { -moz-appearance: textfield; }
 
@@ -92,24 +87,39 @@
         btn.innerText = "Publicando...";
         btn.disabled = true;
 
-        const datos = {
+        // Empaquetado Híbrido: Planos para búsqueda, JSONF para el fractal
+        const payload = {
             titulo: document.getElementById('titulo').value,
-            descripcion: document.getElementById('desc').value,
-            requisitos: document.getElementById('req').value,
-            modalidad: document.getElementById('m1').classList.contains('disabled-input') ? null : document.getElementById('m1').value,
-            salario: document.getElementById('m2').classList.contains('disabled-input') ? null : document.getElementById('m2').value,
-            experiencia: document.getElementById('m3').classList.contains('disabled-input') ? null : document.getElementById('m3').value,
-            cultura: document.getElementById('m4').classList.contains('disabled-input') ? null : document.getElementById('m4').value,
-            beneficios: document.getElementById('m5').classList.contains('disabled-input') ? null : document.getElementById('m5').value
+            modalidad: !document.getElementById('m1').classList.contains('disabled-input') ? document.getElementById('m1').value : null,
+            salario: !document.getElementById('m2').classList.contains('disabled-input') ? parseFloat(document.getElementById('m2').value) : null,
+            jsonf: {
+                "!meta": { "type": "oferta", "version": "1.0" },
+                "data": {
+                    "descripcion": document.getElementById('desc').value,
+                    "requisitos": document.getElementById('req').value,
+                    "experiencia": !document.getElementById('m3').classList.contains('disabled-input') ? parseInt(document.getElementById('m3').value) : null,
+                    "cultura": !document.getElementById('m4').classList.contains('disabled-input') ? document.getElementById('m4').value : null,
+                    "beneficios": !document.getElementById('m5').classList.contains('disabled-input') ? document.getElementById('m5').value : null
+                },
+                "sub_nodos": [
+                    { "!meta": { "id": "observatorio_stats" }, "data": { "total_postulantes": 0 } }
+                ]
+            }
         };
 
         try {
-            console.log("Datos capturados:", datos);
-            // Aquí integrarías el fetch a tu base de datos:
-            // await fetch('TU_URL', { method: 'POST', body: JSON.stringify(datos) });
-            alert("¡Oferta publicada exitosamente!");
+            const response = await fetch('https://zuzvozgjsppkxvdlptmk.supabase.co/functions/v1/publicarOferta', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) throw new Error('Error en la comunicación con el Blueprint');
+            
+            alert("¡Oferta publicada exitosamente en el Ecosistema Fractal!");
         } catch (e) {
-            alert("Error al publicar.");
+            console.error(e);
+            alert("Error al publicar. Revisá la consola (F12).");
         } finally {
             btn.innerText = "PUBLICAR";
             btn.disabled = false;
