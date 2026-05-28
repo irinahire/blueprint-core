@@ -2,74 +2,48 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Irina Hire Selection | Portal de Postulación</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Irina | Gestión de Talento</title>
     <style>
-        :root { --irina-gradient: linear-gradient(to right, #bc8abf 0%, #96e8da 100%); --fucsia-solid: #bc8abf; --bg-dark: #05070a; }
-        body { margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 92%; max-width: 1150px; height: 85vh; display: flex; position: relative; }
-        .app-container { background: white; width: 100%; height: 100%; border-radius: 40px; display: flex; flex-direction: column; overflow: hidden; }
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-color); margin: 0; padding: 0; }
         
-        .top-vincha { width: 100%; height: 90px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 45px; box-sizing: border-box; }
-        .vincha-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 24px; text-transform: uppercase; color: white; }
-
-        .main-body { flex: 1; display: flex; overflow: hidden; }
-        .form-side { flex: 1; padding: 40px; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; }
+        /* Vincha superior */
+        header { background: var(--primary-gradient); color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         
-        .input-group { margin-bottom: 15px; }
-        label { display: block; font-size: 10px; font-weight: 800; color: #6b7280; text-transform: uppercase; margin-bottom: 5px; }
-        input { width: 100%; padding: 12px; border: 2px solid #f3f4f6; border-radius: 12px; box-sizing: border-box; }
-        #submit-btn { width: 100%; height: 50px; background: var(--fucsia-solid); color: white; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; margin-top: 10px; }
+        /* Layout principal */
+        main { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; padding: 2rem; max-width: 1200px; margin: auto; }
         
-        .visual-side { width: 35%; display: flex; align-items: center; justify-content: center; background: #fdfdfd; }
-        .irina-bg { height: 100%; width: 100%; object-fit: contain; }
+        /* Estética de naipes/tarjetas */
+        .card { background: var(--card-bg); padding: 2rem; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        
+        /* Estilo de Irina a la derecha */
+        .irina-sidebar { text-align: center; }
+        .irina-img { width: 150px; height: 150px; border-radius: 50%; background: #ddd; margin-bottom: 1rem; border: 4px solid #764ba2; }
     </style>
 </head>
 <body>
-    <div class="outer-frame">
-        <div class="app-container">
-            <div class="top-vincha">
-                <div style="color:white; font-weight:900;">BLUE LAB</div>
-                <div class="vincha-title">Irina Hire Selection</div>
-            </div>
-            <div class="main-body">
-                <div class="form-side">
-                    <form id="postulacion-form">
-                        <div class="input-group">
-                            <label>Nombre Completo</label>
-                            <input type="text" id="nombre" required>
-                        </div>
-                        <div class="input-group">
-                            <label>Email</label>
-                            <input type="email" id="email" required>
-                        </div>
-                        <div class="input-group">
-                            <label>WhatsApp</label>
-                            <input type="tel" id="telefono" required>
-                        </div>
-                        <div class="input-group">
-                            <label>LinkedIn URL</label>
-                            <input type="url" id="linkedin">
-                        </div>
-                        <div class="input-group">
-                            <label>Adjuntar Currículum (PDF)</label>
-                            <input type="file" id="cv" accept=".pdf" required>
-                        </div>
-                        <button type="submit" id="submit-btn">ENVIAR Y PREPARAR ENTREVISTA</button>
-                    </form>
-                </div>
-                <div class="visual-side">
-                    <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg">
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <script>
-        document.getElementById('postulacion-form').onsubmit = (e) => {
-            e.preventDefault();
-            alert("Postulación recibida.");
-        };
-    </script>
+<header>
+    <h1>Irina - Ecosistema de Talento</h1>
+    <nav>Dashboard | Ofertas | Candidatos</nav>
+</header>
+
+<main>
+    <section class="card">
+        <h2>Crear nueva oferta laboral</h2>
+        <p>Configura los parámetros de búsqueda con los interruptores.</p>
+        </section>
+
+    <aside class="irina-sidebar">
+        <div class="irina-img"></div> <h3>Irina</h3>
+        <p>Estoy lista para ayudarte a encontrar al mejor candidato.</p>
+    </aside>
+</main>
+
 </body>
 </html>
