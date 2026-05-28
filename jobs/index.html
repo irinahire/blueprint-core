@@ -2,29 +2,35 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Irina Hire Selection | Nueva Oferta</title>
+    <title>Irina Hire Selection | Crear Oferta</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
     <style>
         :root { --irina-gradient: linear-gradient(to right, #bc8abf 0%, #96e8da 100%); --bg-dark: #05070a; }
         body { margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; }
+        
         .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 92%; max-width: 1150px; height: 85vh; display: flex; }
         .app-container { background: white; width: 100%; height: 100%; border-radius: 40px; display: flex; flex-direction: column; overflow: hidden; }
+        
         .top-vincha { width: 100%; height: 90px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 45px; box-sizing: border-box; }
         .vincha-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 24px; color: white; }
         
         .main-body { flex: 1; display: flex; overflow: hidden; }
         .form-side { flex: 1; padding: 40px; overflow-y: auto; }
         
-        /* Estética de campos con Switch */
-        .field-row { display: flex; align-items: center; margin-bottom: 20px; gap: 15px; padding: 10px; border-radius: 12px; transition: 0.3s; }
-        .field-row.disabled { background: #f9f9f9; filter: grayscale(1); opacity: 0.6; }
-        .switch { width: 40px; height: 20px; background: #ddd; border-radius: 20px; position: relative; cursor: pointer; transition: 0.3s; }
-        .switch.active { background: #bc8abf; }
-        .switch::after { content: ''; position: absolute; width: 16px; height: 16px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: 0.3s; }
-        .switch.active::after { left: 22px; }
+        /* Ajuste de Título interno */
+        .form-title { font-family: 'Montserrat', sans-serif; color: #bc8abf; margin-bottom: 25px; font-size: 22px; }
         
-        input { flex: 1; padding: 10px; border: 2px solid #eee; border-radius: 8px; }
-        .visual-side { width: 35%; height: 100%; background: #eee; }
+        /* Estética de campos con Switch mejorada */
+        .field-row { display: flex; align-items: center; margin-bottom: 15px; gap: 15px; }
+        .switch { width: 45px; height: 22px; background: #ddd; border-radius: 20px; position: relative; cursor: pointer; transition: 0.3s; flex-shrink: 0; }
+        .switch.active { background: #96e8da; } /* Color de activación */
+        .switch::after { content: ''; position: absolute; width: 18px; height: 18px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: 0.3s; }
+        .switch.active::after { left: 25px; }
+        
+        input, select, textarea { flex: 1; padding: 12px; border: 2px solid #eee; border-radius: 9px; transition: 0.3s; }
+        .disabled-input { background: #f9f9f9; opacity: 0.5; pointer-events: none; }
+        
+        .visual-side { width: 35%; height: 100%; }
         .irina-bg { width: 100%; height: 100%; object-fit: cover; mask-image: linear-gradient(to right, transparent 0%, black 15%); }
     </style>
 </head>
@@ -33,19 +39,19 @@
         <div class="app-container">
             <div class="top-vincha">
                 <div style="color:white; font-weight:900;">BLUE LAB</div>
-                <div class="vincha-title">Irina - Crear Oferta</div>
+                <div class="vincha-title">Irina Hire Selection</div>
             </div>
             <div class="main-body">
                 <div class="form-side">
-                    <div class="field-row" id="row-titulo">
-                        <div class="switch active" onclick="toggleField('titulo')"></div>
-                        <input type="text" placeholder="Título del Puesto" id="titulo">
-                    </div>
-                    <div class="field-row" id="row-beneficios">
-                        <div class="switch" onclick="toggleField('beneficios')"></div>
-                        <input type="text" placeholder="Beneficios (Opcional)" id="beneficios" disabled>
-                    </div>
-                    <button style="width:100%; padding:15px; background:var(--irina-gradient); border:none; color:white; font-weight:800; border-radius:10px; cursor:pointer;">PUBLICAR OFERTA</button>
+                    <h2 class="form-title">Crear Oferta Laboral</h2>
+                    
+                    <div class="field-row" id="row-titulo"><div class="switch active" onclick="toggleField('titulo')"></div><input type="text" id="titulo" placeholder="Título del Puesto"></div>
+                    <div class="field-row" id="row-modalidad"><div class="switch" onclick="toggleField('modalidad')"></div><input type="text" id="modalidad" class="disabled-input" placeholder="Modalidad (Remoto/Híbrido)"></div>
+                    <div class="field-row" id="row-salario"><div class="switch" onclick="toggleField('salario')"></div><input type="number" id="salario" class="disabled-input" placeholder="Pretensión Salarial"></div>
+                    <div class="field-row" id="row-experiencia"><div class="switch" onclick="toggleField('experiencia')"></div><input type="number" id="experiencia" class="disabled-input" placeholder="Años de Experiencia"></div>
+                    <div class="field-row" id="row-descripcion"><div class="switch" onclick="toggleField('descripcion')"></div><textarea id="descripcion" class="disabled-input" placeholder="Descripción del Puesto"></textarea></div>
+
+                    <button style="width:100%; margin-top:20px; padding:15px; background:var(--irina-gradient); border:none; color:white; font-weight:800; border-radius:10px; cursor:pointer;">PUBLICAR OFERTA</button>
                 </div>
                 <div class="visual-side">
                     <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg">
@@ -60,9 +66,8 @@
             const input = document.getElementById(id);
             const sw = row.querySelector('.switch');
             
-            row.classList.toggle('disabled');
             sw.classList.toggle('active');
-            input.disabled = !input.disabled;
+            input.classList.toggle('disabled-input');
         }
     </script>
 </body>
