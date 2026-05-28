@@ -3,58 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <title>Irina Hire Selection | Nueva Oferta</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --fucsia: #bc8abf; --bg-dark: #05070a; --irina-gradient: linear-gradient(to right, #bc8abf, #96e8da); }
-        body, html { margin: 0; padding: 0; height: 100%; background: var(--bg-dark); font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; }
+        :root { 
+            --irina-gradient: linear-gradient(to right, #bc8abf 0%, #96e8da 100%); 
+            --btn-gradient: linear-gradient(to right, #96e8da 0%, #bc8abf 100%);
+            --fucsia: #bc8abf; --bg-dark: #05070a; 
+        }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: var(--bg-dark); display: flex; align-items: center; justify-content: center; font-family: 'Inter', sans-serif; }
         
         .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 95%; max-width: 1050px; height: 92vh; display: flex; align-items: center; justify-content: center; }
         .app-shell { width: 100%; height: 100%; background: white; border-radius: 40px; display: flex; flex-direction: column; overflow: hidden; }
         
-        .sticky-header { padding: 20px 60px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; background: white; z-index: 10; }
+        .header { height: 80px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; font-weight: 900; font-family: 'Montserrat', sans-serif; }
+        .sticky-controls { background: white; padding: 20px 60px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; z-index: 10; }
         
         .content-area { flex: 1; display: flex; overflow: hidden; }
-        .form-container { flex: 1; padding: 20px 60px; overflow-y: auto; }
+        #form-wrapper { flex: 1; padding: 20px 60px; overflow-y: auto; }
         
-        .input-group { position: relative; margin-top: 25px; margin-bottom: 10px; }
-        .input-group label { position: absolute; left: 12px; top: 12px; color: #333; font-weight: 700; transition: 0.2s; pointer-events: none; background: white; padding: 0 4px; }
-        .input-group input { width: 100%; padding: 14px; border: 2px solid #eee; border-radius: 10px; outline: none; font-size: 14px; }
-        .input-group input:focus + label, .input-group input:not(:placeholder-shown) + label { top: -10px; font-size: 11px; color: var(--fucsia); }
+        /* Animación Botón */
+        .btn-wrapper { position: relative; padding: 3px; border-radius: 12px; overflow: hidden; }
+        .btn-wrapper::before { content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, var(--fucsia), #96e8da, transparent); animation: rotate 3s linear infinite; display: none; }
+        .btn-wrapper:hover::before { display: block; }
+        .btn-pub { background: var(--btn-gradient); color: white; border: none; padding: 12px 25px; border-radius: 9px; font-weight: 800; cursor: pointer; position: relative; z-index: 1; }
+        @keyframes rotate { 100% { transform: rotate(360deg); } }
         
-        .btn-pub { background: var(--fucsia); color: white; border: none; padding: 12px 25px; border-radius: 9px; font-weight: 800; cursor: pointer; }
+        /* Campos con animación */
+        .input-group { position: relative; margin-top: 25px; }
+        .input-group label { position: absolute; left: 12px; top: 14px; color: #333; font-weight: 700; transition: 0.2s; pointer-events: none; background: white; padding: 0 4px; }
+        .input-group input { width: 100%; padding: 14px; border: 2px solid #eee; border-radius: 10px; outline: none; font-size: 14px; box-sizing: border-box; }
+        .input-group input:focus + label, .input-group input:not(:placeholder-shown) + label { top: -10px; font-size: 11px; color: var(--fucsia); font-weight: 700; }
         
         .sidebar { width: 300px; }
         .irina-bg { width: 100%; height: 100%; object-fit: cover; mask-image: linear-gradient(to right, transparent 0%, black 15%); }
-        
-        #success-screen { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        #success-screen { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
 <div class="outer-frame">
     <div class="app-shell">
-        <div class="sticky-header">
+        <div class="header">
+            <div>BLUE LAB</div>
+            <div>Irina Hire Selection</div>
+        </div>
+        
+        <div class="sticky-controls">
             <h2 style="color:var(--fucsia); margin:0;">Nueva Oferta Laboral</h2>
-            <button class="btn-pub" onclick="publicarOferta()">PUBLICAR</button>
+            <div class="btn-wrapper"><button class="btn-pub" onclick="publicarOferta()">PUBLICAR</button></div>
         </div>
 
         <div class="content-area">
             <div id="form-wrapper" class="form-container">
-                <div class="input-group"><input type="text" id="titulo" placeholder="Ej: Desarrollador Sr, Analista UX"><label>Título del Puesto</label></div>
-                <div class="input-group"><input type="text" id="desc" placeholder="Ej: Gestión de equipos, Análisis métricas"><label>Descripción</label></div>
-                <div class="input-group"><input type="text" id="req" placeholder="Ej: Python, Inglés avanzado, SQL"><label>Requisitos</label></div>
-                <div class="input-group"><input type="text" id="m1" placeholder="Ej: Remoto, Presencial, Híbrido"><label>Modalidad</label></div>
-                <div class="input-group"><input type="text" id="m2" placeholder="Ej: 2000, 3500, 5000"><label>Salario</label></div>
+                <div class="input-group"><input type="text" id="titulo" placeholder="Ej: Desarrollador Sr"><label>Título del Puesto</label></div>
+                <div class="input-group"><input type="text" id="desc" placeholder="Ej: Gestión de equipos"><label>Descripción</label></div>
+                <div class="input-group"><input type="text" id="req" placeholder="Ej: Python, SQL"><label>Requisitos</label></div>
+                <div class="input-group"><input type="text" id="m1" placeholder="Ej: Remoto, Presencial"><label>Modalidad</label></div>
+                <div class="input-group"><input type="text" id="m2" placeholder="Ej: 2000, 3500"><label>Salario</label></div>
                 <div class="input-group"><input type="text" id="m3" placeholder="Ej: 2, 5, 8+ años"><label>Experiencia</label></div>
-                <div class="input-group"><input type="text" id="m4" placeholder="Ej: Ágil, Formal, Startup"><label>Cultura</label></div>
-                <div class="input-group"><input type="text" id="m5" placeholder="Ej: Salud, Gimnasio, Capacitación"><label>Beneficios</label></div>
-                <div class="input-group"><input type="text" id="m6" placeholder="Ej: Buenos Aires, Remoto"><label>Ubicación</label></div>
+                <div class="input-group"><input type="text" id="m4" placeholder="Ej: Ágil, Startup"><label>Cultura</label></div>
+                <div class="input-group"><input type="text" id="m5" placeholder="Ej: Salud, Gimnasio"><label>Beneficios</label></div>
+                <div class="input-group"><input type="text" id="m6" placeholder="Ej: Buenos Aires"><label>Ubicación</label></div>
             </div>
 
             <div id="success-screen">
                 <h1 style="color:var(--fucsia);">¡Oferta Creada!</h1>
-                <button class="btn-pub" onclick="resetForm()">Crear otra oferta</button>
+                <div class="btn-wrapper"><button class="btn-pub" onclick="resetForm()">Crear otra oferta</button></div>
             </div>
             
             <div class="sidebar"><img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg"></div>
@@ -69,6 +84,7 @@
         document.getElementById('form-wrapper').style.display = 'block';
         document.getElementById('success-screen').style.display = 'none';
         document.querySelectorAll('input').forEach(el => el.value = '');
+        document.getElementById('form-wrapper').scrollTop = 0; // Vuelve al tope
     }
 
     async function publicarOferta() {
