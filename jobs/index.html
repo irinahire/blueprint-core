@@ -2,48 +2,68 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Irina | Gestión de Talento</title>
+    <title>Irina Hire Selection | Nueva Oferta</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --bg-color: #f4f7f6;
-            --card-bg: #ffffff;
-        }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-color); margin: 0; padding: 0; }
+        :root { --irina-gradient: linear-gradient(to right, #bc8abf 0%, #96e8da 100%); --bg-dark: #05070a; }
+        body { margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 92%; max-width: 1150px; height: 85vh; display: flex; }
+        .app-container { background: white; width: 100%; height: 100%; border-radius: 40px; display: flex; flex-direction: column; overflow: hidden; }
+        .top-vincha { width: 100%; height: 90px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 45px; box-sizing: border-box; }
+        .vincha-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 24px; color: white; }
         
-        /* Vincha superior */
-        header { background: var(--primary-gradient); color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .main-body { flex: 1; display: flex; overflow: hidden; }
+        .form-side { flex: 1; padding: 40px; overflow-y: auto; }
         
-        /* Layout principal */
-        main { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; padding: 2rem; max-width: 1200px; margin: auto; }
+        /* Estética de campos con Switch */
+        .field-row { display: flex; align-items: center; margin-bottom: 20px; gap: 15px; padding: 10px; border-radius: 12px; transition: 0.3s; }
+        .field-row.disabled { background: #f9f9f9; filter: grayscale(1); opacity: 0.6; }
+        .switch { width: 40px; height: 20px; background: #ddd; border-radius: 20px; position: relative; cursor: pointer; transition: 0.3s; }
+        .switch.active { background: #bc8abf; }
+        .switch::after { content: ''; position: absolute; width: 16px; height: 16px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: 0.3s; }
+        .switch.active::after { left: 22px; }
         
-        /* Estética de naipes/tarjetas */
-        .card { background: var(--card-bg); padding: 2rem; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-        
-        /* Estilo de Irina a la derecha */
-        .irina-sidebar { text-align: center; }
-        .irina-img { width: 150px; height: 150px; border-radius: 50%; background: #ddd; margin-bottom: 1rem; border: 4px solid #764ba2; }
+        input { flex: 1; padding: 10px; border: 2px solid #eee; border-radius: 8px; }
+        .visual-side { width: 35%; height: 100%; background: #eee; }
+        .irina-bg { width: 100%; height: 100%; object-fit: cover; mask-image: linear-gradient(to right, transparent 0%, black 15%); }
     </style>
 </head>
 <body>
+    <div class="outer-frame">
+        <div class="app-container">
+            <div class="top-vincha">
+                <div style="color:white; font-weight:900;">BLUE LAB</div>
+                <div class="vincha-title">Irina - Crear Oferta</div>
+            </div>
+            <div class="main-body">
+                <div class="form-side">
+                    <div class="field-row" id="row-titulo">
+                        <div class="switch active" onclick="toggleField('titulo')"></div>
+                        <input type="text" placeholder="Título del Puesto" id="titulo">
+                    </div>
+                    <div class="field-row" id="row-beneficios">
+                        <div class="switch" onclick="toggleField('beneficios')"></div>
+                        <input type="text" placeholder="Beneficios (Opcional)" id="beneficios" disabled>
+                    </div>
+                    <button style="width:100%; padding:15px; background:var(--irina-gradient); border:none; color:white; font-weight:800; border-radius:10px; cursor:pointer;">PUBLICAR OFERTA</button>
+                </div>
+                <div class="visual-side">
+                    <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg">
+                </div>
+            </div>
+        </div>
+    </div>
 
-<header>
-    <h1>Irina - Ecosistema de Talento</h1>
-    <nav>Dashboard | Ofertas | Candidatos</nav>
-</header>
-
-<main>
-    <section class="card">
-        <h2>Crear nueva oferta laboral</h2>
-        <p>Configura los parámetros de búsqueda con los interruptores.</p>
-        </section>
-
-    <aside class="irina-sidebar">
-        <div class="irina-img"></div> <h3>Irina</h3>
-        <p>Estoy lista para ayudarte a encontrar al mejor candidato.</p>
-    </aside>
-</main>
-
+    <script>
+        function toggleField(id) {
+            const row = document.getElementById('row-' + id);
+            const input = document.getElementById(id);
+            const sw = row.querySelector('.switch');
+            
+            row.classList.toggle('disabled');
+            sw.classList.toggle('active');
+            input.disabled = !input.disabled;
+        }
+    </script>
 </body>
 </html>
