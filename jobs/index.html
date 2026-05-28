@@ -59,13 +59,13 @@
             <div class="form-container">
                 <div class="sticky-controls">
                     <h2 style="color:var(--fucsia); margin:0;">Nueva Oferta Laboral</h2>
-                    <div class="btn-wrapper"><button class="btn-pub">PUBLICAR</button></div>
+                    <div class="btn-wrapper"><button class="btn-pub" onclick="publicarOferta()">PUBLICAR</button></div>
                 </div>
                 
                 <div class="form-content">
-                    <input type="text" placeholder="Título del Puesto" style="width:100%; margin-bottom:10px; box-sizing:border-box;">
-                    <textarea placeholder="Descripción del puesto" style="width:100%; height:80px; margin-bottom:10px; box-sizing:border-box;"></textarea>
-                    <textarea placeholder="Requisitos del puesto" style="width:100%; height:80px; margin-bottom:20px; box-sizing:border-box;"></textarea>
+                    <input type="text" id="titulo" placeholder="Título del Puesto" style="width:100%; margin-bottom:10px; box-sizing:border-box;">
+                    <textarea id="desc" placeholder="Descripción del puesto" style="width:100%; height:80px; margin-bottom:10px; box-sizing:border-box;"></textarea>
+                    <textarea id="req" placeholder="Requisitos del puesto" style="width:100%; height:80px; margin-bottom:20px; box-sizing:border-box;"></textarea>
                     
                     <div class="field-row"><input type="text" id="m1" class="disabled-input" placeholder="Modalidad (Ej: Remoto)"><div class="switch" onclick="toggleField('m1', this)"></div></div>
                     <div class="field-row"><input type="number" id="m2" class="disabled-input" placeholder="Salario (Ej: 3000)"><div class="switch" onclick="toggleField('m2', this)"></div></div>
@@ -85,6 +85,35 @@
     function toggleField(id, el) {
         document.getElementById(id).classList.toggle('disabled-input');
         el.classList.toggle('active');
+    }
+
+    async function publicarOferta() {
+        const btn = document.querySelector('.btn-pub');
+        btn.innerText = "Publicando...";
+        btn.disabled = true;
+
+        const datos = {
+            titulo: document.getElementById('titulo').value,
+            descripcion: document.getElementById('desc').value,
+            requisitos: document.getElementById('req').value,
+            modalidad: document.getElementById('m1').classList.contains('disabled-input') ? null : document.getElementById('m1').value,
+            salario: document.getElementById('m2').classList.contains('disabled-input') ? null : document.getElementById('m2').value,
+            experiencia: document.getElementById('m3').classList.contains('disabled-input') ? null : document.getElementById('m3').value,
+            cultura: document.getElementById('m4').classList.contains('disabled-input') ? null : document.getElementById('m4').value,
+            beneficios: document.getElementById('m5').classList.contains('disabled-input') ? null : document.getElementById('m5').value
+        };
+
+        try {
+            console.log("Datos capturados:", datos);
+            // Aquí integrarías el fetch a tu base de datos:
+            // await fetch('TU_URL', { method: 'POST', body: JSON.stringify(datos) });
+            alert("¡Oferta publicada exitosamente!");
+        } catch (e) {
+            alert("Error al publicar.");
+        } finally {
+            btn.innerText = "PUBLICAR";
+            btn.disabled = false;
+        }
     }
 </script>
 
