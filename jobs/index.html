@@ -78,7 +78,6 @@
 </div>
 
 <script>
-    // Inicialización del cliente de Supabase
     const sb = supabase.createClient(
         'https://zuzvozgjsppkxvdlptmk.supabase.co', 
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0'
@@ -87,6 +86,22 @@
     function toggleField(id, el) {
         document.getElementById(id).classList.toggle('disabled-input');
         el.classList.toggle('active');
+    }
+
+    function limpiarFormulario() {
+        document.getElementById('titulo').value = '';
+        document.getElementById('desc').value = '';
+        document.getElementById('req').value = '';
+        const inputs = ['m1', 'm2', 'm3', 'm4', 'm5'];
+        inputs.forEach(id => {
+            const el = document.getElementById(id);
+            if (!el.classList.contains('disabled-input')) {
+                el.classList.add('disabled-input');
+                el.value = '';
+                const switchEl = el.nextElementSibling;
+                switchEl.classList.remove('active');
+            }
+        });
     }
 
     async function publicarOferta() {
@@ -116,6 +131,7 @@
             if (error) throw error;
             
             alert("¡Oferta publicada exitosamente!");
+            limpiarFormulario(); // <-- La magia ocurre aquí
         } catch (e) {
             console.error("Error:", e);
             alert("Error al publicar: " + e.message);
@@ -125,6 +141,5 @@
         }
     }
 </script>
-
 </body>
 </html>
