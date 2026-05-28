@@ -8,20 +8,23 @@
         :root { --irina-gradient: linear-gradient(to right, #bc8abf 0%, #96e8da 100%); --fucsia: #bc8abf; --bg-dark: #05070a; }
         body { margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; }
         
-        .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 95%; max-width: 1200px; height: 90vh; display: flex; }
+        .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 95%; max-width: 1000px; height: 90vh; display: flex; }
         .app-container { background: white; width: 100%; height: 100%; border-radius: 40px; display: flex; flex-direction: column; overflow: hidden; }
         
         .top-vincha { width: 100%; height: 80px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 45px; }
         .vincha-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 22px; color: white; }
         
         .main-body { flex: 1; display: flex; overflow: hidden; }
-        .form-side { flex: 1; padding: 30px 40px; overflow-y: auto; }
-        .form-title { font-family: 'Montserrat', sans-serif; color: var(--fucsia); margin-bottom: 20px; font-size: 20px; }
+        /* Centramos el formulario con un ancho controlado */
+        .form-side { flex: 1; padding: 30px 60px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
+        .form-content { width: 100%; max-width: 550px; } 
+        
+        .form-title { font-family: 'Montserrat', sans-serif; color: var(--fucsia); margin-bottom: 25px; font-size: 22px; width: 100%; }
         
         .field-row { display: flex; align-items: center; gap: 15px; margin-bottom: 12px; }
         .input-group { flex: 1; display: flex; align-items: center; gap: 10px; }
         
-        input, textarea { flex: 1; padding: 10px; border: 2px solid #eee; border-radius: 8px; font-size: 14px; }
+        input, textarea { flex: 1; padding: 12px; border: 2px solid #eee; border-radius: 10px; font-size: 14px; }
         .disabled-input { background: #f4f4f4; opacity: 0.6; pointer-events: none; }
 
         .switch { width: 35px; height: 18px; background: #ddd; border-radius: 20px; position: relative; cursor: pointer; transition: 0.3s; flex-shrink: 0; }
@@ -29,12 +32,11 @@
         .switch::after { content: ''; position: absolute; width: 14px; height: 14px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: 0.3s; }
         .switch.active::after { left: 19px; }
         
-        /* Botón Láser solo en hover */
-        .btn-wrapper { position: relative; width: 100%; padding: 3px; border-radius: 12px; margin-top: 20px; overflow: hidden; }
+        .btn-wrapper { position: relative; width: 100%; max-width: 550px; padding: 3px; border-radius: 12px; margin-top: 20px; overflow: hidden; }
         .btn-wrapper::before { content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, var(--fucsia), #96e8da, transparent); animation: rotate 3s linear infinite; display: none; }
         .btn-wrapper:hover::before { display: block; }
         
-        #submit-btn { position: relative; width: 100%; height: 45px; background: linear-gradient(to right, #96e8da, var(--fucsia)); color: white; border: none; border-radius: 9px; font-weight: 800; cursor: pointer; z-index: 1; }
+        #submit-btn { position: relative; width: 100%; height: 45px; background: linear-gradient(to right, #96e8da, var(--fucsia)); color: white; border: none; border-radius: 9px; font-weight: 800; cursor: pointer; }
         @keyframes rotate { 100% { transform: rotate(360deg); } }
         
         .visual-side { width: 30%; height: 100%; }
@@ -50,19 +52,21 @@
             </div>
             <div class="main-body">
                 <div class="form-side">
-                    <h2 class="form-title">Crear Oferta Laboral</h2>
-                    
-                    <input type="text" placeholder="Título del Puesto (Obligatorio)" style="margin-bottom:10px; width: 100%;">
-                    <textarea placeholder="Descripción del Puesto (Obligatorio)" style="margin-bottom:10px; width: 100%; height: 60px;"></textarea>
-                    <textarea placeholder="Requisitos del Puesto (Obligatorio)" style="margin-bottom:15px; width: 100%; height: 60px;"></textarea>
-                    
-                    <div class="field-row"><div class="input-group"><input type="text" id="modalidad" class="disabled-input" placeholder="Modalidad"><div class="switch" onclick="toggleField('modalidad')"></div></div></div>
-                    <div class="field-row"><div class="input-group"><input type="number" id="salario" class="disabled-input" placeholder="Salario"><div class="switch" onclick="toggleField('salario')"></div></div></div>
-                    <div class="field-row"><div class="input-group"><input type="number" id="experiencia" class="disabled-input" placeholder="Años de Experiencia"><div class="switch" onclick="toggleField('experiencia')"></div></div></div>
-                    <div class="field-row"><div class="input-group"><input type="text" id="cultura" class="disabled-input" placeholder="Fit Cultural"><div class="switch" onclick="toggleField('cultura')"></div></div></div>
-                    <div class="field-row"><div class="input-group"><input type="text" id="beneficios" class="disabled-input" placeholder="Beneficios"><div class="switch" onclick="toggleField('beneficios')"></div></div></div>
+                    <div class="form-content">
+                        <h2 class="form-title">Crear Oferta Laboral</h2>
+                        
+                        <input type="text" placeholder="Ej: Desarrollador Fullstack Senior" style="margin-bottom:10px; width: 100%; box-sizing: border-box;">
+                        <textarea placeholder="Ej: Responsable de liderar el equipo de arquitectura..." style="margin-bottom:10px; width: 100%; box-sizing: border-box; height: 60px;"></textarea>
+                        <textarea placeholder="Ej: Experiencia en Python, React, SQL y 5 años de práctica..." style="margin-bottom:15px; width: 100%; box-sizing: border-box; height: 60px;"></textarea>
+                        
+                        <div class="field-row"><div class="input-group"><input type="text" id="modalidad" class="disabled-input" placeholder="Ej: Presencial / Remoto / Híbrido"><div class="switch" onclick="toggleField('modalidad')"></div></div></div>
+                        <div class="field-row"><div class="input-group"><input type="number" id="salario" class="disabled-input" placeholder="Ej: 2500 - 3500 USD"><div class="switch" onclick="toggleField('salario')"></div></div></div>
+                        <div class="field-row"><div class="input-group"><input type="number" id="experiencia" class="disabled-input" placeholder="Ej: 3+ años"><div class="switch" onclick="toggleField('experiencia')"></div></div></div>
+                        <div class="field-row"><div class="input-group"><input type="text" id="cultura" class="disabled-input" placeholder="Ej: Innovadora, ágil, orientada a resultados"><div class="switch" onclick="toggleField('cultura')"></div></div></div>
+                        <div class="field-row"><div class="input-group"><input type="text" id="beneficios" class="disabled-input" placeholder="Ej: Medicina prepaga, días de home office"><div class="switch" onclick="toggleField('beneficios')"></div></div></div>
 
-                    <div class="btn-wrapper"><button id="submit-btn">PUBLICAR OFERTA</button></div>
+                        <div class="btn-wrapper"><button id="submit-btn">PUBLICAR OFERTA</button></div>
+                    </div>
                 </div>
                 <div class="visual-side">
                     <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg">
