@@ -31,14 +31,15 @@
         .btn-wrapper:hover::before { display: block; }
         .btn-pub { background: var(--btn-gradient); color: white; border: none; padding: 12px 25px; border-radius: 9px; font-weight: 800; cursor: pointer; position: relative; z-index: 1; }
         @keyframes rotate { 100% { transform: rotate(360deg); } }
-
-        .btn-action { background: var(--fucsia); color: white; border: none; padding: 15px 30px; border-radius: 12px; font-weight: 700; cursor: pointer; margin: 10px; }
         
+        /* Switch Estilo Original */
         .field-row { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
         input, textarea { flex: 1; padding: 12px; border: 2px solid #eee; border-radius: 10px; font-size: 14px; outline: none; }
         .disabled-input { background: #f4f4f4; opacity: 0.5; pointer-events: none; }
-        .switch { width: 40px; height: 20px; background: #ddd; border-radius: 20px; cursor: pointer; transition: 0.3s; }
+        .switch { width: 40px; height: 20px; background: #ddd; border-radius: 20px; position: relative; cursor: pointer; transition: 0.3s; flex-shrink: 0; }
         .switch.active { background: var(--fucsia); }
+        .switch::after { content: ''; position: absolute; width: 16px; height: 16px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: 0.3s; }
+        .switch.active::after { left: 22px; }
         
         .sidebar { width: 300px; }
         .irina-bg { width: 100%; height: 100%; object-fit: cover; mask-image: linear-gradient(to right, transparent 0%, black 15%); }
@@ -63,10 +64,14 @@
                     <input type="text" id="titulo" placeholder="Título del Puesto" style="width:100%; margin-bottom:10px;">
                     <textarea id="desc" placeholder="Descripción del puesto" style="width:100%; height:80px; margin-bottom:10px;"></textarea>
                     <textarea id="req" placeholder="Requisitos del puesto" style="width:100%; height:80px; margin-bottom:20px;"></textarea>
-                    <div class="field-row"><input type="text" id="m1" class="disabled-input" placeholder="Modalidad"><div class="switch" onclick="toggleField('m1', this)"></div></div>
-                    <div class="field-row"><input type="number" id="m2" class="disabled-input" placeholder="Salario"><div class="switch" onclick="toggleField('m2', this)"></div></div>
-                    <div class="field-row"><input type="number" id="m3" class="disabled-input" placeholder="Experiencia"><div class="switch" onclick="toggleField('m3', this)"></div></div>
+                    
+                    <div class="field-row"><input type="text" id="m1" placeholder="Modalidad"><div class="switch active" onclick="toggleField('m1', this)"></div></div>
+                    <div class="field-row"><input type="number" id="m2" placeholder="Salario"><div class="switch active" onclick="toggleField('m2', this)"></div></div>
+                    <div class="field-row"><input type="number" id="m3" placeholder="Experiencia"><div class="switch active" onclick="toggleField('m3', this)"></div></div>
+                    
                     <div class="field-row"><input type="text" id="m4" class="disabled-input" placeholder="Cultura"><div class="switch" onclick="toggleField('m4', this)"></div></div>
+                    <div class="field-row"><input type="text" id="m5" class="disabled-input" placeholder="Beneficios"><div class="switch" onclick="toggleField('m5', this)"></div></div>
+                    <div class="field-row"><input type="text" id="m6" class="disabled-input" placeholder="Ubicación"><div class="switch" onclick="toggleField('m6', this)"></div></div>
                 </div>
             </div>
             <div class="sidebar"><img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg"></div>
@@ -74,9 +79,7 @@
 
         <div id="success-screen">
             <h1 style="color:var(--fucsia);">¡Oferta Creada!</h1>
-            <p>La posición ha sido publicada exitosamente en el sistema.</p>
-            <button class="btn-action" onclick="resetForm()">Crear otra oferta</button>
-            <button class="btn-action" style="background: #333;" onclick="location.href='dashboard.html'">Volver al Dashboard</button>
+            <button class="btn-pub" onclick="resetForm()">Crear otra oferta</button>
         </div>
     </div>
 </div>
@@ -85,35 +88,4 @@
     const sb = supabase.createClient('https://zuzvozgjsppkxvdlptmk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0');
 
     function toggleField(id, el) {
-        document.getElementById(id).classList.toggle('disabled-input');
-        el.classList.toggle('active');
-    }
-
-    function resetForm() {
-        document.getElementById('form-wrapper').style.display = 'flex';
-        document.getElementById('success-screen').style.display = 'none';
-        document.querySelectorAll('input, textarea').forEach(el => { el.value = ''; el.classList.add('disabled-input'); });
-        document.querySelectorAll('.switch').forEach(el => el.classList.remove('active'));
-    }
-
-    async function publicarOferta() {
-        const btn = document.querySelector('.btn-pub');
-        btn.innerText = "Publicando...";
-        
-        try {
-            const { error } = await sb.from('crear_oferta').insert([{
-                titulo: document.getElementById('titulo').value,
-                jsonf: { data: { descripcion: document.getElementById('desc').value, requisitos: document.getElementById('req').value } }
-            }]);
-            if (error) throw error;
-            document.getElementById('form-wrapper').style.display = 'none';
-            document.getElementById('success-screen').style.display = 'flex';
-        } catch (e) {
-            alert("Error: " + e.message);
-        } finally {
-            btn.innerText = "PUBLICAR";
-        }
-    }
-</script>
-</body>
-</html>
+        document.getElementById(id).classList
