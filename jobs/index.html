@@ -2,23 +2,55 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Irina Hire Selection | Crear Oferta</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <title>Irina Hire Selection</title>
     <style>
-        :root { --irina-gradient: linear-gradient(to right, #bc8abf 0%, #96e8da 100%); --fucsia: #bc8abf; --bg-dark: #05070a; }
-        body { margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        /* Reset básico para evitar pantallas negras */
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #05070a; display: flex; align-items: center; justify-content: center; font-family: sans-serif; }
         
-        .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 95%; max-width: 1000px; height: 90vh; display: flex; box-sizing: border-box; }
-        .app-container { background: white; width: 100%; height: 100%; border-radius: 40px; display: flex; flex-direction: column; overflow: hidden; }
+        /* Contenedor principal */
+        .app-shell { width: 95%; max-width: 1000px; height: 90vh; background: white; border-radius: 40px; position: relative; overflow: hidden; display: flex; flex-direction: column; }
         
-        .top-vincha { width: 100%; height: 80px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; box-sizing: border-box; }
-        .vincha-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 20px; color: white; }
+        /* Barra superior */
+        .header { height: 80px; background: linear-gradient(to right, #bc8abf, #96e8da); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; font-weight: 900; }
         
-        .main-body { flex: 1; display: flex; overflow: hidden; }
-        .form-side { flex: 1; padding: 0 60px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
+        /* Cuerpo */
+        .content-area { flex: 1; display: flex; overflow: hidden; }
+        .form-container { flex: 1; overflow-y: auto; padding: 20px 60px; }
+        .sidebar { width: 300px; background: #eee; }
         
-        .sticky-header { position: sticky; top: 0; background: white; padding: 20px 0; display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 550px; z-index: 10; border-bottom: 1px solid #eee; }
-        .form-content { width: 100%; max-width: 550px; padding-bottom: 40px; }
-        
-        .form-title { font-family: 'Montserrat', sans-serif; color: var(--fucsia); font-size: 20px; margin: 0; }
-        .btn-pub-top { background: var(--fucsia); color: white;
+        /* Controles */
+        .sticky-controls { position: sticky; top: 0; background: white; padding: 15px 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; z-index: 5; }
+        .field { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 8px; }
+        .switch { width: 40px; height: 20px; background: #ccc; border-radius: 10px; cursor: pointer; }
+        .switch.active { background: #bc8abf; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="header">
+        <div>BLUE LAB</div>
+        <div>Irina Hire Selection</div>
+    </div>
+    <div class="content-area">
+        <div class="form-container">
+            <div class="sticky-controls">
+                <h3>Crear Oferta</h3>
+                <button style="background:#bc8abf; color:white; border:none; padding:10px 20px; border-radius:8px;">PUBLICAR</button>
+            </div>
+            
+            <input type="text" placeholder="Título" style="width:100%; margin-bottom:10px;">
+            <textarea placeholder="Descripción" style="width:100%; height:80px; margin-bottom:20px;"></textarea>
+            
+            <div class="field"><input type="text" id="m1" placeholder="Modalidad"><div class="switch" onclick="this.classList.toggle('active')"></div></div>
+            <div class="field"><input type="text" id="m2" placeholder="Salario"><div class="switch" onclick="this.classList.toggle('active')"></div></div>
+        </div>
+        <div class="sidebar">
+            <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" style="width:100%; height:100%; object-fit:cover;">
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
