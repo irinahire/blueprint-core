@@ -3,83 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <title>Irina Hire Selection | Nueva Oferta</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { 
-            --irina-gradient: linear-gradient(to right, #bc8abf 0%, #96e8da 100%); 
-            --btn-gradient: linear-gradient(to right, #96e8da 0%, #bc8abf 100%);
-            --fucsia: #bc8abf; --bg-dark: #05070a; 
-        }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: var(--bg-dark); font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; }
+        :root { --fucsia: #bc8abf; --bg-dark: #05070a; --irina-gradient: linear-gradient(to right, #bc8abf, #96e8da); }
+        body { margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; }
         
-        .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 95%; max-width: 1050px; height: 92vh; display: flex; align-items: center; justify-content: center; }
-        .app-shell { width: 100%; height: 100%; background: white; border-radius: 40px; position: relative; overflow: hidden; display: flex; flex-direction: column; }
-        .header { height: 80px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; font-weight: 900; }
+        .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 95%; max-width: 1000px; height: 90vh; }
+        .app-shell { width: 100%; height: 100%; background: white; border-radius: 40px; display: flex; overflow: hidden; }
         
-        .content-area { flex: 1; display: flex; overflow: hidden; }
-        #form-wrapper { flex: 1; display: flex; overflow: hidden; }
-        #success-screen { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; }
+        .form-container { flex: 1; padding: 40px; overflow-y: auto; }
+        .input-group { position: relative; margin-bottom: 25px; }
         
-        .form-container { flex: 1; overflow-y: auto; padding: 0 60px; display: flex; flex-direction: column; align-items: center; }
-        .sticky-controls { position: sticky; top: 0; background: white; padding: 20px 0; display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 550px; z-index: 10; border-bottom: 1px solid #eee; }
-        .form-content { width: 100%; max-width: 550px; padding-bottom: 40px; }
+        /* Animación del Label */
+        .input-group label { position: absolute; left: 15px; top: 14px; color: #aaa; transition: 0.3s; pointer-events: none; background: white; padding: 0 5px; }
+        .input-group input:focus + label, .input-group textarea:focus + label,
+        .input-group input:not(:placeholder-shown) + label, .input-group textarea:not(:placeholder-shown) + label { top: -10px; font-size: 12px; color: var(--fucsia); }
         
-        .btn-wrapper { position: relative; padding: 3px; border-radius: 12px; overflow: hidden; }
-        .btn-pub { background: var(--btn-gradient); color: white; border: none; padding: 12px 25px; border-radius: 9px; font-weight: 800; cursor: pointer; }
+        input, textarea { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 10px; outline: none; box-sizing: border-box; }
+        input:focus, textarea:focus { border-color: var(--fucsia); }
         
-        .field-label { font-weight: 600; font-size: 13px; margin-bottom: 5px; display: block; color: #555; }
-        input, textarea { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 10px; font-size: 14px; outline: none; box-sizing: border-box; margin-bottom: 15px; }
-        input:focus { border-color: var(--fucsia); }
-        
+        .btn-pub { background: var(--irina-gradient); color: white; border: none; padding: 12px 25px; border-radius: 9px; font-weight: 800; cursor: pointer; width: 100%; }
         .sidebar { width: 300px; }
         .irina-bg { width: 100%; height: 100%; object-fit: cover; mask-image: linear-gradient(to right, transparent 0%, black 15%); }
+        #success-screen { display: none; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
     </style>
 </head>
 <body>
 
 <div class="outer-frame">
     <div class="app-shell">
-        <div class="header">
-            <div>BLUE LAB</div>
-            <div style="font-family: 'Montserrat', sans-serif;">Irina Hire Selection</div>
-        </div>
-        
-        <div id="form-wrapper" class="content-area">
-            <div class="form-container">
-                <div class="sticky-controls">
-                    <h2 style="color:var(--fucsia); margin:0;">Nueva Oferta Laboral</h2>
-                    <div class="btn-wrapper"><button class="btn-pub" onclick="publicarOferta()">PUBLICAR</button></div>
-                </div>
-                <div class="form-content">
-                    <span class="field-label">Título del Puesto *</span>
-                    <input type="text" id="titulo">
-                    <span class="field-label">Descripción *</span>
-                    <textarea id="desc" style="height:80px;"></textarea>
-                    <span class="field-label">Requisitos *</span>
-                    <textarea id="req" style="height:80px;"></textarea>
-                    
-                    <span class="field-label">Modalidad</span>
-                    <input type="text" id="m1">
-                    <span class="field-label">Salario</span>
-                    <input type="number" id="m2">
-                    <span class="field-label">Experiencia</span>
-                    <input type="number" id="m3">
-                    <span class="field-label">Cultura</span>
-                    <input type="text" id="m4">
-                    <span class="field-label">Beneficios</span>
-                    <input type="text" id="m5">
-                    <span class="field-label">Ubicación</span>
-                    <input type="text" id="m6">
-                </div>
-            </div>
-            <div class="sidebar"><img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg"></div>
+        <div id="form-wrapper" class="form-container">
+            <h2 style="color:var(--fucsia);">Nueva Oferta Laboral</h2>
+            
+            <div class="input-group"><input type="text" id="titulo" placeholder=" "><label>Título (Ej: Dev Senior, Analista, UX)</label></div>
+            <div class="input-group"><textarea id="desc" placeholder=" " style="height:70px;"></textarea><label>Descripción (Ej: Gestión de equipos, Análisis de métricas)</label></div>
+            <div class="input-group"><textarea id="req" placeholder=" " style="height:70px;"></textarea><label>Requisitos (Ej: Python, Inglés, SQL, Certificaciones)</label></div>
+            <div class="input-group"><input type="text" id="m1" placeholder=" "><label>Modalidad (Ej: Remoto, Presencial, Híbrido)</label></div>
+            <div class="input-group"><input type="text" id="m2" placeholder=" "><label>Salario (Ej: 2000, 3500, 5000)</label></div>
+            <div class="input-group"><input type="text" id="m3" placeholder=" "><label>Experiencia (Ej: 2, 5, 8+)</label></div>
+            <div class="input-group"><input type="text" id="m4" placeholder=" "><label>Cultura (Ej: Ágil, Formal, Startup)</label></div>
+            <div class="input-group"><input type="text" id="m5" placeholder=" "><label>Beneficios (Ej: Salud, Gimnasio, Capacitación)</label></div>
+            <div class="input-group"><input type="text" id="m6" placeholder=" "><label>Ubicación (Ej: Buenos Aires, Remoto, Latam)</label></div>
+            
+            <button class="btn-pub" onclick="publicarOferta()">PUBLICAR</button>
         </div>
 
         <div id="success-screen">
             <h1 style="color:var(--fucsia);">¡Oferta Creada!</h1>
-            <button class="btn-pub" onclick="resetForm()">Crear otra oferta</button>
+            <button class="btn-pub" style="width:auto;" onclick="resetForm()">Crear otra oferta</button>
         </div>
+        
+        <div class="sidebar"><img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg"></div>
     </div>
 </div>
 
@@ -87,41 +62,30 @@
     const sb = supabase.createClient('https://zuzvozgjsppkxvdlptmk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0');
 
     function resetForm() {
-        document.getElementById('form-wrapper').style.display = 'flex';
+        document.getElementById('form-wrapper').style.display = 'block';
         document.getElementById('success-screen').style.display = 'none';
         document.querySelectorAll('input, textarea').forEach(el => el.value = '');
     }
 
     async function publicarOferta() {
-        const t = document.getElementById('titulo').value;
-        const d = document.getElementById('desc').value;
-        const r = document.getElementById('req').value;
-
-        if(!t || !d || !r) { alert("Por favor completa los campos obligatorios (*)"); return; }
-
-        const btn = document.querySelector('.btn-pub');
-        btn.innerText = "Publicando...";
-        
         try {
             const { error } = await sb.from('crear_oferta').insert([{
-                titulo: t,
-                jsonf: { 
-                    data: { 
-                        descripcion: d, 
-                        requisitos: r,
-                        modalidad: document.getElementById('m1').value,
-                        salario: document.getElementById('m2').value,
-                        experiencia: document.getElementById('m3').value,
-                        cultura: document.getElementById('m4').value,
-                        beneficios: document.getElementById('m5').value,
-                        ubicacion: document.getElementById('m6').value
-                    } 
-                }
+                titulo: document.getElementById('titulo').value,
+                jsonf: { data: { 
+                    desc: document.getElementById('desc').value,
+                    req: document.getElementById('req').value,
+                    mod: document.getElementById('m1').value,
+                    sal: document.getElementById('m2').value,
+                    exp: document.getElementById('m3').value,
+                    cult: document.getElementById('m4').value,
+                    ben: document.getElementById('m5').value,
+                    ubi: document.getElementById('m6').value
+                }}
             }]);
             if (error) throw error;
             document.getElementById('form-wrapper').style.display = 'none';
             document.getElementById('success-screen').style.display = 'flex';
-        } catch (e) { alert("Error: " + e.message); } finally { btn.innerText = "PUBLICAR"; }
+        } catch (e) { alert("Error: " + e.message); }
     }
 </script>
 </body>
