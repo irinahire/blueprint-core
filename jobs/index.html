@@ -16,9 +16,8 @@
         .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 95%; max-width: 1050px; height: 92vh; display: flex; align-items: center; justify-content: center; }
         .app-shell { width: 100%; height: 100%; background: white; border-radius: 40px; position: relative; overflow: hidden; display: flex; flex-direction: column; }
         .header { height: 80px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; font-weight: 900; }
-        .content-area { flex: 1; display: flex; overflow: hidden; }
         
-        /* Contenedores de estado */
+        .content-area { flex: 1; display: flex; overflow: hidden; }
         #form-wrapper { flex: 1; display: flex; overflow: hidden; }
         #success-screen { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; }
         
@@ -26,13 +25,19 @@
         .sticky-controls { position: sticky; top: 0; background: white; padding: 20px 0; display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 550px; z-index: 10; border-bottom: 1px solid #eee; }
         .form-content { width: 100%; max-width: 550px; padding-bottom: 40px; }
         
-        .btn-pub { background: var(--btn-gradient); color: white; border: none; padding: 12px 25px; border-radius: 9px; font-weight: 800; cursor: pointer; }
+        /* Animación Botón */
+        .btn-wrapper { position: relative; padding: 3px; border-radius: 12px; overflow: hidden; }
+        .btn-wrapper::before { content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, var(--fucsia), #96e8da, transparent); animation: rotate 3s linear infinite; display: none; }
+        .btn-wrapper:hover::before { display: block; }
+        .btn-pub { background: var(--btn-gradient); color: white; border: none; padding: 12px 25px; border-radius: 9px; font-weight: 800; cursor: pointer; position: relative; z-index: 1; }
+        @keyframes rotate { 100% { transform: rotate(360deg); } }
+
         .btn-action { background: var(--fucsia); color: white; border: none; padding: 15px 30px; border-radius: 12px; font-weight: 700; cursor: pointer; margin: 10px; }
         
         .field-row { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
         input, textarea { flex: 1; padding: 12px; border: 2px solid #eee; border-radius: 10px; font-size: 14px; outline: none; }
         .disabled-input { background: #f4f4f4; opacity: 0.5; pointer-events: none; }
-        .switch { width: 40px; height: 20px; background: #ddd; border-radius: 20px; cursor: pointer; }
+        .switch { width: 40px; height: 20px; background: #ddd; border-radius: 20px; cursor: pointer; transition: 0.3s; }
         .switch.active { background: var(--fucsia); }
         
         .sidebar { width: 300px; }
@@ -52,31 +57,26 @@
             <div class="form-container">
                 <div class="sticky-controls">
                     <h2 style="color:var(--fucsia); margin:0;">Nueva Oferta Laboral</h2>
-                    <button class="btn-pub" onclick="publicarOferta()">PUBLICAR</button>
+                    <div class="btn-wrapper"><button class="btn-pub" onclick="publicarOferta()">PUBLICAR</button></div>
                 </div>
                 <div class="form-content">
-                    <input type="text" id="titulo" placeholder="Título del Puesto" style="width:100%; margin-bottom:10px; box-sizing:border-box;">
-                    <textarea id="desc" placeholder="Descripción del puesto" style="width:100%; height:80px; margin-bottom:10px; box-sizing:border-box;"></textarea>
-                    <textarea id="req" placeholder="Requisitos del puesto" style="width:100%; height:80px; margin-bottom:20px; box-sizing:border-box;"></textarea>
+                    <input type="text" id="titulo" placeholder="Título del Puesto" style="width:100%; margin-bottom:10px;">
+                    <textarea id="desc" placeholder="Descripción del puesto" style="width:100%; height:80px; margin-bottom:10px;"></textarea>
+                    <textarea id="req" placeholder="Requisitos del puesto" style="width:100%; height:80px; margin-bottom:20px;"></textarea>
                     <div class="field-row"><input type="text" id="m1" class="disabled-input" placeholder="Modalidad"><div class="switch" onclick="toggleField('m1', this)"></div></div>
                     <div class="field-row"><input type="number" id="m2" class="disabled-input" placeholder="Salario"><div class="switch" onclick="toggleField('m2', this)"></div></div>
-                    <div class="field-row"><input type="number" id="m3" class="disabled-input" placeholder="Años experiencia"><div class="switch" onclick="toggleField('m3', this)"></div></div>
+                    <div class="field-row"><input type="number" id="m3" class="disabled-input" placeholder="Experiencia"><div class="switch" onclick="toggleField('m3', this)"></div></div>
                     <div class="field-row"><input type="text" id="m4" class="disabled-input" placeholder="Cultura"><div class="switch" onclick="toggleField('m4', this)"></div></div>
-                    <div class="field-row"><input type="text" id="m5" class="disabled-input" placeholder="Beneficios"><div class="switch" onclick="toggleField('m5', this)"></div></div>
                 </div>
             </div>
-            <div class="sidebar">
-                <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg">
-            </div>
+            <div class="sidebar"><img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg"></div>
         </div>
 
         <div id="success-screen">
             <h1 style="color:var(--fucsia);">¡Oferta Creada!</h1>
             <p>La posición ha sido publicada exitosamente en el sistema.</p>
-            <div>
-                <button class="btn-action" onclick="resetForm()">Crear otra oferta</button>
-                <button class="btn-action" style="background: #333;" onclick="location.href='dashboard.html'">Volver al Dashboard</button>
-            </div>
+            <button class="btn-action" onclick="resetForm()">Crear otra oferta</button>
+            <button class="btn-action" style="background: #333;" onclick="location.href='dashboard.html'">Volver al Dashboard</button>
         </div>
     </div>
 </div>
@@ -92,36 +92,26 @@
     function resetForm() {
         document.getElementById('form-wrapper').style.display = 'flex';
         document.getElementById('success-screen').style.display = 'none';
-        document.querySelectorAll('input, textarea').forEach(el => el.value = '');
+        document.querySelectorAll('input, textarea').forEach(el => { el.value = ''; el.classList.add('disabled-input'); });
+        document.querySelectorAll('.switch').forEach(el => el.classList.remove('active'));
     }
 
     async function publicarOferta() {
         const btn = document.querySelector('.btn-pub');
         btn.innerText = "Publicando...";
-        btn.disabled = true;
-
-        const payload = {
-            titulo: document.getElementById('titulo').value,
-            jsonf: {
-                data: {
-                    descripcion: document.getElementById('desc').value,
-                    requisitos: document.getElementById('req').value
-                }
-            }
-        };
-
+        
         try {
-            const { error } = await sb.from('crear_oferta').insert([payload]);
+            const { error } = await sb.from('crear_oferta').insert([{
+                titulo: document.getElementById('titulo').value,
+                jsonf: { data: { descripcion: document.getElementById('desc').value, requisitos: document.getElementById('req').value } }
+            }]);
             if (error) throw error;
-            
-            // Ocultar form, mostrar éxito
             document.getElementById('form-wrapper').style.display = 'none';
             document.getElementById('success-screen').style.display = 'flex';
         } catch (e) {
             alert("Error: " + e.message);
         } finally {
             btn.innerText = "PUBLICAR";
-            btn.disabled = false;
         }
     }
 </script>
