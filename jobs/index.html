@@ -5,7 +5,7 @@
     <title>Irina Hire Selection | Crear Oferta</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --irina-gradient: linear-gradient(to right, #bc8abf 0%, #96e8da 100%); --bg-dark: #05070a; }
+        :root { --irina-gradient: linear-gradient(to right, #bc8abf 0%, #96e8da 100%); --fucsia: #bc8abf; --bg-dark: #05070a; }
         body { margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; }
         
         .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 92%; max-width: 1150px; height: 85vh; display: flex; }
@@ -16,19 +16,26 @@
         
         .main-body { flex: 1; display: flex; overflow: hidden; }
         .form-side { flex: 1; padding: 40px; overflow-y: auto; }
+        .form-title { font-family: 'Montserrat', sans-serif; color: var(--fucsia); margin-bottom: 25px; font-size: 22px; }
         
-        /* Ajuste de Título interno */
-        .form-title { font-family: 'Montserrat', sans-serif; color: #bc8abf; margin-bottom: 25px; font-size: 22px; }
+        /* Ajuste de campos */
+        .field-container { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .input-wrapper { flex: 1; display: flex; align-items: center; gap: 10px; }
         
-        /* Estética de campos con Switch mejorada */
-        .field-row { display: flex; align-items: center; margin-bottom: 15px; gap: 15px; }
-        .switch { width: 45px; height: 22px; background: #ddd; border-radius: 20px; position: relative; cursor: pointer; transition: 0.3s; flex-shrink: 0; }
-        .switch.active { background: #96e8da; } /* Color de activación */
-        .switch::after { content: ''; position: absolute; width: 18px; height: 18px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: 0.3s; }
-        .switch.active::after { left: 25px; }
-        
-        input, select, textarea { flex: 1; padding: 12px; border: 2px solid #eee; border-radius: 9px; transition: 0.3s; }
+        input, textarea { flex: 1; padding: 12px; border: 2px solid #eee; border-radius: 9px; }
         .disabled-input { background: #f9f9f9; opacity: 0.5; pointer-events: none; }
+
+        /* Switch a la derecha */
+        .switch { width: 40px; height: 20px; background: #ddd; border-radius: 20px; position: relative; cursor: pointer; transition: 0.3s; }
+        .switch.active { background: var(--fucsia); }
+        .switch::after { content: ''; position: absolute; width: 16px; height: 16px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: 0.3s; }
+        .switch.active::after { left: 22px; }
+        
+        /* Botón láser */
+        .btn-wrapper { position: relative; padding: 3px; border-radius: 12px; margin-top: 20px; overflow: hidden; }
+        .btn-wrapper::before { content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, #96e8da, var(--fucsia), transparent); animation: rotate 3s linear infinite; }
+        #submit-btn { position: relative; width: 100%; height: 50px; background: linear-gradient(to right, #96e8da, var(--fucsia)); color: white; border: none; border-radius: 9px; font-weight: 800; cursor: pointer; z-index: 1; }
+        @keyframes rotate { 100% { transform: rotate(360deg); } }
         
         .visual-side { width: 35%; height: 100%; }
         .irina-bg { width: 100%; height: 100%; object-fit: cover; mask-image: linear-gradient(to right, transparent 0%, black 15%); }
@@ -45,13 +52,14 @@
                 <div class="form-side">
                     <h2 class="form-title">Crear Oferta Laboral</h2>
                     
-                    <div class="field-row" id="row-titulo"><div class="switch active" onclick="toggleField('titulo')"></div><input type="text" id="titulo" placeholder="Título del Puesto"></div>
-                    <div class="field-row" id="row-modalidad"><div class="switch" onclick="toggleField('modalidad')"></div><input type="text" id="modalidad" class="disabled-input" placeholder="Modalidad (Remoto/Híbrido)"></div>
-                    <div class="field-row" id="row-salario"><div class="switch" onclick="toggleField('salario')"></div><input type="number" id="salario" class="disabled-input" placeholder="Pretensión Salarial"></div>
-                    <div class="field-row" id="row-experiencia"><div class="switch" onclick="toggleField('experiencia')"></div><input type="number" id="experiencia" class="disabled-input" placeholder="Años de Experiencia"></div>
-                    <div class="field-row" id="row-descripcion"><div class="switch" onclick="toggleField('descripcion')"></div><textarea id="descripcion" class="disabled-input" placeholder="Descripción del Puesto"></textarea></div>
+                    <input type="text" placeholder="Título del Puesto" style="margin-bottom:15px; width: 100%; box-sizing: border-box;">
+                    <textarea placeholder="Descripción del Puesto" style="margin-bottom:15px; width: 100%; box-sizing: border-box; height: 80px;"></textarea>
+                    
+                    <div class="field-container"><div class="input-wrapper"><input type="text" id="modalidad" class="disabled-input" placeholder="Modalidad"><div class="switch" onclick="toggleField('modalidad')"></div></div></div>
+                    <div class="field-container"><div class="input-wrapper"><input type="number" id="salario" class="disabled-input" placeholder="Pretensión Salarial"><div class="switch" onclick="toggleField('salario')"></div></div></div>
+                    <div class="field-container"><div class="input-wrapper"><input type="number" id="experiencia" class="disabled-input" placeholder="Años de Experiencia"><div class="switch" onclick="toggleField('experiencia')"></div></div></div>
 
-                    <button style="width:100%; margin-top:20px; padding:15px; background:var(--irina-gradient); border:none; color:white; font-weight:800; border-radius:10px; cursor:pointer;">PUBLICAR OFERTA</button>
+                    <div class="btn-wrapper"><button id="submit-btn">PUBLICAR OFERTA</button></div>
                 </div>
                 <div class="visual-side">
                     <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg">
@@ -62,12 +70,10 @@
 
     <script>
         function toggleField(id) {
-            const row = document.getElementById('row-' + id);
             const input = document.getElementById(id);
-            const sw = row.querySelector('.switch');
-            
-            sw.classList.toggle('active');
+            const sw = event.target;
             input.classList.toggle('disabled-input');
+            sw.classList.toggle('active');
         }
     </script>
 </body>
