@@ -14,15 +14,22 @@
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: var(--bg-dark); font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; }
         
         .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 95%; max-width: 1050px; height: 92vh; display: flex; align-items: center; justify-content: center; }
-        .app-shell { width: 100%; height: 100%; background: white; border-radius: 40px; position: relative; overflow: hidden; display: flex; flex-direction: column; }
-        .header { height: 80px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; font-weight: 900; }
+        
+        /* Contenedor con scroll (aquí es donde gestionamos la barra) */
+        .app-shell { width: 100%; height: 100%; background: white; border-radius: 40px; position: relative; overflow-y: auto; display: flex; flex-direction: column; direction: rtl; }
+        
+        /* Revertimos el direction: rtl para que el contenido se vea normal */
+        .content-wrapper { direction: ltr; display: flex; flex-direction: column; min-height: 100%; }
+
+        .header { height: 80px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; font-weight: 900; position: sticky; top: 0; z-index: 20; }
         .content-area { flex: 1; display: flex; overflow: hidden; }
-        .form-container { flex: 1; overflow-y: auto; padding: 0 60px; display: flex; flex-direction: column; align-items: center; }
+        .form-container { flex: 1; padding: 0 60px; display: flex; flex-direction: column; align-items: center; }
+        
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         input[type=number] { -moz-appearance: textfield; }
 
-        .sticky-controls { position: sticky; top: 0; background: white; padding: 20px 0; display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 550px; z-index: 10; border-bottom: 1px solid #eee; }
-        .form-content { width: 100%; max-width: 550px; padding-bottom: 40px; }
+        .sticky-controls { position: sticky; top: 80px; background: white; padding: 20px 0; display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 550px; z-index: 10; border-bottom: 1px solid #eee; }
+        .form-content { width: 100%; max-width: 550px; padding: 40px 0; }
         
         .btn-wrapper { position: relative; padding: 3px; border-radius: 12px; overflow: hidden; }
         .btn-wrapper::before { content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, var(--fucsia), #96e8da, transparent); animation: rotate 3s linear infinite; display: none; }
@@ -47,41 +54,40 @@
 
 <div class="outer-frame">
     <div class="app-shell">
-        <div class="header">
-            <div>BLUE LAB</div>
-            <div style="font-family: 'Montserrat', sans-serif;">Irina Hire Selection</div>
-        </div>
-        <div class="content-area">
-            <div class="form-container">
-                <div class="sticky-controls">
-                    <h2 style="color:var(--fucsia); margin:0;">Nueva Oferta Laboral</h2>
-                    <div class="btn-wrapper"><button class="btn-pub" onclick="publicarOferta()">PUBLICAR</button></div>
-                </div>
-                
-                <div class="form-content">
-                    <input type="text" id="titulo" placeholder="Título del Puesto" style="width:100%; margin-bottom:10px; box-sizing:border-box;">
-                    <textarea id="desc" placeholder="Descripción del puesto" style="width:100%; height:80px; margin-bottom:10px; box-sizing:border-box;"></textarea>
-                    <textarea id="req" placeholder="Requisitos del puesto" style="width:100%; height:80px; margin-bottom:20px; box-sizing:border-box;"></textarea>
-                    
-                    <div class="field-row"><input type="text" id="m1" class="disabled-input" placeholder="Modalidad (Ej: Remoto)"><div class="switch" onclick="toggleField('m1', this)"></div></div>
-                    <div class="field-row"><input type="number" id="m2" class="disabled-input" placeholder="Salario (Ej: 3000)"><div class="switch" onclick="toggleField('m2', this)"></div></div>
-                    <div class="field-row"><input type="number" id="m3" class="disabled-input" placeholder="Años experiencia (Ej: 3+)"><div class="switch" onclick="toggleField('m3', this)"></div></div>
-                    <div class="field-row"><input type="text" id="m4" class="disabled-input" placeholder="Cultura Organizacional"><div class="switch" onclick="toggleField('m4', this)"></div></div>
-                    <div class="field-row"><input type="text" id="m5" class="disabled-input" placeholder="Beneficios"><div class="switch" onclick="toggleField('m5', this)"></div></div>
-                </div>
+        <div class="content-wrapper">
+            <div class="header">
+                <div>BLUE LAB</div>
+                <div style="font-family: 'Montserrat', sans-serif;">Irina Hire Selection</div>
             </div>
-            <div class="sidebar">
-                <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg">
+            <div class="content-area">
+                <div class="form-container">
+                    <div class="sticky-controls">
+                        <h2 style="color:var(--fucsia); margin:0;">Nueva Oferta Laboral</h2>
+                        <div class="btn-wrapper"><button class="btn-pub" onclick="publicarOferta()">PUBLICAR</button></div>
+                    </div>
+                    
+                    <div class="form-content">
+                        <input type="text" id="titulo" placeholder="Título del Puesto" style="width:100%; margin-bottom:10px; box-sizing:border-box;">
+                        <textarea id="desc" placeholder="Descripción del puesto" style="width:100%; height:80px; margin-bottom:10px; box-sizing:border-box;"></textarea>
+                        <textarea id="req" placeholder="Requisitos del puesto" style="width:100%; height:80px; margin-bottom:20px; box-sizing:border-box;"></textarea>
+                        
+                        <div class="field-row"><input type="text" id="m1" class="disabled-input" placeholder="Modalidad (Ej: Remoto)"><div class="switch" onclick="toggleField('m1', this)"></div></div>
+                        <div class="field-row"><input type="number" id="m2" class="disabled-input" placeholder="Salario (Ej: 3000)"><div class="switch" onclick="toggleField('m2', this)"></div></div>
+                        <div class="field-row"><input type="number" id="m3" class="disabled-input" placeholder="Años experiencia (Ej: 3+)"><div class="switch" onclick="toggleField('m3', this)"></div></div>
+                        <div class="field-row"><input type="text" id="m4" class="disabled-input" placeholder="Cultura Organizacional"><div class="switch" onclick="toggleField('m4', this)"></div></div>
+                        <div class="field-row"><input type="text" id="m5" class="disabled-input" placeholder="Beneficios"><div class="switch" onclick="toggleField('m5', this)"></div></div>
+                    </div>
+                </div>
+                <div class="sidebar">
+                    <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg">
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    const sb = supabase.createClient(
-        'https://zuzvozgjsppkxvdlptmk.supabase.co', 
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0'
-    );
+    const sb = supabase.createClient('https://zuzvozgjsppkxvdlptmk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0');
 
     function toggleField(id, el) {
         document.getElementById(id).classList.toggle('disabled-input');
@@ -92,14 +98,12 @@
         document.getElementById('titulo').value = '';
         document.getElementById('desc').value = '';
         document.getElementById('req').value = '';
-        const inputs = ['m1', 'm2', 'm3', 'm4', 'm5'];
-        inputs.forEach(id => {
+        ['m1', 'm2', 'm3', 'm4', 'm5'].forEach(id => {
             const el = document.getElementById(id);
             if (!el.classList.contains('disabled-input')) {
                 el.classList.add('disabled-input');
                 el.value = '';
-                const switchEl = el.nextElementSibling;
-                switchEl.classList.remove('active');
+                el.nextElementSibling.classList.remove('active');
             }
         });
     }
@@ -119,7 +123,7 @@
                     "descripcion": document.getElementById('desc').value,
                     "requisitos": document.getElementById('req').value,
                     "experiencia": !document.getElementById('m3').classList.contains('disabled-input') ? parseInt(document.getElementById('m3').value) : null,
-                    "cultura": !document.getElementById('m4').classList.contains('disabled-input') ? document.getElementById('m4').value : null,
+                    "cultura": !document.getElementById('m4').classList.contains('disabled-input') ? document.getElementById('m4'].value : null,
                     "beneficios": !document.getElementById('m5').classList.contains('disabled-input') ? document.getElementById('m5').value : null
                 },
                 "sub_nodos": [{ "!meta": { "id": "observatorio_stats" }, "data": { "total_postulantes": 0 } }]
@@ -129,9 +133,8 @@
         try {
             const { error } = await sb.from('crear_oferta').insert([payload]);
             if (error) throw error;
-            
             alert("¡Oferta publicada exitosamente!");
-            limpiarFormulario(); // <-- La magia ocurre aquí
+            limpiarFormulario();
         } catch (e) {
             console.error("Error:", e);
             alert("Error al publicar: " + e.message);
