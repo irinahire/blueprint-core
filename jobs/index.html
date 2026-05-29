@@ -18,34 +18,27 @@
         .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 95%; max-width: 1050px; height: 92vh; display: flex; align-items: center; justify-content: center; }
         .app-shell { width: 100%; height: 100%; background: white; border-radius: 40px; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* Vincha Superior */
         .header { height: 80px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; font-weight: 900; font-family: 'Montserrat', sans-serif; flex-shrink: 0; }
-        
-        /* Contenedor Sticky para título y botón */
         .sticky-controls { background: white; padding: 20px 60px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100; }
         
         .content-area { flex: 1; display: flex; overflow: hidden; position: relative; }
         .form-container { flex: 1; padding: 0 60px 30px 60px; overflow-y: auto; }
         
-        /* Animación Botón */
         .btn-wrapper { position: relative; padding: 3px; border-radius: 12px; overflow: hidden; }
         .btn-wrapper::before { content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, var(--fucsia), #96e8da, transparent); animation: rotate 3s linear infinite; display: none; }
         .btn-wrapper:hover::before { display: block; }
         .btn-pub { background: var(--btn-gradient); color: white; border: none; padding: 12px 25px; border-radius: 9px; font-weight: 800; cursor: pointer; position: relative; z-index: 1; }
         @keyframes rotate { 100% { transform: rotate(360deg); } }
         
-        /* Campos con animación */
         .input-group { position: relative; margin-top: 30px; }
         .input-group label { position: absolute; left: 12px; top: 14px; color: var(--fucsia); font-weight: 700; transition: 0.2s; pointer-events: none; background: white; padding: 0 4px; }
         .input-group input { width: 100%; padding: 14px; border: 2px solid var(--gris-claro); border-radius: 10px; outline: none; font-size: 14px; box-sizing: border-box; color: #333; }
         .input-group input:focus { border-color: var(--fucsia); }
         .input-group input:focus + label, .input-group input:not(:placeholder-shown) + label { top: -10px; font-size: 11px; color: var(--fucsia); }
-        .input-group input::placeholder { color: var(--fucsia); opacity: 0.5; font-weight: 400; font-size: 13px; }
-        .input-group input:focus::placeholder { opacity: 0; } /* Desaparece al escribir */
         
         .sidebar { width: 300px; position: relative; flex-shrink: 0; }
         .irina-bg { width: 100%; height: 100%; object-fit: cover; mask-image: linear-gradient(to right, transparent 0%, black 10%); }
-        #success-screen { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: center; }
+        #success-screen { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: center; padding: 40px; }
     </style>
 </head>
 <body>
@@ -61,58 +54,4 @@
             <div id="form-wrapper" class="form-container">
                 <div class="sticky-controls">
                     <h2 style="color:var(--fucsia); margin:0;">Nueva Oferta Laboral</h2>
-                    <div class="btn-wrapper"><button class="btn-pub" onclick="publicarOferta()">PUBLICAR</button></div>
-                </div>
-                
-                <div class="input-group"><input type="text" id="titulo" placeholder="(Ej: Dev Senior en Arquitectura de Alta Disponibilidad)"><label>Título del Puesto</label></div>
-                <div class="input-group"><input type="text" id="desc" placeholder="(Ej: Gestión integral de equipos, diseño de microservicios AWS)"><label>Descripción</label></div>
-                <div class="input-group"><input type="text" id="req" placeholder="(Ej: 10+ años en Kubernetes, Certificación AWS, Inglés B2)"><label>Requisitos</label></div>
-                <div class="input-group"><input type="text" id="m1" placeholder="(Ej: Remoto, Presencial en CABA, Híbrido 3x2)"><label>Modalidad</label></div>
-                <div class="input-group"><input type="text" id="m2" placeholder="(Ej: 5000 USD, Revisión trimestral, Bonos por desempeño)"><label>Salario</label></div>
-                <div class="input-group"><input type="text" id="m3" placeholder="(Ej: 7 años de experiencia demostrable en el sector)"><label>Experiencia</label></div>
-                <div class="input-group"><input type="text" id="m4" placeholder="(Ej: Cultura startup, enfoque en entregas continuas, autonomía)"><label>Cultura</label></div>
-                <div class="input-group"><input type="text" id="m5" placeholder="(Ej: Stock options, presupuesto para certificaciones, seguro)"><label>Beneficios</label></div>
-                <div class="input-group"><input type="text" id="m6" placeholder="(Ej: Oficina en Distrito Tecnológico, disponibilidad para viajar)"><label>Ubicación</label></div>
-            </div>
-
-            <div id="success-screen">
-                <h1 style="color:var(--fucsia);">¡Oferta Creada!</h1>
-                <div class="btn-wrapper"><button class="btn-pub" onclick="resetForm()">Crear otra oferta</button></div>
-            </div>
-            
-            <div class="sidebar"><img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg"></div>
-        </div>
-    </div>
-</div>
-
-<script>
-    const sb = supabase.createClient('https://zuzvozgjsppkxvdlptmk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0');
-
-    function resetForm() {
-        document.getElementById('form-wrapper').style.display = 'block';
-        document.getElementById('success-screen').style.display = 'none';
-        document.querySelectorAll('input').forEach(el => el.value = '');
-        document.getElementById('form-wrapper').scrollTop = 0;
-    }
-
-    async function publicarOferta() {
-        const btn = document.querySelector('.btn-pub');
-        btn.innerText = "Publicando...";
-        try {
-            const { error } = await sb.from('crear_oferta').insert([{
-                titulo: document.getElementById('titulo').value,
-                jsonf: { data: { 
-                    desc: document.getElementById('desc').value, req: document.getElementById('req').value,
-                    mod: document.getElementById('m1').value, sal: document.getElementById('m2').value,
-                    exp: document.getElementById('m3').value, cult: document.getElementById('m4').value,
-                    ben: document.getElementById('m5').value, ubi: document.getElementById('m6').value
-                }}
-            }]);
-            if (error) throw error;
-            document.getElementById('form-wrapper').style.display = 'none';
-            document.getElementById('success-screen').style.display = 'flex';
-        } catch (e) { alert("Error: " + e.message); } finally { btn.innerText = "PUBLICAR"; }
-    }
-</script>
-</body>
-</html>
+                    <div class="btn-wrapper"><button class="btn-pub" onclick="publicarOfer
