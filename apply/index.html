@@ -28,7 +28,7 @@
         .input-group input:focus { border-color: var(--fucsia); }
         .input-group input:focus + label, .input-group input:not(:placeholder-shown) + label { top: -10px; font-size: 11px; color: var(--fucsia); }
 
-        /* Botón con animación circular - RECUPERADA */
+        /* Botón con animación circular */
         .btn-wrapper { position: relative; padding: 3px; border-radius: 12px; margin-top: 25px; overflow: hidden; cursor: pointer; }
         .btn-wrapper::before { content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, var(--fucsia), #96e8da, transparent); animation: rotate 3s linear infinite; display: none; }
         .btn-wrapper:hover::before { display: block; }
@@ -102,33 +102,48 @@
         document.getElementById('postulacion-form').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submit-btn');
-            btn.innerText = "ENVIANDO...";
+            btn.innerText = "SUBIENDO ARCHIVOS...";
 
             try {
-                const { error } = await sb.from('blueprint_ecosystem').insert([{
+                const cvFile = document.getElementById('cv').files[0];
+                const fileName = `cv_${Date.now()}.pdf`;
+
+                // Subida al Storage
+                const { error: uploadError } = await sb.storage
+                    .from('curriculums')
+                    .upload(fileName, cvFile);
+
+                if (uploadError) throw uploadError;
+
+                // Obtención de URL
+                const { data: { publicUrl } } = sb.storage
+                    .from('curriculums')
+                    .getPublicUrl(fileName);
+
+                // Inserción en tabla (activa el trigger)
+                const { error: insertError } = await sb.from('blueprint_ecosystem').insert([{
                     unique_id: "POSTULANTE_" + Date.now(),
                     dna_content: {
                         nombre: document.getElementById('nombre').value,
                         email: document.getElementById('email').value,
-                        oferta_vinculada: document.getElementById('oferta_vinculada').value
+                        oferta_vinculada: document.getElementById('oferta_vinculada').value,
+                        urlCv: publicUrl
                     }
                 }]);
-                if (error) throw error;
+
+                if (insertError) throw insertError;
+
                 document.getElementById('postulacion-form').style.display = 'none';
                 document.getElementById('success-screen').style.display = 'flex';
-            } catch (err) { alert("Error: " + err.message); btn.innerText = "ENVIAR POSTULACIÓN"; }
+            } catch (err) { 
+                console.error(err);
+                alert("Error al enviar: " + err.message); 
+                btn.innerText = "ENVIAR POSTULACIÓN"; 
+            }
         };
 
         document.getElementById('foto').onchange = function(e) {
             const reader = new FileReader();
             reader.onload = function() {
                 const img = document.getElementById('preview-img-form');
-                img.src = reader.result;
-                img.style.display = 'block';
-                document.getElementById('placeholder-text').style.display = 'none';
-            }
-            reader.readAsDataURL(e.target.files[0]);
-        };
-    </script>
-</body>
-</html>
+                img.src = reader
