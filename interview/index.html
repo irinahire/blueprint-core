@@ -32,7 +32,6 @@
         ul { padding-left: 20px; }
         li { margin-bottom: 12px; font-size: 14px; line-height: 1.4; }
         
-        /* BOTÓN CON ANIMACIÓN LÁSER ORIGINAL */
         .btn-wrapper { position: relative; padding: 3px; border-radius: 12px; overflow: hidden; cursor: pointer; width: fit-content; margin-top: 30px; }
         .btn-wrapper::before { content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, var(--fucsia), #96e8da, transparent); animation: rotate 3s linear infinite; display: none; }
         .btn-wrapper:hover::before { display: block; }
@@ -67,7 +66,7 @@
                 <p style="font-size: 11px; color: #666;">Al validar su identidad e iniciar la llamada, usted acepta nuestras Políticas de Privacidad y consiente la grabación de la sesión para fines exclusivos de evaluación profesional.</p>
                 
                 <div class="btn-wrapper">
-                    <button class="btn-pub" id="start-btn" onclick="iniciarLlamada()">INICIAR ENTREVISTA CON IRINA</button>
+                    <button class="btn-pub" id="start-btn">INICIAR ENTREVISTA CON IRINA</button>
                 </div>
             </div>
             <div class="right-col">
@@ -78,11 +77,11 @@
 </div>
 
 <script>
-    // Configuración Vapi
-    const vapi = new Vapi("fa551a95-8c91-45ae-9716-3480d39a429b");
+    // Usamos window.Vapi para asegurar acceso global tras la carga del script
+    const vapi = new window.Vapi("fa551a95-8c91-45ae-9716-3480d39a429b");
+    const btn = document.getElementById('start-btn');
 
-    async function iniciarLlamada() {
-        const btn = document.getElementById('start-btn');
+    btn.addEventListener('click', async () => {
         btn.innerText = "Intentando llamar a Irina...";
         btn.disabled = true;
 
@@ -96,10 +95,9 @@
             btn.innerText = "Error - Reintentar";
             btn.disabled = false;
         }
-    }
+    });
 
     vapi.on("call-end", () => {
-        const btn = document.getElementById('start-btn');
         btn.innerText = "INICIAR ENTREVISTA CON IRINA";
         btn.disabled = false;
     });
