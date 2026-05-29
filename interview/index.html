@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Irina Hire Selection | Entrevista</title>
-    <script src="https://unpkg.com/@vapi-ai/web/dist/vapi.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -77,30 +76,31 @@
 </div>
 
 <script>
-    // En lugar de window.Vapi, accedemos al objeto Vapi directamente
-    // que el script de unpkg expone globalmente.
-    const vapi = new Vapi("fa551a95-8c91-45ae-9716-3480d39a429b");
     const btn = document.getElementById('start-btn');
+    const FUNCTION_URL = "https://zuzvozgjsppkxvdlptmk.supabase.co/functions/v1/start-interview";
 
     btn.addEventListener('click', async () => {
-        btn.innerText = "Conectando...";
+        btn.innerText = "Conectando con Irina...";
         btn.disabled = true;
 
         try {
-            await vapi.start({
-                assistantId: "6f1a49d5-321b-4e75-a998-289e94388398",
+            const response = await fetch(FUNCTION_URL, {
+                method: "POST"
             });
-            btn.innerText = "Hablando con Irina...";
+
+            const data = await response.json();
+
+            if (data.url) {
+                // Abrimos la sesión de Vapi directamente con la URL que devolvió tu función
+                window.location.href = data.url;
+            } else {
+                throw new Error("No se pudo obtener la URL de la entrevista.");
+            }
         } catch (error) {
-            console.error("Error detallado:", error);
+            console.error("Error:", error);
             btn.innerText = "Error - Reintentar";
             btn.disabled = false;
         }
-    });
-
-    vapi.on("call-end", () => {
-        btn.innerText = "INICIAR ENTREVISTA CON IRINA";
-        btn.disabled = false;
     });
 </script>
 
