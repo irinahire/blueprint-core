@@ -2,203 +2,73 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Irina Hire Selection | Entrevista</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --irina-gradient: linear-gradient(to right, #bc8abf 0%, #96e8da 100%);
-            --fucsia-solid: #bc8abf;
             --bg-dark: #05070a;
-            --text-dark: #111827;
-            --text-gray: #4b5563;
         }
-
-        body { 
-            margin: 0; padding: 0; 
-            background: var(--bg-dark); 
-            font-family: 'Inter', sans-serif; 
-            height: 100vh; 
-            display: flex; align-items: center; justify-content: center; 
-            overflow: hidden;
-        }
-
-        /* MARCO EXTERNO */
-        .outer-frame { 
-            padding: 10px; 
-            background: var(--irina-gradient); 
-            border-radius: 50px; 
-            width: 92%; max-width: 1150px; 
-            height: 85vh; 
-            display: flex; 
-        }
-
-        /* CONTENEDOR PRINCIPAL */
-        .app-container { 
-            background: white; 
-            width: 100%; height: 100%; 
-            border-radius: 40px; 
-            display: flex; flex-direction: column; 
-            overflow: hidden; 
-            position: relative; 
-        }
-
-        /* VINCHA (HEADER) */
-        .top-vincha { 
-            width: 100%; height: 90px; 
-            background: var(--irina-gradient); 
-            display: flex; align-items: center; 
-            justify-content: space-between; 
-            padding: 0 45px; box-sizing: border-box; 
-            flex-shrink: 0;
-        }
-
-        .brand-left { display: flex; flex-direction: column; color: white; font-family: 'Montserrat', sans-serif; line-height: 1.1; }
-        .blue-lab-text { font-weight: 900; font-size: 26px; letter-spacing: -1px; }
-        .blueprint-subtext { font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
-
-        .vincha-title { 
-            font-family: 'Montserrat', sans-serif; 
-            font-weight: 900; font-size: 24px; 
-            text-transform: uppercase; 
-            background: white; 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-            background-image: var(--irina-gradient); 
-            filter: drop-shadow(2px 0 0 white) drop-shadow(-2px 0 0 white) drop-shadow(0 2px 0 white) drop-shadow(0 -2px 0 white); 
-        }
-
-        /* CUERPO - Eliminamos padding derecho e inferior para que Irina pegue al borde */
-        .main-body { 
-            flex: 1; 
-            display: flex; 
-            padding: 0; /* Sin padding general */
-            overflow: hidden; 
-        }
-
-        /* LADO IZQUIERDO (TEXTO) */
-        .info-side { 
-            flex: 1.2; 
-            padding: 40px 60px; 
-            display: flex; flex-direction: column; 
-            justify-content: center; 
-        }
-
-        .section-box h3 { 
-            font-size: 18px; font-weight: 800; 
-            margin-bottom: 25px; color: var(--text-dark); 
-            border-bottom: 2px solid #f3f4f6; 
-            padding-bottom: 8px; display: inline-block; 
-        }
-
-        .checklist { list-style: none; padding: 0; margin: 0; }
-        .checklist li { 
-            margin-bottom: 12px; font-size: 13px; 
-            display: flex; align-items: flex-start; 
-            color: var(--text-gray); line-height: 1.4;
-        }
-        .checklist li b { color: var(--text-dark); font-weight: 700; width: 130px; flex-shrink: 0; }
-        .checklist li .icon { width: 30px; font-size: 16px; flex-shrink: 0; }
-
-        .legal-notice { 
-            margin-top: 25px; 
-            padding-top: 15px; border-top: 1px solid #f3f4f6; 
-            font-size: 10px; color: #9ca3af; line-height: 1.5;
-        }
-
-        /* LADO DERECHO (IRINA) - Pegado al borde */
-        .visual-side { 
-            flex: 1; 
-            height: 100%; 
-            display: flex; align-items: flex-end; justify-content: flex-end; 
-            background: #fdfdfd;
-        }
-
-        .irina-bg { 
-            height: 100%; 
-            width: 100%; 
-            object-fit: cover; 
-            object-position: center;
-        }
-
-        /* BOTÓN LÁSER REINSTAURADO */
-        .vapi-btn {
-            border-radius: 14px; 
-            width: 300px; height: 60px; 
-            background: var(--irina-gradient); 
-            border: none; color: white; 
-            font-weight: 800; text-transform: uppercase; 
-            cursor: pointer; 
-            position: relative; 
-            overflow: hidden; 
-            margin-top: 30px;
-            z-index: 10;
-        }
-
-        .vapi-btn::after {
-            content: 'INICIAR ENTREVISTA CON IRINA';
-            position: absolute; inset: 2px;
-            background: inherit; border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            z-index: 2;
-        }
-
-        .vapi-btn::before {
-            content: ''; position: absolute; top: 50%; left: 50%; 
-            width: 200%; height: 400%; 
-            background: conic-gradient(transparent, transparent, transparent, white); 
-            transform: translate(-50%, -50%) rotate(0deg); 
-            animation: rotateLaser 3s linear infinite; 
-            display: none; 
-            z-index: 1;
-        }
-        .vapi-btn:hover::before { display: block; }
+        body { margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .card { background: white; width: 90%; max-width: 1000px; border-radius: 30px; overflow: hidden; display: flex; flex-direction: column; }
         
-        @keyframes rotateLaser { 
-            from { transform: translate(-50%, -50%) rotate(0deg); } 
-            to { transform: translate(-50%, -50%) rotate(360deg); } 
+        .header { background: var(--irina-gradient); padding: 25px 40px; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { color: white; margin: 0; font-size: 24px; font-weight: 900; }
+        .header p { color: white; margin: 0; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+
+        .content { display: flex; }
+        .left-col { padding: 40px; flex: 1; }
+        .right-col { width: 400px; }
+        .right-col img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+
+        h2 { font-size: 18px; margin-top: 0; }
+        ul { padding-left: 20px; }
+        li { margin-bottom: 12px; font-size: 14px; line-height: 1.4; }
+        
+        .btn-start { 
+            background: var(--irina-gradient); 
+            border: none; padding: 15px 30px; 
+            border-radius: 10px; color: white; 
+            font-weight: 900; cursor: pointer; 
+            margin-top: 20px; text-transform: uppercase;
         }
     </style>
 </head>
 <body>
 
-<div class="outer-frame">
-    <div class="app-container">
-        <div class="top-vincha">
-            <div class="brand-left">
-                <span class="blue-lab-text">BLUE LAB</span>
-                <span class="blueprint-subtext">Blueprint Integrations Lab</span>
-            </div>
-            <div class="vincha-title">Irina Hire Selection</div>
+<div class="card">
+    <div class="header">
+        <div>
+            <h1>BLUE LAB</h1>
+            <p>BLUEPRINT INTEGRATIONS LAB</p>
         </div>
-
-        <div class="main-body">
-            <div class="info-side">
-                <div class="section-box">
-                    <h3>PARA UNA ENTREVISTA DE CALIDAD:</h3>
-                    <ul class="checklist">
-                        <li><span class="icon">🎧</span> <b>Audio y Micrófono:</b><span>Es recomendable el uso de auriculares con micrófono.</span></li>
-                        <li><span class="icon">🤫</span> <b>Entorno:</b><span>Ubíquese en un lugar privado, silencioso y sin interrupciones.</span></li>
-                        <li><span class="icon">💡</span> <b>Ambiente:</b><span>Bien iluminado con luz de frente y cámara a la altura del rostro.</span></li>
-                        <li><span class="icon">📶</span> <b>Conexión:</b><span>Verifique que la conexión a Internet sea estable para evitar cortes.</span></li>
-                        <li><span class="icon">🔋</span> <b>Batería:</b><span>Asegúrese de tener carga completa o conexión a la red eléctrica.</span></li>
-                        <li><span class="icon">🆔</span> <b>Identidad:</b><span>Tenga su DNI a mano, tal vez se le solicite para validar.</span></li>
-                        <li><span class="icon">🗣️</span> <b>Atención:</b><span>La entrevista es interactiva; responda de forma clara y pausada.</span></li>
-                    </ul>
-                    
-                    <div class="legal-notice">
-                        Al validar su identidad e iniciar la llamada, usted acepta nuestras <b>Políticas de Privacidad</b> y consiente la grabación de la sesión para fines exclusivos de evaluación profesional.
-                    </div>
-
-                    <button class="vapi-btn" onclick="alert('Iniciando...')"></button>
-                </div>
-            </div>
-
-            <div class="visual-side">
-                <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg">
-            </div>
+        <h1 style="font-size: 20px;">IRINA HIRE SELECTION</h1>
+    </div>
+    
+    <div class="content">
+        <div class="left-col">
+            <h2>PARA UNA ENTREVISTA DE CALIDAD:</h2>
+            <ul>
+                <li>🎧 <b>Audio y Micrófono:</b> Es recomendable el uso de auriculares con micrófono.</li>
+                <li>🤫 <b>Entorno:</b> Ubíquese en un lugar privado, silencioso y sin interrupciones.</li>
+                <li>💡 <b>Ambiente:</b> Bien iluminado con luz de frente y cámara a la altura del rostro.</li>
+                <li>📶 <b>Conexión:</b> Verifique que la conexión a Internet sea estable para evitar cortes.</li>
+                <li>🔋 <b>Batería:</b> Asegúrese de tener carga completa o conexión a la red eléctrica.</li>
+                <li>🆔 <b>Identidad:</b> Tenga su DNI a mano, tal vez se le solicite para validar.</li>
+                <li>🗣️ <b>Atención:</b> La entrevista es interactiva; responda de forma clara y pausada.</li>
+            </ul>
+            <p style="font-size: 11px; color: #666;">Al validar su identidad e iniciar la llamada, usted acepta nuestras Políticas de Privacidad y consiente la grabación de la sesión para fines exclusivos de evaluación profesional.</p>
+            <button class="btn-start" id="start-btn">INICIAR ENTREVISTA CON IRINA</button>
+        </div>
+        <div class="right-col">
+            <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" alt="Irina">
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('start-btn').onclick = () => {
+        alert("Conectando con Vapi...");
+    };
+</script>
 
 </body>
 </html>
