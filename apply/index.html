@@ -21,24 +21,20 @@
         .main-body { flex: 1; display: flex; overflow: hidden; position: relative; }
         .form-side { flex: 1; padding: 40px; display: flex; flex-direction: column; overflow-y: auto; z-index: 1; }
         
-        /* Animación Campos */
         .input-group { position: relative; margin-top: 25px; }
         .input-group label { position: absolute; left: 12px; top: 14px; color: var(--fucsia); font-weight: 700; transition: 0.2s; pointer-events: none; background: white; padding: 0 4px; }
         .input-group input { width: 100%; padding: 14px; border: 2px solid #f3f4f6; border-radius: 12px; outline: none; box-sizing: border-box; }
         .input-group input:focus { border-color: var(--fucsia); }
         .input-group input:focus + label, .input-group input:not(:placeholder-shown) + label { top: -10px; font-size: 11px; color: var(--fucsia); }
 
-        /* Botón con animación circular */
         .btn-wrapper { position: relative; padding: 3px; border-radius: 12px; margin-top: 25px; overflow: hidden; cursor: pointer; }
         .btn-wrapper::before { content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, var(--fucsia), #96e8da, transparent); animation: rotate 3s linear infinite; display: none; }
         .btn-wrapper:hover::before { display: block; }
         @keyframes rotate { 100% { transform: rotate(360deg); } }
         #submit-btn { position: relative; width: 100%; height: 50px; background: var(--btn-gradient); color: white; border: none; border-radius: 9px; font-weight: 800; cursor: pointer; z-index: 1; }
 
-        /* Estilo Botón Archivo (CV) */
         input[type="file"]::file-selector-button { background: var(--fucsia); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; margin-right: 10px; }
         
-        /* Foto */
         .photo-side { width: 130px; display: flex; flex-direction: column; align-items: center; padding-top: 40px; padding-right: 20px; }
         .foto-title { font-size: 11px; font-weight: 800; color: var(--fucsia); text-transform: uppercase; margin-bottom: 6px; display: block; }
         .foto-preview-box { width: 120px; height: 120px; border: 2px dashed var(--fucsia); border-radius: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #f9f9f9; cursor: pointer; }
@@ -56,6 +52,8 @@
 
             <div id="content-wrapper" class="main-body">
                 <form id="postulacion-form" style="display: flex; width: 100%;">
+                    <input type="hidden" id="oferta_vinculada" name="oferta_vinculada">
+                    
                     <div class="form-side">
                         <div class="input-group"><input type="text" id="nombre" placeholder=" " required><label>Nombre Completo</label></div>
                         <div class="input-group"><input type="email" id="email" placeholder=" " required><label>Email</label></div>
@@ -90,7 +88,40 @@
     </div>
 
     <script>
-        const sb = supabase.createClient('https://zuzvozgjsppkxvdlptmk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0');
+        const sb = supabase.createClient('https://zuzvozgjsppkxvdlptmk.supabase.co', 'YOUR_SUPABASE_ANON_KEY');
+
+        // Capturar ID de la oferta desde la URL
+        window.onload = function() {
+            const params = new URLSearchParams(window.location.search);
+            const ofertaId = params.get('oferta');
+            if (ofertaId) {
+                document.getElementById('oferta_vinculada').value = ofertaId;
+            }
+        };
+
+        // Lógica de envío
+        document.getElementById('postulacion-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            btn.innerText = "ENVIANDO...";
+
+            try {
+                await sb.from('blueprint_ecosystem').insert([{
+                    unique_id: "POSTULANTE_" + Date.now(),
+                    dna_content: {
+                        nombre: document.getElementById('nombre').value,
+                        email: document.getElementById('email').value,
+                        oferta_vinculada: document.getElementById('oferta_vinculada').value,
+                        // Aquí irán las URLs de los archivos una vez los subas al bucket
+                    }
+                }]);
+                alert("¡Postulación enviada exitosamente!");
+            } catch (err) {
+                alert("Error al enviar: " + err.message);
+            } finally {
+                btn.innerText = "ENVIAR POSTULACIÓN";
+            }
+        };
 
         document.getElementById('foto').onchange = function(e) {
             const reader = new FileReader();
