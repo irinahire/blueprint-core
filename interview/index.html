@@ -9,6 +9,8 @@
             --irina-gradient: linear-gradient(to right, #bc8abf 0%, #96e8da 100%);
             --fucsia-solid: #bc8abf;
             --bg-dark: #05070a;
+            --text-dark: #111827;
+            --text-gray: #4b5563;
         }
 
         body { margin: 0; padding: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; }
@@ -16,51 +18,65 @@
         .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 92%; max-width: 1150px; height: 85vh; display: flex; }
         .app-container { background: white; width: 100%; height: 100%; border-radius: 40px; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* VINCHA EXTRAÍDA */
-        .top-vincha {
-            width: 100%; height: 90px;
-            background: var(--irina-gradient);
-            display: flex; align-items: center; 
-            justify-content: space-between;
-            padding: 0 45px; box-sizing: border-box;
-            z-index: 20;
-        }
-
+        /* VINCHA */
+        .top-vincha { width: 100%; height: 90px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 45px; box-sizing: border-box; }
         .brand-left { display: flex; flex-direction: column; color: white; font-family: 'Montserrat', sans-serif; }
         .blue-lab-text { font-weight: 900; font-size: 26px; }
         .blueprint-subtext { font-weight: 700; font-size: 11px; text-transform: uppercase; }
+        .vincha-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 24px; text-transform: uppercase; background: white; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-image: var(--irina-gradient); filter: drop-shadow(2px 0 0 white) drop-shadow(-2px 0 0 white) drop-shadow(0 2px 0 white) drop-shadow(0 -2px 0 white); }
 
-        .vincha-title {
-            font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 24px; text-transform: uppercase;
-            background: white; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-image: var(--irina-gradient);
-            filter: drop-shadow(2px 0 0 white) drop-shadow(-2px 0 0 white) drop-shadow(0 2px 0 white) drop-shadow(0 -2px 0 white);
-        }
-
-        .main-body { flex: 1; display: flex; padding: 40px; align-items: center; justify-content: center; text-align: center; }
-        .btn-call { background: var(--fucsia-solid); color: white; border: none; padding: 20px 40px; border-radius: 14px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 18px; margin-top: 20px; }
+        /* CUERPO PRINCIPAL */
+        .main-body { flex: 1; display: flex; overflow: hidden; }
+        .info-side { flex: 1.3; padding: 40px 60px; display: flex; flex-direction: column; justify-content: center; }
+        
+        /* CONTENEDOR DE IMAGEN RESTAURADO */
+        .visual-side { flex: 1; position: relative; background: #fdfdfd; display: flex; align-items: center; justify-content: center; }
+        
+        .section-box h3 { font-size: 18px; font-weight: 800; margin-bottom: 25px; color: var(--text-dark); border-bottom: 2px solid #f3f4f6; padding-bottom: 8px; display: inline-block; }
+        .checklist { list-style: none; padding: 0; margin: 0; }
+        .checklist li { margin-bottom: 15px; font-size: 13px; display: flex; align-items: flex-start; color: var(--text-gray); }
+        .checklist li .icon { width: 30px; font-size: 16px; }
+        .legal-notice { margin-top: 25px; padding-top: 15px; border-top: 1px solid #f3f4f6; font-size: 10px; color: #9ca3af; }
+        
+        /* IMAGEN DE IRINA RESTAURADA */
+        .irina-bg { height: 100%; width: auto; object-fit: cover; }
+        .btn-call { background: var(--fucsia-solid); color: white; border: none; padding: 18px 30px; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-    <div class="outer-frame">
-        <div class="app-container">
-            <div class="top-vincha">
-                <div class="brand-left">
-                    <span class="blue-lab-text">BLUE LAB</span>
-                    <span class="blueprint-subtext">Blueprint Integrations Lab</span>
-                </div>
-                <div class="vincha-title">Irina Hire Selection</div>
+<div class="outer-frame">
+    <div class="app-container">
+        <div class="top-vincha">
+            <div class="brand-left">
+                <span class="blue-lab-text">BLUE LAB</span>
+                <span class="blueprint-subtext">Blueprint Integrations Lab</span>
             </div>
+            <div class="vincha-title">Irina Hire Selection</div>
+        </div>
 
-            <div class="main-body">
-                <div>
-                    <h1 style="color: var(--fucsia-solid);">Listo para tu entrevista</h1>
-                    <p>Hola Walter, el análisis de tu perfil está completo.</p>
-                    <button class="btn-call" onclick="alert('Iniciando llamada...')">Iniciar llamada con Irina</button>
+        <div class="main-body">
+            <div class="info-side">
+                <div class="section-box">
+                    <h3>PARA UNA ENTREVISTA DE CALIDAD:</h3>
+                    <ul class="checklist">
+                        <li><span class="icon">🎧</span> <b>Audio:</b> Use auriculares con micrófono.</li>
+                        <li><span class="icon">🤫</span> <b>Entorno:</b> Lugar silencioso y privado.</li>
+                        <li><span class="icon">💡</span> <b>Ambiente:</b> Bien iluminado.</li>
+                        <li><span class="icon">📶</span> <b>Conexión:</b> Internet estable.</li>
+                        <li><span class="icon">🔋</span> <b>Batería:</b> Asegure carga suficiente.</li>
+                        <li><span class="icon">🆔</span> <b>Identidad:</b> Tenga su DNI a mano.</li>
+                    </ul>
+                    <div class="legal-notice">Al iniciar, acepta nuestras políticas de privacidad y la grabación de la sesión para fines de evaluación profesional.</div>
+                    <button class="btn-call" onclick="alert('Iniciando...')">Iniciar Entrevista</button>
                 </div>
+            </div>
+            <div class="visual-side">
+                <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg">
             </div>
         </div>
     </div>
+</div>
+
 </body>
 </html>
