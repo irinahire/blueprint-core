@@ -2,157 +2,61 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entrevista - Irina (v6.1 Nativa Estable)</title>
+    <title>Irina Hire Selection | Entrevista</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; text-align: center; padding: 50px; background: #0f172a; color: #f8fafc; }
-        .card { background: #1e293b; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); display: inline-block; max-width: 450px; border: 1px solid #334155; }
-        h2 { color: #38bdf8; margin-top: 0; }
-        button { background: #06b6d4; color: #0f172a; border: none; padding: 16px 32px; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: all 0.2s; width: 100%; margin-top: 15px; }
-        button:hover { background: #22d3ee; }
-        #status { margin-top: 25px; font-weight: bold; font-size: 14px; padding: 12px; border-radius: 6px; background: #0f172a; border: 1px solid #1e293b; }
+        :root { 
+            --fucsia: #bc8abf; 
+            --gris-claro: #e0e0e0;
+            --irina-gradient: linear-gradient(to right, #bc8abf 0%, #96e8da 100%); 
+            --btn-gradient: linear-gradient(to right, #96e8da 0%, #bc8abf 100%);
+            --bg-dark: #05070a; 
+        }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: var(--bg-dark); display: flex; align-items: center; justify-content: center; font-family: 'Inter', sans-serif; }
+        
+        .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 95%; max-width: 1050px; height: 92vh; display: flex; align-items: center; justify-content: center; }
+        .app-shell { width: 100%; height: 100%; background: white; border-radius: 40px; display: flex; flex-direction: column; overflow: hidden; }
+        
+        .header { height: 80px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; font-weight: 900; font-family: 'Montserrat', sans-serif; flex-shrink: 0; }
+        
+        .content-area { flex: 1; display: flex; overflow: hidden; }
+        .interview-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px; text-align: center; }
+        
+        .btn-call { background: var(--btn-gradient); color: white; border: none; padding: 20px 50px; border-radius: 12px; font-weight: 900; cursor: pointer; font-size: 20px; text-transform: uppercase; margin-top: 30px; box-shadow: 0 10px 20px rgba(188, 138, 191, 0.3); }
+        
+        .sidebar { width: 300px; position: relative; flex-shrink: 0; }
+        .irina-bg { width: 100%; height: 100%; object-fit: cover; mask-image: linear-gradient(to right, transparent 0%, black 10%); }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h2>Entrevista con Irina</h2>
-        <p>Hacé clic abajo para iniciar la validación por voz.</p>
-        <button id="btn-accion" onclick="controlarLlamada()">Iniciar llamada de voz (v6.1)</button>
-        <div id="status">Verificando datos de acceso...</div>
+<div class="outer-frame">
+    <div class="app-shell">
+        <div class="header">
+            <div>BLUE LAB</div>
+            <div>Irina Hire Selection</div>
+        </div>
+        
+        <div class="content-area">
+            <div class="interview-container">
+                <h1 style="color:var(--fucsia); font-size: 48px;">Hola, <span id="user-name">Walter</span></h1>
+                <p style="font-size: 20px; color: #555; max-width: 600px;">
+                    Irina ha analizado tu trayectoria y está lista para conversar sobre tu experiencia en el sector.
+                </p>
+                <button class="btn-call" onclick="iniciarLlamada()">Iniciar Protocolo</button>
+                <p style="font-size: 12px; color: #999; margin-top: 20px;">Se establecerá una conexión cifrada de voz con la IA.</p>
+            </div>
+            
+            <div class="sidebar"><img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg"></div>
+        </div>
     </div>
+</div>
 
-    <script>
-        const parametros = new URLSearchParams(window.location.search);
-        const tokenRecibido = parametros.get('token');
-        
-        const statusDiv = document.getElementById("status");
-        const btnAccion = document.getElementById("btn-accion");
-        
-        let websocket = null;
-        let contextoAudio = null;
-        let flujoMicrofono = null;
-        let procesadorAudio = null;
-        let estaLlamando = false;
-
-        window.onload = function() {
-            if (tokenRecibido && tokenRecibido.trim() !== "") {
-                statusDiv.innerHTML = "🔑 <span style='color: #4ade80;'>Token detectado con éxito. Listo para conectar.</span>";
-            } else {
-                statusDiv.innerHTML = "🚨 <span style='color: #f87171;'>Error: Falta el token de acceso en la URL.</span>";
-                btnAccion.disabled = true;
-            }
-        };
-
-        async function controlarLlamada() {
-            if (estaLlamando) {
-                finalizarLlamada();
-            } else {
-                await iniciarConexionNativa();
-            }
-        }
-
-        async function iniciarConexionNativa() {
-            try {
-                statusDiv.innerText = "Solicitando permiso para usar el micrófono...";
-                flujoMicrofono = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, sampleRate: 16000, channelCount: 1 } });
-                
-                statusDiv.innerText = "Estableciendo puente de conexión con Irina...";
-                // Conexión nativa directa por WebSocket
-                websocket = new WebSocket(`wss://api.retellai.com/v2/initiate-web-call-websocket?accessToken=${tokenRecibido}`);
-
-                websocket.onopen = () => {
-                    estaLlamando = true;
-                    btnAccion.innerText = "Finalizar llamada";
-                    btnAccion.style.background = "#ef4444";
-                    btnAccion.style.color = "#ffffff";
-                    statusDiv.innerHTML = "🟢 <span style='color: #4ade80;'>¡En línea! Irina te está escuchando de forma directa.</span>";
-                    
-                    conectarAudioNativo();
-                };
-
-                websocket.onmessage = async (evento) => {
-                    try {
-                        const datos = JSON.parse(evento.data);
-                        if (datos.audio) {
-                            reproducirRespuestaIrina(datos.audio);
-                        }
-                    } catch (e) {
-                        // Ignoramos mensajes de control que no sean audio para no saturar
-                    }
-                };
-
-                websocket.onerror = (error) => {
-                    statusDiv.innerHTML = "🚨 <span style='color: #f87171;'>Error de comunicación con el servidor.</span>";
-                    finalizarLlamada();
-                };
-
-                websocket.onclose = () => {
-                    statusDiv.innerText = "Llamada terminada.";
-                    finalizarLlamada();
-                };
-
-            } catch (err) {
-                statusDiv.innerHTML = "🚨 <span style='color: #f87171;'>Error de micrófono: " + err.message + "</span>";
-                finalizarLlamada();
-            }
-        }
-
-        function conectarAudioNativo() {
-            // Ajustamos el contexto de audio nativo de forma estricta para Retell
-            contextoAudio = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
-            const origen = contextoAudio.createMediaStreamSource(flujoMicrofono);
-            
-            // Usamos un tamaño de buffer estándar de 4096 para estabilizar el flujo de datos
-            procesadorAudio = contextoAudio.createScriptProcessor(4096, 1, 1);
-
-            procesadorAudio.onaudioprocess = (eventoInput) => {
-                if (!estaLlamando || websocket.readyState !== WebSocket.OPEN) return;
-                
-                const canalInput = eventoInput.inputBuffer.getChannelData(0);
-                const bufferInt16 = new Int16Array(canalInput.length);
-                
-                // Conversión limpia a PCM de 16 bits sin pérdidas
-                for (let i = 0; i < canalInput.length; i++) {
-                    let s = Math.max(-1, Math.min(1, canalInput[i]));
-                    bufferInt16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
-                }
-                
-                websocket.send(bufferInt16.buffer);
-            };
-
-            origen.connect(procesadorAudio);
-            procesadorAudio.connect(contextoAudio.destination);
-        }
-
-        function reproducirRespuestaIrina(base64Audio) {
-            if (!contextoAudio) return;
-            
-            const binario = atob(base64Audio);
-            const arrayBifurcado = new Uint8Array(binario.length);
-            for (let i = 0; i < binario.length; i++) {
-                arrayBifurcado[i] = binario.charCodeAt(i);
-            }
-            
-            contextoAudio.decodeAudioData(arrayBifurcado.buffer, (buffer) => {
-                const fuenteNodo = contextoAudio.createBufferSource();
-                fuenteNodo.buffer = buffer;
-                fuenteNodo.connect(contextoAudio.destination);
-                fuenteNodo.start(0);
-            }).catch(e => console.log("Error decodificando respuesta"));
-        }
-
-        function finalizarLlamada() {
-            estaLlamando = false;
-            btnAccion.innerText = "Iniciar llamada de voz (v6.1)";
-            btnAccion.style.background = "#06b6d4";
-            btnAccion.style.color = "#0f172a";
-            
-            if (procesadorAudio) { try { procesadorAudio.disconnect(); } catch(e){} procesadorAudio = null; }
-            if (flujoMicrofono) { try { flujoMicrofono.getTracks().forEach(track => track.stop()); } catch(e){} flujoMicrofono = null; }
-            if (contextoAudio) { try { contextoAudio.close(); } catch(e){} contextoAudio = null; }
-            if (websocket) { if (websocket.readyState === WebSocket.OPEN) websocket.close(); websocket = null; }
-        }
-    </script>
+<script>
+    function iniciarLlamada() {
+        alert("Iniciando sesión de voz con Irina...");
+        // Aquí conectaremos mañana con el motor de voz
+    }
+</script>
 </body>
 </html>
