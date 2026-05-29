@@ -77,12 +77,13 @@
 </div>
 
 <script>
-    // Usamos window.Vapi para asegurar acceso global tras la carga del script
-    const vapi = new window.Vapi("fa551a95-8c91-45ae-9716-3480d39a429b");
+    // En lugar de window.Vapi, accedemos al objeto Vapi directamente
+    // que el script de unpkg expone globalmente.
+    const vapi = new Vapi("fa551a95-8c91-45ae-9716-3480d39a429b");
     const btn = document.getElementById('start-btn');
 
     btn.addEventListener('click', async () => {
-        btn.innerText = "Intentando llamar a Irina...";
+        btn.innerText = "Conectando...";
         btn.disabled = true;
 
         try {
@@ -91,7 +92,7 @@
             });
             btn.innerText = "Hablando con Irina...";
         } catch (error) {
-            console.error("Error:", error);
+            console.error("Error detallado:", error);
             btn.innerText = "Error - Reintentar";
             btn.disabled = false;
         }
