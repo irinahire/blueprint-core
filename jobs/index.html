@@ -33,6 +33,8 @@
         .btn-pub { background: var(--btn-gradient); color: white; border: none; padding: 12px 25px; border-radius: 9px; font-weight: 800; cursor: pointer; position: relative; z-index: 1; font-family: 'Inter', sans-serif; }
         @keyframes rotate { 100% { transform: rotate(360deg); } }
         
+        .btn-copy { background: #96e8da; color: var(--fucsia); border: 2px solid var(--fucsia); padding: 10px 20px; border-radius: 9px; font-weight: 800; cursor: pointer; }
+        
         .input-group { position: relative; margin-top: 30px; }
         .input-group label { position: absolute; left: 12px; top: 14px; color: var(--fucsia); font-weight: 700; transition: 0.2s; pointer-events: none; background: white; padding: 0 4px; }
         .input-group input { width: 100%; padding: 14px; border: 2px solid var(--gris-claro); border-radius: 10px; outline: none; font-size: 14px; box-sizing: border-box; color: #333; }
@@ -61,15 +63,15 @@
                 </div>
                 
                 <div class="form-fields">
-                    <div class="input-group"><input type="text" id="titulo" placeholder=" "><label>Título del Puesto</label></div>
-                    <div class="input-group"><input type="text" id="desc" placeholder=" "><label>Descripción</label></div>
-                    <div class="input-group"><input type="text" id="req" placeholder=" "><label>Requisitos</label></div>
-                    <div class="input-group"><input type="text" id="m1" placeholder=" "><label>Modalidad</label></div>
-                    <div class="input-group"><input type="text" id="m2" placeholder=" "><label>Salario</label></div>
-                    <div class="input-group"><input type="text" id="m3" placeholder=" "><label>Experiencia</label></div>
-                    <div class="input-group"><input type="text" id="m4" placeholder=" "><label>Cultura</label></div>
-                    <div class="input-group"><input type="text" id="m5" placeholder=" "><label>Beneficios</label></div>
-                    <div class="input-group"><input type="text" id="m6" placeholder=" "><label>Ubicación</label></div>
+                    <div class="input-group"><input type="text" id="titulo" placeholder="(Ej: Productor Asesor de Seguros Senior)"><label>Título del Puesto</label></div>
+                    <div class="input-group"><input type="text" id="desc" placeholder="(Ej: Gestión integral de cartera, asesoramiento personalizado)"><label>Descripción</label></div>
+                    <div class="input-group"><input type="text" id="req" placeholder="(Ej: Matrícula SSN, experiencia en patrimoniales y vida, negociación)"><label>Requisitos</label></div>
+                    <div class="input-group"><input type="text" id="m1" placeholder="(Ej: Híbrido 3x2 CABA, Presencial Microcentro)"><label>Modalidad</label></div>
+                    <div class="input-group"><input type="text" id="m2" placeholder="(Ej: A convenir, sueldo base + comisiones por producción)"><label>Salario</label></div>
+                    <div class="input-group"><input type="text" id="m3" placeholder="(Ej: +5 años en corretaje de seguros)"><label>Experiencia</label></div>
+                    <div class="input-group"><input type="text" id="m4" placeholder="(Ej: Orientada a resultados, excelencia en atención al cliente, crecimiento)"><label>Cultura</label></div>
+                    <div class="input-group"><input type="text" id="m5" placeholder="(Ej: Prepaga, capacitación profesional, bono anual objetivos)"><label>Beneficios</label></div>
+                    <div class="input-group"><input type="text" id="m6" placeholder="(Ej: Oficina comercial Microcentro, CABA)"><label>Ubicación</label></div>
                 </div>
             </div>
 
@@ -78,9 +80,13 @@
                 <p>Copiá la URL de esta oferta para compartirla:</p>
                 <div style="display: flex; gap: 10px; align-items: center; margin: 20px 0;">
                     <input type="text" id="full-url" style="padding:10px; border:1px solid #ccc; border-radius:5px; width: 350px; font-family:monospace;" readonly>
-                    <button class="btn-pub" onclick="copiarUrl()">Copiar</button>
+                    <button class="btn-copy" onclick="copiarUrl()">Copiar</button>
                 </div>
-                <div class="btn-wrapper"><button class="btn-pub" onclick="resetForm()">Crear otra oferta</button></div>
+                <div id="copy-feedback" style="color:var(--fucsia); font-weight:600; height: 20px;"></div>
+
+                <div style="margin-top: 50px;">
+                    <div class="btn-wrapper"><button class="btn-pub" onclick="resetForm()">Crear otra oferta</button></div>
+                </div>
             </div>
             
             <div class="sidebar"><img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg"></div>
@@ -99,9 +105,11 @@
 
     function copiarUrl() {
         const input = document.getElementById('full-url');
+        const feedback = document.getElementById('copy-feedback');
         input.select();
         document.execCommand('copy');
-        alert("¡URL copiada al portapapeles!");
+        feedback.innerText = "¡URL copiada!";
+        setTimeout(() => { feedback.innerText = ""; }, 2000);
     }
 
     async function publicarOferta() {
