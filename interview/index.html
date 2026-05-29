@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Irina Hire Selection | Entrevista</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js"></script>
     <style>
         :root {
             --fucsia: #bc8abf;
@@ -84,38 +85,40 @@
         btn.disabled = true;
 
         try {
-            const payload = {
-                applicantId: "WALTER_TEST_001",
-                jobTitle: "Productor Asesor Senior",
-                applicantName: "Walter",
-                interviewId: "INT_001",
-                contexto: "Entrevista de prueba"
-            };
-
+            // 1. Obtener contexto y configuración desde tu Edge Function
             const response = await fetch(FUNCTION_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
+                body: JSON.stringify({ 
+                    applicantId: "WALTER_TEST_001",
+                    jobId: "PROD_SENIOR_001" 
+                })
             });
 
-            const textResponse = await response.text();
-            console.log("Respuesta cruda del servidor:", textResponse);
+            const config = await response.json();
 
-            if (!response.ok) {
-                throw new Error("Servidor respondió: " + response.status + " - " + textResponse);
-            }
+            if (!response.ok) throw new Error(config.error || "Error en el servidor");
 
-            const data = JSON.parse(textResponse);
+            // 2. Iniciar Vapi SDK con los datos recibidos
+            window.vapiSDK.run({
+                apiKey: config.publicKey, 
+                assistant: config.assistantId,
+                assistantOverrides: config.assistantOverrides
+            });
 
-            if (data.webCallUrl) {
-                window.location.href = data.webCallUrl;
-            } else {
-                throw new Error("La respuesta no contiene webCallUrl.");
-            }
+            btn.innerText = "Entrevista en curso...";
         } catch (error) {
-            console.error("Error capturado:", error);
-            btn.innerText = "Error - Mira la consola (F12)";
+            console.error("Error:", error);
+            btn.innerText = "Error - Reintentar";
             btn.disabled = false;
+        }
+    });
+
+    // Escucha el evento de fin de llamada si necesitas limpiar UI
+    window.addEventListener('message', (e) => {
+        if (e.data.type === 'vapi-call-end') {
+            btn.innerText = "ENTREVISTA FINALIZADA";
+            btn.disabled = true;
         }
     });
 </script>
