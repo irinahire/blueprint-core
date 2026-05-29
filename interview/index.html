@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Irina Hire Selection | Entrevista</title>
+    <script src="https://unpkg.com/@vapi-ai/web/dist/vapi.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -16,7 +17,6 @@
         .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 92%; max-width: 1150px; }
         .card { background: white; width: 100%; border-radius: 40px; overflow: hidden; display: flex; flex-direction: column; }
         
-        /* LA VINCHA CORRECTA */
         .header { height: 90px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 45px; flex-shrink: 0; }
         .brand-left { display: flex; flex-direction: column; color: white; font-family: 'Montserrat', sans-serif; }
         .blue-lab-text { font-weight: 900; font-size: 26px; }
@@ -78,11 +78,31 @@
 </div>
 
 <script>
-    function iniciarLlamada() {
+    // Configuración Vapi
+    const vapi = new Vapi("fa551a95-8c91-45ae-9716-3480d39a429b");
+
+    async function iniciarLlamada() {
         const btn = document.getElementById('start-btn');
         btn.innerText = "Intentando llamar a Irina...";
         btn.disabled = true;
+
+        try {
+            await vapi.start({
+                assistantId: "6f1a49d5-321b-4e75-a998-289e94388398",
+            });
+            btn.innerText = "Hablando con Irina...";
+        } catch (error) {
+            console.error("Error:", error);
+            btn.innerText = "Error - Reintentar";
+            btn.disabled = false;
+        }
     }
+
+    vapi.on("call-end", () => {
+        const btn = document.getElementById('start-btn');
+        btn.innerText = "INICIAR ENTREVISTA CON IRINA";
+        btn.disabled = false;
+    });
 </script>
 
 </body>
