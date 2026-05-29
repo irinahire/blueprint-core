@@ -80,7 +80,6 @@
     const FUNCTION_URL = "https://zuzvozgjsppkxvdlptmk.supabase.co/functions/v1/start-interview";
 
     btn.addEventListener('click', async () => {
-        // Estado visual de carga
         btn.innerText = "Conectando con Irina...";
         btn.disabled = true;
 
@@ -89,20 +88,28 @@
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
-                }
+                },
+                body: JSON.stringify({
+                    applicantId: "WALTER_TEST_001",
+                    jobTitle: "Productor Asesor Senior",
+                    applicantName: "Walter",
+                    interviewId: "INT_001",
+                    contexto: "Entrevista de prueba"
+                })
             });
 
             if (!response.ok) {
-                throw new Error("No autorizado o error en servidor");
+                throw new Error("Error en el servidor de conexión");
             }
 
             const data = await response.json();
 
-            if (data.url) {
-                // Redirige al usuario a la interfaz de llamada de Vapi
-                window.location.href = data.url;
+            // Vapi ahora debería devolver 'webCallUrl' gracias a la actualización de la función
+            if (data.webCallUrl) {
+                window.location.href = data.webCallUrl;
             } else {
-                throw new Error("No se pudo obtener la URL de la entrevista.");
+                console.error("Respuesta de Vapi:", data);
+                throw new Error("No se pudo iniciar la sesión de llamada.");
             }
         } catch (error) {
             console.error("Error:", error);
