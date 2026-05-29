@@ -42,7 +42,6 @@
         .input-group input:focus { border-color: var(--fucsia); }
         .input-group input:focus + label, .input-group input:not(:placeholder-shown) + label { top: -10px; font-size: 11px; color: var(--fucsia); }
         
-        /* Ajuste: Placeholder Fucsia Negrita que desaparece al hacer click */
         .input-group input::placeholder { color: var(--fucsia); font-weight: 700; opacity: 0.6; }
         .input-group input:focus::placeholder { opacity: 0; }
         
@@ -68,15 +67,15 @@
                 </div>
                 
                 <div class="form-fields">
-                    <div class="input-group"><input type="text" id="titulo" placeholder="                                         (Ej: Productor Asesor de Seguros Senior)"><label>Título del Puesto</label></div>
-                    <div class="input-group"><input type="text" id="desc" placeholder="                                  (Ej: Gestión integral de cartera, asesoramiento personalizado)"><label>Descripción</label></div>
-                    <div class="input-group"><input type="text" id="req" placeholder="                                  (Ej: Matrícula SSN, experiencia en patrimoniales y vida, negociación)"><label>Requisitos</label></div>
+                    <div class="input-group"><input type="text" id="titulo" placeholder="                                   (Ej: Productor Asesor de Seguros Senior)"><label>Título del Puesto</label></div>
+                    <div class="input-group"><input type="text" id="desc" placeholder="                                   (Ej: Gestión integral de cartera, asesoramiento personalizado)"><label>Descripción</label></div>
+                    <div class="input-group"><input type="text" id="req" placeholder="                                   (Ej: Matrícula SSN, experiencia en patrimoniales y vida, negociación)"><label>Requisitos</label></div>
                     <div class="input-group"><input type="text" id="m1" placeholder="                                   (Ej: Híbrido 3x2 CABA, Presencial Microcentro)"><label>Modalidad</label></div>
-                    <div class="input-group"><input type="text" id="m2" placeholder="                             (Ej: A convenir, sueldo base + comisiones por producción)"><label>Salario</label></div>
-                    <div class="input-group"><input type="text" id="m3" placeholder="                                    (Ej: +5 años en corretaje de seguros)"><label>Experiencia</label></div>
-                    <div class="input-group"><input type="text" id="m4" placeholder="                             (Ej: Orientada a resultados, excelencia en atención al cliente, crecimiento)"><label>Cultura</label></div>
-                    <div class="input-group"><input type="text" id="m5" placeholder="                                     (Ej: Prepaga, capacitación profesional, bono anual objetivos)"><label>Beneficios</label></div>
-                    <div class="input-group"><input type="text" id="m6" placeholder="                                      (Ej: Oficina comercial Microcentro, CABA)"><label>Ubicación</label></div>
+                    <div class="input-group"><input type="text" id="m2" placeholder="                                   (Ej: A convenir, sueldo base + comisiones por producción)"><label>Salario</label></div>
+                    <div class="input-group"><input type="text" id="m3" placeholder="                                   (Ej: +5 años en corretaje de seguros)"><label>Experiencia</label></div>
+                    <div class="input-group"><input type="text" id="m4" placeholder="                                   (Ej: Orientada a resultados, excelencia en atención al cliente, crecimiento)"><label>Cultura</label></div>
+                    <div class="input-group"><input type="text" id="m5" placeholder="                                   (Ej: Prepaga, capacitación profesional, bono anual objetivos)"><label>Beneficios</label></div>
+                    <div class="input-group"><input type="text" id="m6" placeholder="                                   (Ej: Oficina comercial Microcentro, CABA)"><label>Ubicación</label></div>
                 </div>
             </div>
 
@@ -87,6 +86,7 @@
                     <input type="text" id="full-url" style="padding:10px; border:1px solid #ccc; border-radius:5px; width: 350px; font-family:monospace;" readonly>
                     <button class="btn-copy" onclick="copiarUrl()">Copiar</button>
                 </div>
+                <p>ID de la oferta: <span id="job-id-display" style="font-weight:bold; color:var(--fucsia);"></span></p>
                 <div id="copy-feedback" style="color:var(--fucsia); font-weight:600; height: 20px;"></div>
 
                 <div style="margin-top: 50px;">
@@ -140,6 +140,7 @@
             if (error) throw error;
             
             document.getElementById('full-url').value = fullUrl;
+            document.getElementById('job-id-display').innerText = jobId;
             document.getElementById('form-wrapper').style.display = 'none';
             document.getElementById('success-screen').style.display = 'flex';
         } catch (e) { alert("Error: " + e.message); } finally { btn.innerText = "PUBLICAR"; }
