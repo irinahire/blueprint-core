@@ -8,7 +8,6 @@
     <style>
         :root { 
             --fucsia: #bc8abf; 
-            --fucsia-light: #dcbadd;
             --irina-gradient: linear-gradient(to right, #bc8abf 0%, #96e8da 100%); 
             --btn-gradient: linear-gradient(to right, #96e8da 0%, #bc8abf 100%);
             --bg-dark: #05070a; 
@@ -28,21 +27,17 @@
         .input-group input { width: 100%; padding: 14px; border: 2px solid #f3f4f6; border-radius: 12px; outline: none; box-sizing: border-box; }
         .input-group input:focus { border-color: var(--fucsia); }
         .input-group input:focus + label, .input-group input:not(:placeholder-shown) + label { top: -10px; font-size: 11px; color: var(--fucsia); }
-        .input-group input::placeholder { color: var(--fucsia); opacity: 0.5; font-size: 13px; }
-        .input-group input:focus::placeholder { opacity: 0; }
 
-        /* Botón con animación */
+        /* Botón */
         .btn-wrapper { position: relative; padding: 3px; border-radius: 12px; margin-top: 25px; overflow: hidden; cursor: pointer; }
-        .btn-wrapper::before { content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, var(--fucsia), #96e8da, transparent); animation: rotate 3s linear infinite; display: none; }
-        .btn-wrapper:hover::before { display: block; }
-        @keyframes rotate { 100% { transform: rotate(360deg); } }
-        #submit-btn { position: relative; width: 100%; height: 50px; background: var(--btn-gradient); color: white; border: none; border-radius: 9px; font-weight: 800; cursor: pointer; z-index: 1; }
+        #submit-btn { width: 100%; height: 50px; background: var(--btn-gradient); color: white; border: none; border-radius: 9px; font-weight: 800; cursor: pointer; }
 
+        /* Foto */
         .photo-side { width: 130px; display: flex; flex-direction: column; align-items: center; padding-top: 40px; padding-right: 20px; }
-        .foto-preview-box { width: 120px; height: 120px; border: 2px dashed var(--fucsia); border-radius: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #f9f9f9; cursor: pointer; margin-bottom: 8px; }
+        .foto-title { font-size: 11px; font-weight: 800; color: var(--fucsia); text-transform: uppercase; margin-bottom: 6px; display: block; }
+        .foto-preview-box { width: 120px; height: 120px; border: 2px dashed var(--fucsia); border-radius: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #f9f9f9; cursor: pointer; }
         
         .irina-bg { width: 100%; height: 100%; object-fit: cover; mask-image: linear-gradient(to right, transparent 0%, black 15%); }
-        #success-message { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; width: 100%; }
     </style>
 </head>
 <body>
@@ -56,10 +51,10 @@
             <div id="content-wrapper" class="main-body">
                 <form id="postulacion-form" style="display: flex; width: 100%;">
                     <div class="form-side">
-                        <div class="input-group"><input type="text" id="nombre" placeholder="(Ej: Juan Pérez)" required><label>Nombre Completo</label></div>
-                        <div class="input-group"><input type="email" id="email" placeholder="(Ej: juan@email.com)" required><label>Email</label></div>
-                        <div class="input-group"><input type="tel" id="telefono" placeholder="(Ej: +54 9 11 0000 0000)" required><label>WhatsApp</label></div>
-                        <div class="input-group"><input type="url" id="linkedin" placeholder="(Ej: linkedin.com/in/perfil)"><label>LinkedIn URL</label></div>
+                        <div class="input-group"><input type="text" id="nombre" placeholder=" " required><label>Nombre Completo</label></div>
+                        <div class="input-group"><input type="email" id="email" placeholder=" " required><label>Email</label></div>
+                        <div class="input-group"><input type="tel" id="telefono" placeholder=" " required><label>WhatsApp</label></div>
+                        <div class="input-group"><input type="url" id="linkedin" placeholder=" "><label>LinkedIn URL</label></div>
                         <div class="input-group" style="margin-top:20px;"><label style="position:static; margin-bottom:5px;">Adjuntar Currículum (PDF)</label><input type="file" id="cv" accept=".pdf" required></div>
                         
                         <div class="btn-wrapper">
@@ -68,7 +63,7 @@
                     </div>
                     
                     <div class="photo-side">
-                        <label>Subir Foto</label>
+                        <span class="foto-title">SUBIR FOTO</span>
                         <div class="foto-preview-box" onclick="document.getElementById('foto').click()">
                             <img id="preview-img-form" src="#" style="width: 100%; height: 100%; object-fit: cover; display: none;">
                             <span id="placeholder-text" style="color:#bc8abf; font-size: 24px;">+</span>
@@ -77,46 +72,11 @@
                     </div>
                 </form>
 
-                <div id="success-message">
-                    <h2>¡Gracias por tu postulación!</h2>
-                    <p style="color: #6b7280;">Estamos analizando tu perfil.</p>
-                </div>
-
                 <div class="visual-side" style="width: 35%; height: 100%; position: relative;">
                     <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg">
                 </div>
             </div>
         </div>
     </div>
-
-    <script>
-        const sb = supabase.createClient('https://zuzvozgjsppkxvdlptmk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0');
-
-        document.getElementById('foto').onchange = function(e) {
-            const reader = new FileReader();
-            reader.onload = function() {
-                const img = document.getElementById('preview-img-form');
-                img.src = reader.result;
-                img.style.display = 'block';
-                document.getElementById('placeholder-text').style.display = 'none';
-            }
-            reader.readAsDataURL(e.target.files[0]);
-        };
-
-        document.getElementById('postulacion-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('submit-btn');
-            btn.innerText = "ENVIANDO...";
-            
-            try {
-                // Aquí va la lógica de subida a Supabase que ya tenías
-                document.getElementById('postulacion-form').style.display = 'none';
-                document.getElementById('success-message').style.display = 'flex';
-            } catch (err) {
-                alert("Error: " + err.message);
-                btn.innerText = "ENVIAR POSTULACIÓN";
-            }
-        };
-    </script>
 </body>
 </html>
