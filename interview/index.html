@@ -32,11 +32,13 @@
         ul { padding-left: 20px; }
         li { margin-bottom: 12px; font-size: 14px; line-height: 1.4; }
         
-        .btn-wrapper { position: relative; padding: 3px; border-radius: 12px; overflow: hidden; cursor: pointer; width: fit-content; margin-top: 30px; }
-        .btn-wrapper::before { content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, var(--fucsia), #96e8da, transparent); animation: rotate 3s linear infinite; display: none; }
-        .btn-wrapper:hover::before { display: block; }
-        .btn-pub { background: var(--btn-gradient); color: white; border: none; padding: 15px 35px; border-radius: 9px; font-weight: 800; cursor: pointer; position: relative; z-index: 1; font-family: 'Inter', sans-serif; font-size: 14px; text-transform: uppercase; }
-        @keyframes rotate { 100% { transform: rotate(360deg); } }
+        .btn-wrapper { position: relative; padding: 3px; border-radius: 8px; overflow: hidden; cursor: pointer; width: fit-content; margin-top: 30px; }
+        /* Efecto de borde en hover */
+        .btn-wrapper:hover { border: 2px solid #bc8abf; padding: 1px; }
+        
+        .btn-pub { background: var(--btn-gradient); color: white; border: none; padding: 15px 35px; border-radius: 6px; font-weight: 800; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 14px; text-transform: uppercase; width: 100%; }
+        
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -55,18 +57,14 @@
             <div class="left-col">
                 <h2>PARA UNA ENTREVISTA DE CALIDAD:</h2>
                 <ul>
-                    <li>🎧 <b>Audio y Micrófono:</b> Es recomendable el uso de auriculares con micrófono.</li>
-                    <li>🤫 <b>Entorno:</b> Ubíquese en un lugar privado, silencioso y sin interrupciones.</li>
-                    <li>💡 <b>Ambiente:</b> Bien iluminado con luz de frente y cámara a la altura del rostro.</li>
-                    <li>📶 <b>Conexión:</b> Verifique que la conexión a Internet sea estable para evitar cortes.</li>
-                    <li>🔋 <b>Batería:</b> Asegúrese de tener carga completa o conexión a la red eléctrica.</li>
-                    <li>🆔 <b>Identidad:</b> Tenga su DNI a mano, tal vez se le solicite para validar.</li>
-                    <li>🗣️ <b>Atención:</b> La entrevista es interactiva; responda de forma clara y pausada.</li>
+                    <li>🎧 <b>Audio y Micrófono:</b> Use auriculares.</li>
+                    <li>🤫 <b>Entorno:</b> Lugar silencioso y privado.</li>
+                    <li>📶 <b>Conexión:</b> Asegure una conexión estable.</li>
+                    <li>🆔 <b>Identidad:</b> Tenga su DNI a mano.</li>
                 </ul>
-                <p style="font-size: 11px; color: #666;">Al validar su identidad e iniciar la llamada, usted acepta nuestras Políticas de Privacidad y consiente la grabación de la sesión para fines exclusivos de evaluación profesional.</p>
                 
-                <div class="btn-wrapper">
-                    <button class="btn-pub" id="start-btn">INICIAR ENTREVISTA CON IRINA</button>
+                <div class="btn-wrapper" id="start-wrapper">
+                    <button class="btn-pub" id="start-btn">ESTOY LISTO PARA LA ENTREVISTA</button>
                 </div>
             </div>
             <div class="right-col">
@@ -78,47 +76,45 @@
 
 <script>
     const btn = document.getElementById('start-btn');
+    const startWrapper = document.getElementById('start-wrapper');
     const FUNCTION_URL = "https://zuzvozgjsppkxvdlptmk.supabase.co/functions/v1/start-interview";
 
+    // Extraer applicantId de la URL (ej: bluelab.online/interview?applicantId=123)
+    const urlParams = new URLSearchParams(window.location.search);
+    const applicantId = urlParams.get('applicantId');
+
     btn.addEventListener('click', async () => {
-        btn.innerText = "Conectando con Irina...";
+        if (!applicantId) {
+            alert("Error: No se encontró un ID de postulante válido.");
+            return;
+        }
+
+        btn.innerText = "Configurando entrevista...";
         btn.disabled = true;
 
         try {
-            // 1. Obtener contexto y configuración desde tu Edge Function
             const response = await fetch(FUNCTION_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ 
-                    applicantId: "WALTER_TEST_001",
-                    jobId: "PROD_SENIOR_001" 
-                })
+                body: JSON.stringify({ applicantId: applicantId })
             });
 
             const config = await response.json();
+            if (!response.ok) throw new Error(config.error || "Error al conectar");
 
-            if (!response.ok) throw new Error(config.error || "Error en el servidor");
-
-            // 2. Iniciar Vapi SDK con los datos recibidos
+            // Iniciar SDK de Vapi
             window.vapiSDK.run({
                 apiKey: config.publicKey, 
                 assistant: config.assistantId,
                 assistantOverrides: config.assistantOverrides
             });
 
-            btn.innerText = "Entrevista en curso...";
+            // Ocultar botón y dejar que el SDK muestre el círculo verde
+            startWrapper.classList.add('hidden');
         } catch (error) {
             console.error("Error:", error);
             btn.innerText = "Error - Reintentar";
             btn.disabled = false;
-        }
-    });
-
-    // Escucha el evento de fin de llamada si necesitas limpiar UI
-    window.addEventListener('message', (e) => {
-        if (e.data.type === 'vapi-call-end') {
-            btn.innerText = "ENTREVISTA FINALIZADA";
-            btn.disabled = true;
         }
     });
 </script>
