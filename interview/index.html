@@ -8,14 +8,18 @@
             --bg-dark: #05070a;
         }
         body { margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .card { background: white; width: 90%; max-width: 1000px; border-radius: 30px; overflow: hidden; display: flex; flex-direction: column; }
+        
+        /* MARCO EXTERNO */
+        .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 92%; max-width: 1150px; }
+        
+        .card { background: white; width: 100%; border-radius: 40px; overflow: hidden; display: flex; flex-direction: column; }
         
         .header { background: var(--irina-gradient); padding: 25px 40px; display: flex; justify-content: space-between; align-items: center; }
         .header h1 { color: white; margin: 0; font-size: 24px; font-weight: 900; }
         .header p { color: white; margin: 0; font-size: 12px; font-weight: 700; text-transform: uppercase; }
 
-        .content { display: flex; }
-        .left-col { padding: 40px; flex: 1; }
+        .content { display: flex; min-height: 500px; }
+        .left-col { padding: 40px; flex: 1; display: flex; flex-direction: column; justify-content: center; }
         .right-col { width: 400px; }
         .right-col img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
 
@@ -23,43 +27,52 @@
         ul { padding-left: 20px; }
         li { margin-bottom: 12px; font-size: 14px; line-height: 1.4; }
         
-        .btn-start { 
-            background: var(--irina-gradient); 
-            border: none; padding: 15px 30px; 
-            border-radius: 10px; color: white; 
-            font-weight: 900; cursor: pointer; 
-            margin-top: 20px; text-transform: uppercase;
+        /* BOTÓN CON ANIMACIÓN LÁSER */
+        .vapi-btn {
+            border-radius: 14px; width: 320px; height: 60px; background: var(--irina-gradient);
+            border: none; color: white; font-weight: 800; text-transform: uppercase;
+            cursor: pointer; position: relative; overflow: hidden; margin-top: 30px;
         }
+        .vapi-btn::before {
+            content: ''; position: absolute; top: 50%; left: 50%; width: 200%; height: 400%;
+            background: conic-gradient(transparent, transparent, transparent, white);
+            transform: translate(-50%, -50%) rotate(0deg);
+            animation: rotateLaser 3s linear infinite; display: none;
+        }
+        .vapi-btn:hover::before { display: block; }
+        @keyframes rotateLaser { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <div class="header">
-        <div>
-            <h1>BLUE LAB</h1>
-            <p>BLUEPRINT INTEGRATIONS LAB</p>
+<div class="outer-frame">
+    <div class="card">
+        <div class="header">
+            <div>
+                <h1>BLUE LAB</h1>
+                <p>BLUEPRINT INTEGRATIONS LAB</p>
+            </div>
+            <h1 style="font-size: 20px;">IRINA HIRE SELECTION</h1>
         </div>
-        <h1 style="font-size: 20px;">IRINA HIRE SELECTION</h1>
-    </div>
-    
-    <div class="content">
-        <div class="left-col">
-            <h2>PARA UNA ENTREVISTA DE CALIDAD:</h2>
-            <ul>
-                <li>🎧 <b>Audio y Micrófono:</b> Es recomendable el uso de auriculares con micrófono.</li>
-                <li>🤫 <b>Entorno:</b> Ubíquese en un lugar privado, silencioso y sin interrupciones.</li>
-                <li>💡 <b>Ambiente:</b> Bien iluminado con luz de frente y cámara a la altura del rostro.</li>
-                <li>📶 <b>Conexión:</b> Verifique que la conexión a Internet sea estable para evitar cortes.</li>
-                <li>🔋 <b>Batería:</b> Asegúrese de tener carga completa o conexión a la red eléctrica.</li>
-                <li>🆔 <b>Identidad:</b> Tenga su DNI a mano, tal vez se le solicite para validar.</li>
-                <li>🗣️ <b>Atención:</b> La entrevista es interactiva; responda de forma clara y pausada.</li>
-            </ul>
-            <p style="font-size: 11px; color: #666;">Al validar su identidad e iniciar la llamada, usted acepta nuestras Políticas de Privacidad y consiente la grabación de la sesión para fines exclusivos de evaluación profesional.</p>
-            <button class="btn-start" id="start-btn">INICIAR ENTREVISTA CON IRINA</button>
-        </div>
-        <div class="right-col">
-            <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" alt="Irina">
+        
+        <div class="content">
+            <div class="left-col">
+                <h2>PARA UNA ENTREVISTA DE CALIDAD:</h2>
+                <ul>
+                    <li>🎧 <b>Audio y Micrófono:</b> Es recomendable el uso de auriculares con micrófono.</li>
+                    <li>🤫 <b>Entorno:</b> Ubíquese en un lugar privado, silencioso y sin interrupciones.</li>
+                    <li>💡 <b>Ambiente:</b> Bien iluminado con luz de frente y cámara a la altura del rostro.</li>
+                    <li>📶 <b>Conexión:</b> Verifique que la conexión a Internet sea estable para evitar cortes.</li>
+                    <li>🔋 <b>Batería:</b> Asegúrese de tener carga completa o conexión a la red eléctrica.</li>
+                    <li>🆔 <b>Identidad:</b> Tenga su DNI a mano, tal vez se le solicite para validar.</li>
+                    <li>🗣️ <b>Atención:</b> La entrevista es interactiva; responda de forma clara y pausada.</li>
+                </ul>
+                <p style="font-size: 11px; color: #666;">Al validar su identidad e iniciar la llamada, usted acepta nuestras Políticas de Privacidad y consiente la grabación de la sesión para fines exclusivos de evaluación profesional.</p>
+                <button class="vapi-btn" id="start-btn">INICIAR ENTREVISTA CON IRINA</button>
+            </div>
+            <div class="right-col">
+                <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" alt="Irina">
+            </div>
         </div>
     </div>
 </div>
