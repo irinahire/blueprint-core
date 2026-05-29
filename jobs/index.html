@@ -86,12 +86,10 @@
                     <input type="text" id="full-url" style="padding:10px; border:1px solid #ccc; border-radius:5px; width: 350px; font-family:monospace;" readonly>
                     <button class="btn-copy" onclick="copiarUrl()">Copiar</button>
                 </div>
-                <p>ID de la oferta: <span id="job-id-display" style="font-weight:bold; color:var(--fucsia);"></span></p>
-                <div id="copy-feedback" style="color:var(--fucsia); font-weight:600; height: 20px;"></div>
+                
+                <div id="copy-feedback" style="color:var(--fucsia); font-weight:600; height: 20px; margin-bottom: 20px;"></div>
 
-                <div style="margin-top: 50px;">
-                    <div class="btn-wrapper"><button class="btn-pub" onclick="resetForm()">Crear otra oferta</button></div>
-                </div>
+                <div class="btn-wrapper"><button class="btn-pub" onclick="resetForm()">Crear otra oferta</button></div>
             </div>
             
             <div class="sidebar"><img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg"></div>
@@ -140,7 +138,6 @@
             if (error) throw error;
             
             document.getElementById('full-url').value = fullUrl;
-            document.getElementById('job-id-display').innerText = jobId;
             document.getElementById('form-wrapper').style.display = 'none';
             document.getElementById('success-screen').style.display = 'flex';
         } catch (e) { alert("Error: " + e.message); } finally { btn.innerText = "PUBLICAR"; }
