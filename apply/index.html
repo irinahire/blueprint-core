@@ -28,7 +28,11 @@
         .input-group input:focus { border-color: var(--fucsia); }
         .input-group input:focus + label, .input-group input:not(:placeholder-shown) + label { top: -10px; font-size: 11px; color: var(--fucsia); }
 
+        /* Botón con animación circular - RECUPERADA */
         .btn-wrapper { position: relative; padding: 3px; border-radius: 12px; margin-top: 25px; overflow: hidden; cursor: pointer; }
+        .btn-wrapper::before { content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, var(--fucsia), #96e8da, transparent); animation: rotate 3s linear infinite; display: none; }
+        .btn-wrapper:hover::before { display: block; }
+        @keyframes rotate { 100% { transform: rotate(360deg); } }
         #submit-btn { position: relative; width: 100%; height: 50px; background: var(--btn-gradient); color: white; border: none; border-radius: 9px; font-weight: 800; cursor: pointer; z-index: 1; }
 
         input[type="file"]::file-selector-button { background: var(--fucsia); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; margin-right: 10px; }
@@ -38,9 +42,7 @@
         .foto-preview-box { width: 120px; height: 120px; border: 2px dashed var(--fucsia); border-radius: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #f9f9f9; cursor: pointer; }
         
         .irina-bg { width: 100%; height: 100%; object-fit: cover; mask-image: linear-gradient(to right, transparent 0%, black 15%); }
-        
-        /* Pantalla éxito */
-        #success-screen { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; }
+        #success-screen { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; }
     </style>
 </head>
 <body>
@@ -54,7 +56,6 @@
             <div id="content-wrapper" class="main-body">
                 <form id="postulacion-form" style="display: flex; width: 100%;">
                     <input type="hidden" id="oferta_vinculada" name="oferta_vinculada">
-                    
                     <div class="form-side">
                         <div class="input-group"><input type="text" id="nombre" placeholder=" " required><label>Nombre Completo</label></div>
                         <div class="input-group"><input type="email" id="email" placeholder=" " required><label>Email</label></div>
@@ -81,7 +82,6 @@
 
                 <div id="success-screen">
                     <h1 style="color:var(--fucsia);">¡Postulación Enviada!</h1>
-                    <p>Tu información ha sido recibida correctamente.</p>
                 </div>
 
                 <div class="visual-side" style="width: 35%; height: 100%; position: relative;">
@@ -94,13 +94,11 @@
     <script>
         const sb = supabase.createClient('https://zuzvozgjsppkxvdlptmk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0');
 
-        // Capturar oferta de la URL
         window.onload = () => {
             const params = new URLSearchParams(window.location.search);
             document.getElementById('oferta_vinculada').value = params.get('oferta') || 'DIRECTA';
         };
 
-        // Lógica de envío
         document.getElementById('postulacion-form').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submit-btn');
@@ -115,21 +113,15 @@
                         oferta_vinculada: document.getElementById('oferta_vinculada').value
                     }
                 }]);
-                
                 if (error) throw error;
-
-                // CAMBIO VISUAL A ÉXITO
                 document.getElementById('postulacion-form').style.display = 'none';
                 document.getElementById('success-screen').style.display = 'flex';
-            } catch (err) {
-                alert("Error al enviar: " + err.message);
-                btn.innerText = "ENVIAR POSTULACIÓN";
-            }
+            } catch (err) { alert("Error: " + err.message); btn.innerText = "ENVIAR POSTULACIÓN"; }
         };
 
         document.getElementById('foto').onchange = function(e) {
             const reader = new FileReader();
-            reader.onload = () => {
+            reader.onload = function() {
                 const img = document.getElementById('preview-img-form');
                 img.src = reader.result;
                 img.style.display = 'block';
