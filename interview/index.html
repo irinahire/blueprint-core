@@ -33,7 +33,6 @@
         
         .hidden { display: none !important; }
 
-        /* Ajuste de margen para que el texto baje y no lo tape el botón */
         .left-col { padding: 40px 60px 40px 60px; margin-top: 60px; flex: 1; display: flex; flex-direction: column; }
         .right-col { width: 400px; height: 100%; }
         .right-col img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 0 0 40px 0; }
@@ -41,9 +40,6 @@
         h2 { font-size: 18px; margin-top: 0; }
         ul { padding-left: 20px; }
         li { margin-bottom: 12px; font-size: 14px; line-height: 1.4; }
-
-        /* Estilo para el contenedor de Vapi que aparece */
-        #vapi-container { position: fixed; bottom: 30px; right: 30px; z-index: 999; }
 
         /* --- ESTILO Y ANIMACIÓN INTEGRADA PARA VAPI-BTN --- */
         .vapi-btn {
@@ -55,84 +51,4 @@
             bottom: 5vh !important;
             left: 50% !important;
             transform: translateX(-50%) !important;
-            z-index: 999999 !important;
-            overflow: hidden !important;
-            border: none !important;
-            color: transparent !important;
-            font-weight: 800 !important;
-            text-transform: uppercase !important;
-            padding: 3px !important;
-            pointer-events: auto !important;
-        }
-        .vapi-btn::after {
-            content: attr(data-text); /* Toma el texto del atributo data-text */
-            position: absolute;
-            inset: 3px;
-            background: #96e8da; 
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #05070a !important; 
-            font-size: 14px;
-            z-index: 10;
-            pointer-events: none;
-        }
-        .vapi-btn::before { 
-            content: ""; 
-            position: absolute; 
-            top: -50%; left: -50%; 
-            width: 200%; height: 200%; 
-            background: conic-gradient(transparent, var(--fucsia), #96e8da, transparent); 
-            animation: rotate 3s linear infinite; 
-            display: none; 
-            pointer-events: none;
-        }
-        .vapi-btn:hover::before { display: block; }
-        @keyframes rotate { 100% { transform: rotate(360deg); } }
-    </style>
-</head>
-<body>
-
-<div class="outer-frame">
-    <div class="card">
-        <div class="header">
-            <div class="brand-left">
-                <span class="blue-lab-text">BLUE LAB</span>
-                <span class="blueprint-subtext">Blueprint Integrations Lab</span>
-            </div>
-            <div class="vincha-title">Irina Hire Selection</div>
-        </div>
-        
-        <div class="content">
-            <div id="start-wrapper">
-                <div class="btn-wrapper">
-                    <button class="btn-pub" id="start-btn">ESTOY LISTO PARA LA ENTREVISTA</button>
-                </div>
-                <div id="msg-box" style="margin-top:5px; color:#ef4444; font-size:11px;"></div>
-            </div>
-
-            <div class="left-col">
-                <h2>PARA UNA ENTREVISTA DE CALIDAD:</h2>
-                <ul>
-                    <li>🎧 <b>Audio y Micrófono:</b> Es recomendable el uso de auriculares con micrófono.</li>
-                    <li>🤫 <b>Entorno:</b> Ubíquese en un lugar privado, silencioso y sin interrupciones.</li>
-                    <li>💡 <b>Ambiente:</b> Bien iluminado con luz de frente y cámara a la altura del rostro.</li>
-                    <li>📶 <b>Conexión:</b> Verifique que la conexión a Internet sea estable para evitar cortes.</li>
-                    <li>🔋 <b>Batería:</b> Asegúrese de tener carga completa o conexión a la red eléctrica.</li>
-                    <li>🆔 <b>Identidad:</b> Tenga su DNI a mano, tal vez se le solicite para validar.</li>
-                    <li>🗣️ <b>Atención:</b> La entrevista es interactiva; responda de forma clara y pausada.</li>
-                </ul>
-                <p style="font-size: 11px; color: #666;">Al validar su identidad e iniciar la llamada, usted acepta nuestras Políticas de Privacidad y consiente la grabación de la sesión para fines exclusivos de evaluación profesional.</p>
-            </div>
-            <div class="right-col">
-                <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" alt="Irina">
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    const btn = document.getElementById('start-btn');
-    const startWrapper = document.getElementById('start-wrapper');
-    const msg
+            z-index: 999999
