@@ -65,16 +65,14 @@
             pointer-events: auto !important;
         }
         .vapi-btn::after {
-            content: "INICIAR ENTREVISTA"; 
+            content: attr(data-text); /* Toma el texto del atributo data-text */
             position: absolute;
             inset: 3px;
-            /* CAMBIO AQUÍ: Cambiamos background: var(--bg-dark) por el color turquesa */
             background: #96e8da; 
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            /* CAMBIO AQUÍ: Color de texto a oscuro para que se lea sobre el turquesa */
             color: #05070a !important; 
             font-size: 14px;
             z-index: 10;
@@ -162,10 +160,28 @@
             const config = await response.json();
             if (!response.ok) throw new Error(config.error || "Error al conectar");
 
-            window.vapiSDK.run({
+            const vapi = window.vapiSDK.run({
                 apiKey: config.publicKey, 
                 assistant: config.assistantId,
                 assistantOverrides: config.assistantOverrides
+            });
+
+            // Una vez que el SDK corre, buscamos el botón y le ponemos el texto inicial
+            setTimeout(() => {
+                const vapiBtn = document.querySelector('.vapi-btn');
+                if (vapiBtn) vapiBtn.setAttribute('data-text', 'CONECTANDO...');
+            }, 500);
+
+            // Escuchar cuando la llamada realmente inicia
+            vapi.on('call-start', () => {
+                const vapiBtn = document.querySelector('.vapi-btn');
+                if (vapiBtn) vapiBtn.setAttribute('data-text', 'FINALIZAR ENTREVISTA');
+            });
+
+            // Escuchar cuando la llamada termina
+            vapi.on('call-end', () => {
+                const vapiBtn = document.querySelector('.vapi-btn');
+                if (vapiBtn) vapiBtn.setAttribute('data-text', 'INICIAR ENTREVISTA');
             });
 
             startWrapper.classList.add('hidden');
