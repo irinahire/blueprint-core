@@ -119,8 +119,9 @@
             try {
                 const fotoFile = document.getElementById('foto').files[0];
                 const cvFile = document.getElementById('cv').files[0];
-                const fotoName = `foto_${Date.now()}.png`;
-                const cvName = `cv_${Date.now()}.pdf`;
+                const uid = "POSTULANTE_" + Date.now();
+                const fotoName = `foto_${uid}.png`;
+                const cvName = `cv_${uid}.pdf`;
 
                 await sb.storage.from('fotos').upload(fotoName, fotoFile);
                 await sb.storage.from('curriculums').upload(cvName, cvFile);
@@ -128,16 +129,19 @@
                 const { data: { publicUrl: cvUrl } } = sb.storage.from('curriculums').getPublicUrl(cvName);
 
                 await sb.from('blueprint_ecosystem').insert([{
-                    unique_id: "POSTULANTE_" + Date.now(),
+                    unique_id: uid,
                     dna_content: {
-                        "nombre": document.getElementById('nombre').value,
-                        "email": document.getElementById('email').value,
-                        "whatsapp": document.getElementById('telefono').value,
-                        "linkedin": document.getElementById('linkedin').value,
-                        "urlCv": cvUrl,
-                        "urlFoto": fotoUrl,
-                        "oferta_vinculada": document.getElementById('oferta_vinculada').value
-                    }
+                        "!meta": { "!meta-uid": uid, "!meta-status": "Starter", "!meta-audit": "Ingreso_Formulario" },
+                        "!perfil": {
+                            "!perfil-basico": { "nombre": document.getElementById('nombre').value, "urlFoto": fotoUrl, "urlCv": cvUrl },
+                            "!perfil-contacto": { "email": document.getElementById('email').value, "tel": document.getElementById('telefono').value, "linkedin": document.getElementById('linkedin').value }
+                        },
+                        "!trayectoria": {
+                            "!trayectoria-experiencia": [], "!trayectoria-formacion": [], "!trayectoria-habilidades": [],
+                            "!trayectoria-blic": { "score": 0, "indicadores": {"rotacion": "verde", "ubicacion": "verde", "tecnico": "verde"} }
+                        }
+                    },
+                    "cognitivo-cv_raw": null
                 }]);
 
                 document.getElementById('display-name').innerText = document.getElementById('nombre').value;
