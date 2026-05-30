@@ -44,6 +44,49 @@
 
         /* Estilo para el contenedor de Vapi que aparece */
         #vapi-container { position: fixed; bottom: 30px; right: 30px; z-index: 999; }
+
+        /* --- ESTILO Y ANIMACIÓN INTEGRADA PARA VAPI-BTN --- */
+        .vapi-btn {
+            border-radius: 14px !important; 
+            width: 280px !important; 
+            height: 60px !important;
+            background: var(--irina-gradient) !important;
+            position: fixed !important;
+            bottom: 5vh !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            z-index: 999999 !important;
+            overflow: hidden !important;
+            border: none !important;
+            color: transparent !important;
+            font-weight: 800 !important;
+            text-transform: uppercase !important;
+            padding: 3px !important;
+        }
+        .vapi-btn::after {
+            content: "IRINA ESTÁ ESCUCHANDO"; 
+            position: absolute;
+            inset: 3px;
+            background: var(--bg-dark);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white !important;
+            font-size: 14px;
+            z-index: 10;
+        }
+        .vapi-btn::before { 
+            content: ""; 
+            position: absolute; 
+            top: -50%; left: -50%; 
+            width: 200%; height: 200%; 
+            background: conic-gradient(transparent, var(--fucsia), #96e8da, transparent); 
+            animation: rotate 3s linear infinite; 
+            display: none; 
+        }
+        .vapi-btn:hover::before { display: block; }
+        @keyframes rotate { 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -90,45 +133,4 @@
     const btn = document.getElementById('start-btn');
     const startWrapper = document.getElementById('start-wrapper');
     const msgBox = document.getElementById('msg-box');
-    const FUNCTION_URL = "https://zuzvozgjsppkxvdlptmk.supabase.co/functions/v1/start-interview";
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const applicantId = urlParams.get('applicantId');
-
-    btn.addEventListener('click', async () => {
-        if (!applicantId) {
-            msgBox.innerText = "Error: No se encontró un ID de postulante.";
-            return;
-        }
-
-        btn.innerText = "Conectando...";
-        btn.disabled = true;
-
-        try {
-            const response = await fetch(FUNCTION_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ applicantId: applicantId })
-            });
-
-            const config = await response.json();
-            if (!response.ok) throw new Error(config.error || "Error al conectar");
-
-            window.vapiSDK.run({
-                apiKey: config.publicKey, 
-                assistant: config.assistantId,
-                assistantOverrides: config.assistantOverrides
-            });
-
-            startWrapper.classList.add('hidden');
-        } catch (error) {
-            console.error("Error:", error);
-            msgBox.innerText = "No se pudo recuperar el contexto.";
-            btn.innerText = "ESTOY LISTO PARA LA ENTREVISTA";
-            btn.disabled = false;
-        }
-    });
-</script>
-
-</body>
-</html>
+    const FUNCTION_URL = "
