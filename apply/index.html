@@ -130,14 +130,13 @@
                 await sb.from('blueprint_ecosystem').insert([{
                     unique_id: "POSTULANTE_" + Date.now(),
                     dna_content: {
-                        "!meta": { "!meta-status": "Starter", "!meta-audit": "Ingreso_Formulario" },
-                        "!perfil": {
-                            "!perfil-basico": { "nombre": document.getElementById('nombre').value, "foto": fotoUrl },
-                            "!perfil-contacto": { "email": document.getElementById('email').value, "whatsapp": document.getElementById('telefono').value, "linkedin": document.getElementById('linkedin').value }
-                        },
-                        "!trayectoria": { "!trayectoria-experiencia": [], "!trayectoria-formacion": [], "!trayectoria-habilidades": [] },
-                        "!cognitivo": { "!cognitivo-cv_url": cvUrl },
-                        "!oferta": { "!oferta-vinculada": document.getElementById('oferta_vinculada').value }
+                        "nombre": document.getElementById('nombre').value,
+                        "email": document.getElementById('email').value,
+                        "whatsapp": document.getElementById('telefono').value,
+                        "linkedin": document.getElementById('linkedin').value,
+                        "urlCv": cvUrl,
+                        "urlFoto": fotoUrl,
+                        "oferta_vinculada": document.getElementById('oferta_vinculada').value
                     }
                 }]);
 
