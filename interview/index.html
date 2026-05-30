@@ -9,13 +9,12 @@
         :root {
             --fucsia: #bc8abf;
             --irina-gradient: linear-gradient(to right, #bc8abf 0%, #96e8da 100%);
-            /* Degradado diagonal para el botón */
             --btn-gradient: linear-gradient(135deg, #96e8da 0%, #bc8abf 100%);
             --bg-dark: #05070a;
         }
         body { margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
         
-        .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 92%; max-width: 1150px; }
+        .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 92%; max-width: 1150px; position: relative; }
         .card { background: white; width: 100%; border-radius: 40px; overflow: hidden; display: flex; flex-direction: column; }
         
         .header { height: 90px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 45px; flex-shrink: 0; }
@@ -24,18 +23,18 @@
         .blueprint-subtext { font-weight: 700; font-size: 11px; text-transform: uppercase; }
         .vincha-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 24px; text-transform: uppercase; background: white; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-image: var(--irina-gradient); filter: drop-shadow(2px 0 0 white) drop-shadow(-2px 0 0 white) drop-shadow(0 2px 0 white) drop-shadow(0 -2px 0 white); }
 
-        .content { display: flex; flex-direction: column; min-height: 500px; padding: 40px 60px; }
-        .top-section { text-align: center; margin-bottom: 30px; }
+        .content { display: flex; min-height: 500px; position: relative; }
         
-        .btn-wrapper { position: relative; padding: 3px; border-radius: 8px; overflow: hidden; cursor: pointer; width: fit-content; margin: 0 auto; }
+        /* Contenedor flotante para el botón */
+        #start-wrapper { position: absolute; bottom: 40px; left: 60px; z-index: 10; }
+        .btn-wrapper { position: relative; padding: 3px; border-radius: 8px; overflow: hidden; cursor: pointer; width: fit-content; }
         .btn-pub { background: var(--btn-gradient); color: white; border: none; padding: 18px 40px; border-radius: 6px; font-weight: 800; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 15px; text-transform: uppercase; transition: transform 0.2s; }
         .btn-pub:hover { transform: scale(1.02); }
         .hidden { display: none !important; }
 
-        .main-grid { display: flex; }
-        .left-col { flex: 1; }
-        .right-col { width: 400px; }
-        .right-col img { width: 100%; height: 100%; object-fit: cover; object-position: top; border-radius: 20px; }
+        .left-col { padding: 40px 60px; flex: 1; display: flex; flex-direction: column; }
+        .right-col { width: 400px; height: 100%; }
+        .right-col img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 0 0 40px 0; }
 
         h2 { font-size: 18px; margin-top: 0; }
         ul { padding-left: 20px; }
@@ -55,30 +54,28 @@
         </div>
         
         <div class="content">
-            <div class="top-section" id="start-wrapper">
+            <div id="start-wrapper">
                 <div class="btn-wrapper">
                     <button class="btn-pub" id="start-btn">ESTOY LISTO PARA LA ENTREVISTA</button>
                 </div>
                 <div id="msg-box" style="margin-top:10px; color:#ef4444; font-size:12px;"></div>
             </div>
 
-            <div class="main-grid">
-                <div class="left-col">
-                    <h2>PARA UNA ENTREVISTA DE CALIDAD:</h2>
-                    <ul>
-                        <li>🎧 <b>Audio y Micrófono:</b> Es recomendable el uso de auriculares con micrófono.</li>
-                        <li>🤫 <b>Entorno:</b> Ubíquese en un lugar privado, silencioso y sin interrupciones.</li>
-                        <li>💡 <b>Ambiente:</b> Bien iluminado con luz de frente y cámara a la altura del rostro.</li>
-                        <li>📶 <b>Conexión:</b> Verifique que la conexión a Internet sea estable para evitar cortes.</li>
-                        <li>🔋 <b>Batería:</b> Asegúrese de tener carga completa o conexión a la red eléctrica.</li>
-                        <li>🆔 <b>Identidad:</b> Tenga su DNI a mano, tal vez se le solicite para validar.</li>
-                        <li>🗣️ <b>Atención:</b> La entrevista es interactiva; responda de forma clara y pausada.</li>
-                    </ul>
-                    <p style="font-size: 11px; color: #666;">Al validar su identidad e iniciar la llamada, usted acepta nuestras Políticas de Privacidad y consiente la grabación de la sesión para fines exclusivos de evaluación profesional.</p>
-                </div>
-                <div class="right-col">
-                    <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" alt="Irina">
-                </div>
+            <div class="left-col">
+                <h2>PARA UNA ENTREVISTA DE CALIDAD:</h2>
+                <ul>
+                    <li>🎧 <b>Audio y Micrófono:</b> Es recomendable el uso de auriculares con micrófono.</li>
+                    <li>🤫 <b>Entorno:</b> Ubíquese en un lugar privado, silencioso y sin interrupciones.</li>
+                    <li>💡 <b>Ambiente:</b> Bien iluminado con luz de frente y cámara a la altura del rostro.</li>
+                    <li>📶 <b>Conexión:</b> Verifique que la conexión a Internet sea estable para evitar cortes.</li>
+                    <li>🔋 <b>Batería:</b> Asegúrese de tener carga completa o conexión a la red eléctrica.</li>
+                    <li>🆔 <b>Identidad:</b> Tenga su DNI a mano, tal vez se le solicite para validar.</li>
+                    <li>🗣️ <b>Atención:</b> La entrevista es interactiva; responda de forma clara y pausada.</li>
+                </ul>
+                <p style="font-size: 11px; color: #666;">Al validar su identidad e iniciar la llamada, usted acepta nuestras Políticas de Privacidad y consiente la grabación de la sesión para fines exclusivos de evaluación profesional.</p>
+            </div>
+            <div class="right-col">
+                <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" alt="Irina">
             </div>
         </div>
     </div>
@@ -95,11 +92,11 @@
 
     btn.addEventListener('click', async () => {
         if (!applicantId) {
-            msgBox.innerText = "Error: No se encontró un ID de postulante. Verifica la URL.";
+            msgBox.innerText = "Error: No se encontró un ID de postulante en la URL.";
             return;
         }
 
-        btn.innerText = "Conectando con Irina...";
+        btn.innerText = "Conectando...";
         btn.disabled = true;
 
         try {
@@ -121,7 +118,7 @@
             startWrapper.classList.add('hidden');
         } catch (error) {
             console.error("Error:", error);
-            msgBox.innerText = "No se pudo recuperar el contexto. Intenta de nuevo.";
+            msgBox.innerText = "No se pudo recuperar el contexto.";
             btn.innerText = "ESTOY LISTO PARA LA ENTREVISTA";
             btn.disabled = false;
         }
