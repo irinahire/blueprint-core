@@ -117,38 +117,38 @@
             btn.innerText = "PROCESANDO...";
 
             try {
+                const uid = "POST_" + Date.now();
                 const fotoFile = document.getElementById('foto').files[0];
                 const cvFile = document.getElementById('cv').files[0];
-                const uid = "POSTULANTE_" + Date.now();
-                const fotoName = `foto_${uid}.png`;
-                const cvName = `cv_${uid}.pdf`;
 
-                await sb.storage.from('fotos').upload(fotoName, fotoFile);
-                await sb.storage.from('curriculums').upload(cvName, cvFile);
-                const { data: { publicUrl: fotoUrl } } = sb.storage.from('fotos').getPublicUrl(fotoName);
-                const { data: { publicUrl: cvUrl } } = sb.storage.from('curriculums').getPublicUrl(cvName);
+                await sb.storage.from('fotos').upload(`foto_${uid}.png`, fotoFile);
+                await sb.storage.from('curriculums').upload(`cv_${uid}.pdf`, cvFile);
+                
+                const { data: { publicUrl: fUrl } } = sb.storage.from('fotos').getPublicUrl(`foto_${uid}.png`);
+                const { data: { publicUrl: cUrl } } = sb.storage.from('curriculums').getPublicUrl(`cv_${uid}.pdf`);
 
-                await sb.from('blueprint_ecosystem').insert([{
-                    unique_id: uid,
-                    dna_content: {
-                        "!meta": { "!meta-uid": uid, "!meta-status": "Starter", "!meta-audit": "Ingreso_Formulario" },
-                        "!perfil": {
-                            "!perfil-basico": { "nombre": document.getElementById('nombre').value, "urlFoto": fotoUrl, "urlCv": cvUrl },
-                            "!perfil-contacto": { "email": document.getElementById('email').value, "tel": document.getElementById('telefono').value, "linkedin": document.getElementById('linkedin').value }
-                        },
-                        "!trayectoria": {
-                            "!trayectoria-experiencia": [], "!trayectoria-formacion": [], "!trayectoria-habilidades": [],
-                            "!trayectoria-blic": { "score": 0, "indicadores": {"rotacion": "verde", "ubicacion": "verde", "tecnico": "verde"} }
-                        }
-                    },
-                    "cognitivo-cv_raw": null
-                }]);
+                const { error } = await sb.functions.invoke('dna_content', {
+                    body: {
+                        unique_id: uid,
+                        nombre: document.getElementById('nombre').value,
+                        email: document.getElementById('email').value,
+                        telefono: document.getElementById('telefono').value,
+                        linkedin: document.getElementById('linkedin').value,
+                        urlFoto: fUrl,
+                        cvUrl: cUrl
+                    }
+                });
+
+                if (error) throw error;
 
                 document.getElementById('display-name').innerText = document.getElementById('nombre').value;
                 document.getElementById('final-photo').src = document.getElementById('preview-img-form').src;
                 document.getElementById('postulacion-form').style.display = 'none';
                 document.getElementById('success-screen').style.display = 'flex';
-            } catch (err) { alert("Error: " + err.message); btn.innerText = "ENVIAR POSTULACIÓN"; }
+            } catch (err) { 
+                alert("Error al enviar: " + err.message); 
+                btn.innerText = "ENVIAR POSTULACIÓN"; 
+            }
         };
     </script>
 </body>
