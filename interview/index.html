@@ -62,6 +62,7 @@
             font-weight: 800 !important;
             text-transform: uppercase !important;
             padding: 3px !important;
+            pointer-events: auto !important;
         }
         .vapi-btn::after {
             content: "IRINA ESTÁ ESCUCHANDO"; 
@@ -75,6 +76,7 @@
             color: white !important;
             font-size: 14px;
             z-index: 10;
+            pointer-events: none;
         }
         .vapi-btn::before { 
             content: ""; 
@@ -84,6 +86,7 @@
             background: conic-gradient(transparent, var(--fucsia), #96e8da, transparent); 
             animation: rotate 3s linear infinite; 
             display: none; 
+            pointer-events: none;
         }
         .vapi-btn:hover::before { display: block; }
         @keyframes rotate { 100% { transform: rotate(360deg); } }
@@ -133,4 +136,45 @@
     const btn = document.getElementById('start-btn');
     const startWrapper = document.getElementById('start-wrapper');
     const msgBox = document.getElementById('msg-box');
-    const FUNCTION_URL = "
+    const FUNCTION_URL = "https://zuzvozgjsppkxvdlptmk.supabase.co/functions/v1/start-interview";
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const applicantId = urlParams.get('applicantId');
+
+    btn.addEventListener('click', async () => {
+        if (!applicantId) {
+            msgBox.innerText = "Error: No se encontró un ID de postulante.";
+            return;
+        }
+
+        btn.innerText = "Conectando...";
+        btn.disabled = true;
+
+        try {
+            const response = await fetch(FUNCTION_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ applicantId: applicantId })
+            });
+
+            const config = await response.json();
+            if (!response.ok) throw new Error(config.error || "Error al conectar");
+
+            window.vapiSDK.run({
+                apiKey: config.publicKey, 
+                assistant: config.assistantId,
+                assistantOverrides: config.assistantOverrides
+            });
+
+            startWrapper.classList.add('hidden');
+        } catch (error) {
+            console.error("Error:", error);
+            msgBox.innerText = "No se pudo recuperar el contexto.";
+            btn.innerText = "ESTOY LISTO PARA LA ENTREVISTA";
+            btn.disabled = false;
+        }
+    });
+</script>
+
+</body>
+</html>
