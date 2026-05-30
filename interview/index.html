@@ -33,13 +33,17 @@
         
         .hidden { display: none !important; }
 
-        .left-col { padding: 60px 60px 40px 60px; flex: 1; display: flex; flex-direction: column; }
+        /* Ajuste de margen para que el texto baje y no lo tape el botón */
+        .left-col { padding: 40px 60px 40px 60px; margin-top: 60px; flex: 1; display: flex; flex-direction: column; }
         .right-col { width: 400px; height: 100%; }
         .right-col img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 0 0 40px 0; }
 
         h2 { font-size: 18px; margin-top: 0; }
         ul { padding-left: 20px; }
         li { margin-bottom: 12px; font-size: 14px; line-height: 1.4; }
+
+        /* Estilo para el contenedor de Vapi que aparece */
+        #vapi-container { position: fixed; bottom: 30px; right: 30px; z-index: 999; }
     </style>
 </head>
 <body>
