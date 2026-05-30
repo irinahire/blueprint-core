@@ -15,7 +15,7 @@
         body { margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
         
         .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 92%; max-width: 1150px; position: relative; }
-        .card { background: white; width: 100%; border-radius: 40px; overflow: hidden; display: flex; flex-direction: column; }
+        .card { background: white; width: 100%; border-radius: 40px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
         
         .header { height: 90px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 45px; flex-shrink: 0; }
         .brand-left { display: flex; flex-direction: column; color: white; font-family: 'Montserrat', sans-serif; }
@@ -25,14 +25,15 @@
 
         .content { display: flex; min-height: 500px; position: relative; }
         
-        /* Contenedor flotante para el botón */
-        #start-wrapper { position: absolute; bottom: 40px; left: 60px; z-index: 10; }
-        .btn-wrapper { position: relative; padding: 3px; border-radius: 8px; overflow: hidden; cursor: pointer; width: fit-content; }
-        .btn-pub { background: var(--btn-gradient); color: white; border: none; padding: 18px 40px; border-radius: 6px; font-weight: 800; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 15px; text-transform: uppercase; transition: transform 0.2s; }
-        .btn-pub:hover { transform: scale(1.02); }
+        /* Botón Flotante Superior Central */
+        #start-wrapper { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 20; text-align: center; }
+        .btn-wrapper { padding: 2px; border-radius: 8px; border: 2px solid transparent; transition: border 0.3s ease; }
+        .btn-wrapper:hover { border: 2px solid var(--fucsia); }
+        .btn-pub { background: var(--btn-gradient); color: white; border: none; padding: 15px 30px; border-radius: 6px; font-weight: 800; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 14px; text-transform: uppercase; white-space: nowrap; }
+        
         .hidden { display: none !important; }
 
-        .left-col { padding: 40px 60px; flex: 1; display: flex; flex-direction: column; }
+        .left-col { padding: 60px 60px 40px 60px; flex: 1; display: flex; flex-direction: column; }
         .right-col { width: 400px; height: 100%; }
         .right-col img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 0 0 40px 0; }
 
@@ -58,7 +59,7 @@
                 <div class="btn-wrapper">
                     <button class="btn-pub" id="start-btn">ESTOY LISTO PARA LA ENTREVISTA</button>
                 </div>
-                <div id="msg-box" style="margin-top:10px; color:#ef4444; font-size:12px;"></div>
+                <div id="msg-box" style="margin-top:5px; color:#ef4444; font-size:11px;"></div>
             </div>
 
             <div class="left-col">
@@ -92,7 +93,7 @@
 
     btn.addEventListener('click', async () => {
         if (!applicantId) {
-            msgBox.innerText = "Error: No se encontró un ID de postulante en la URL.";
+            msgBox.innerText = "Error: No se encontró un ID de postulante.";
             return;
         }
 
