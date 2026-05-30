@@ -12,7 +12,8 @@
             --btn-gradient: linear-gradient(135deg, #96e8da 0%, #bc8abf 100%);
             --bg-dark: #05070a;
         }
-        body { margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        /* Corregido: Fondo gris oscuro suave en lugar de negro total */
+        body { margin: 0; background: #f4f7f6; font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
         
         .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 92%; max-width: 1150px; position: relative; }
         .card { background: white; width: 100%; border-radius: 40px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
@@ -21,34 +22,116 @@
         .brand-left { display: flex; flex-direction: column; color: white; font-family: 'Montserrat', sans-serif; }
         .blue-lab-text { font-weight: 900; font-size: 26px; }
         .blueprint-subtext { font-weight: 700; font-size: 11px; text-transform: uppercase; }
-        .vincha-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 24px; text-transform: uppercase; background: white; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-image: var(--irina-gradient); filter: drop-shadow(2px 0 0 white) drop-shadow(-2px 0 0 white) drop-shadow(0 2px 0 white) drop-shadow(0 -2px 0 white); }
+        .vincha-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 24px; text-transform: uppercase; color: white; }
 
         .content { display: flex; min-height: 500px; position: relative; }
         
-        /* Botón Flotante Superior Central */
         #start-wrapper { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 20; text-align: center; }
         .btn-wrapper { padding: 2px; border-radius: 8px; border: 2px solid transparent; transition: border 0.3s ease; }
-        .btn-wrapper:hover { border: 2px solid var(--fucsia); }
-        .btn-pub { background: var(--btn-gradient); color: white; border: none; padding: 15px 30px; border-radius: 6px; font-weight: 800; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 14px; text-transform: uppercase; white-space: nowrap; }
+        .btn-pub { background: var(--btn-gradient); color: white; border: none; padding: 15px 30px; border-radius: 6px; font-weight: 800; cursor: pointer; font-size: 14px; text-transform: uppercase; }
         
-        .hidden { display: none !important; }
+        .left-col { padding: 60px; flex: 1; }
+        .right-col { width: 400px; }
+        .right-col img { width: 100%; height: 100%; object-fit: cover; }
 
-        .left-col { padding: 40px 60px 40px 60px; margin-top: 60px; flex: 1; display: flex; flex-direction: column; }
-        .right-col { width: 400px; height: 100%; }
-        .right-col img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 0 0 40px 0; }
-
-        h2 { font-size: 18px; margin-top: 0; }
-        ul { padding-left: 20px; }
-        li { margin-bottom: 12px; font-size: 14px; line-height: 1.4; }
-
-        /* --- ESTILO Y ANIMACIÓN INTEGRADA PARA VAPI-BTN --- */
+        /* Estilos del Botón Vapi - Corregidos para no afectar el resto */
         .vapi-btn {
             border-radius: 14px !important; 
             width: 280px !important; 
             height: 60px !important;
             background: var(--irina-gradient) !important;
             position: fixed !important;
-            bottom: 5vh !important;
+            bottom: 30px !important;
             left: 50% !important;
             transform: translateX(-50%) !important;
-            z-index: 999999
+            z-index: 999999 !important;
+            padding: 3px !important;
+            border: none !important;
+        }
+        .vapi-btn::after {
+            content: attr(data-text);
+            position: absolute;
+            inset: 3px;
+            background: #96e8da;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #05070a !important;
+            font-weight: 800;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="outer-frame">
+    <div class="card">
+        <div class="header">
+            <div class="brand-left">
+                <span class="blue-lab-text">BLUE LAB</span>
+                <span class="blueprint-subtext">Blueprint Integrations Lab</span>
+            </div>
+            <div class="vincha-title">Irina Hire Selection</div>
+        </div>
+        <div class="content">
+            <div id="start-wrapper">
+                <div class="btn-wrapper">
+                    <button class="btn-pub" id="start-btn">ESTOY LISTO PARA LA ENTREVISTA</button>
+                </div>
+            </div>
+            <div class="left-col">
+                <h2>INSTRUCCIONES:</h2>
+                <p>Asegúrese de estar en un lugar silencioso y con buena conexión.</p>
+            </div>
+            <div class="right-col">
+                <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" alt="Irina">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const btn = document.getElementById('start-btn');
+    const FUNCTION_URL = "https://zuzvozgjsppkxvdlptmk.supabase.co/functions/v1/start-interview";
+    const applicantId = new URLSearchParams(window.location.search).get('applicantId');
+
+    btn.addEventListener('click', async () => {
+        btn.innerText = "CONECTANDO...";
+        btn.disabled = true;
+
+        try {
+            const response = await fetch(FUNCTION_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ applicantId })
+            });
+
+            const config = await response.json();
+            const vapi = window.vapiSDK.run({
+                apiKey: config.publicKey, 
+                assistant: config.assistantId,
+                assistantOverrides: config.assistantOverrides
+            });
+
+            const check = setInterval(() => {
+                const b = document.querySelector('.vapi-btn');
+                if (b) {
+                    b.setAttribute('data-text', 'INICIAR ENTREVISTA');
+                    document.getElementById('start-wrapper').style.display = 'none';
+                    clearInterval(check);
+                }
+            }, 100);
+
+            vapi.on('call-start', () => document.querySelector('.vapi-btn').setAttribute('data-text', 'FINALIZAR ENTREVISTA'));
+            vapi.on('call-end', () => document.querySelector('.vapi-btn').setAttribute('data-text', 'INICIAR ENTREVISTA'));
+
+        } catch (e) {
+            console.error(e);
+            btn.innerText = "ERROR - REINTENTAR";
+            btn.disabled = false;
+        }
+    });
+</script>
+</body>
+</html>
