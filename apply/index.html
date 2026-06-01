@@ -87,67 +87,86 @@
         </div>
     </div>
 
-    <script>
-        const sb = supabase.createClient(
-            'https://zuzvozgjsppkxvdlptmk.supabase.co', 
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0'
-        );
 
-        window.onload = () => {
-            const params = new URLSearchParams(window.location.search);
-            document.getElementById('oferta_vinculada').value = params.get('oferta') || 'DIRECTA';
+
+
+<script>
+    // Configuración del cliente de Supabase
+    const sb = supabase.createClient(
+        'https://zuzvozgjsppkxvdlptmk.supabase.co', 
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0'
+    );
+
+    // Capturar el ID de la oferta desde la URL
+    window.onload = () => {
+        const params = new URLSearchParams(window.location.search);
+        const oferta = params.get('oferta') || 'DIRECTA';
+        document.getElementById('oferta_vinculada').value = oferta;
+    };
+
+    // Previsualización de la foto
+    document.getElementById('foto').onchange = (e) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const img = document.getElementById('preview-img-form');
+            img.src = event.target.result;
+            img.style.display = 'block';
+            document.getElementById('placeholder-text').style.display = 'none';
         };
+        reader.readAsDataURL(e.target.files[0]);
+    };
 
-        document.getElementById('foto').onchange = (e) => {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const img = document.getElementById('preview-img-form');
-                img.src = event.target.result;
-                img.style.display = 'block';
-                document.getElementById('placeholder-text').style.display = 'none';
-            };
-            reader.readAsDataURL(e.target.files[0]);
-        };
+    // Lógica de Envío
+    document.getElementById('postulacion-form').onsubmit = async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('submit-btn');
+        btn.innerText = "PROCESANDO...";
 
-        document.getElementById('postulacion-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('submit-btn');
-            btn.innerText = "PROCESANDO...";
+        try {
+            const uid = "POST_" + Date.now();
+            const fotoFile = document.getElementById('foto').files[0];
+            const cvFile = document.getElementById('cv').files[0];
 
-            try {
-                const uid = "POST_" + Date.now();
-                const fotoFile = document.getElementById('foto').files[0];
-                const cvFile = document.getElementById('cv').files[0];
+            // Subir archivos al Storage
+            await sb.storage.from('fotos').upload(`foto_${uid}.png`, fotoFile);
+            await sb.storage.from('curriculums').upload(`cv_${uid}.pdf`, cvFile);
+            
+            const { data: fData } = sb.storage.from('fotos').getPublicUrl(`foto_${uid}.png`);
+            const { data: cData } = sb.storage.from('curriculums').getPublicUrl(`cv_${uid}.pdf`);
 
-                await sb.storage.from('fotos').upload(`foto_${uid}.png`, fotoFile);
-                await sb.storage.from('curriculums').upload(`cv_${uid}.pdf`, cvFile);
-                
-                const { data: fData } = sb.storage.from('fotos').getPublicUrl(`foto_${uid}.png`);
-                const { data: cData } = sb.storage.from('curriculums').getPublicUrl(`cv_${uid}.pdf`);
+            // Llamar a la Edge Function
+            const { data, error } = await sb.functions.invoke('ingreso-postulante-01', {
+                body: {
+                    jobId: document.getElementById('oferta_vinculada').value,
+                    nombre: document.getElementById('nombre').value,
+                    email: document.getElementById('email').value,
+                    telefono: document.getElementById('telefono').value,
+                    linkedin: document.getElementById('linkedin').value,
+                    urlFoto: fData.publicUrl,
+                    cvUrl: cData.publicUrl
+                }
+            });
 
-                const { error } = await sb.functions.invoke('ingreso-postulante-01', {
-                    body: {
-                        jobId: document.getElementById('oferta_vinculada').value,
-                        nombre: document.getElementById('nombre').value,
-                        email: document.getElementById('email').value,
-                        telefono: document.getElementById('telefono').value,
-                        linkedin: document.getElementById('linkedin').value,
-                        urlFoto: fData.publicUrl,
-                        cvUrl: cData.publicUrl
-                    }
-                });
-
-                if (error) throw error;
-
-                document.getElementById('display-name').innerText = document.getElementById('nombre').value;
-                document.getElementById('final-photo').src = document.getElementById('preview-img-form').src;
-                document.getElementById('postulacion-form').style.display = 'none';
-                document.getElementById('success-screen').style.display = 'flex';
-            } catch (err) { 
-                alert("Error al enviar: " + err.message); 
-                btn.innerText = "ENVIAR POSTULACIÓN"; 
+            if (error) {
+                // Esto mostrará en consola exactamente qué está rechazando la función
+                console.error("Error en Edge Function:", error);
+                throw new Error("Edge Function rejected request");
             }
-        };
-    </script>
+
+            // Si todo sale bien
+            document.getElementById('display-name').innerText = document.getElementById('nombre').value;
+            document.getElementById('final-photo').src = document.getElementById('preview-img-form').src;
+            document.getElementById('postulacion-form').style.display = 'none';
+            document.getElementById('success-screen').style.display = 'flex';
+
+        } catch (err) { 
+            console.error(err);
+            alert("Error al enviar: " + err.message); 
+            btn.innerText = "ENVIAR POSTULACIÓN"; 
+        }
+    };
+</script>
+
+    
 </body>
 </html>
