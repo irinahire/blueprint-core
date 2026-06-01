@@ -135,7 +135,7 @@
             const { data: cData } = sb.storage.from('curriculums').getPublicUrl(`cv_${uid}.pdf`);
 
             // Llamar a la Edge Function
-            const { data, error } = await sb.functions.invoke('ingreso-postulante-01', {
+            const { data, error } = await sb.functions.invoke('hbt_ingreso_postulante', {
                 body: {
                     job_id: document.getElementById('oferta_vinculada').value,
                     nombre: document.getElementById('nombre').value,
