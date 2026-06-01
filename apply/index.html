@@ -134,6 +134,7 @@
             const { data: cData } = sb.storage.from('curriculums').getPublicUrl(`cv_${uid}.pdf`);
 
             // 1. Llamar a la Edge Function de ingreso
+            console.log("Iniciando ingreso...");
             const { data: ingresoData, error: ingresoError } = await sb.functions.invoke('hbt_ingreso_postulante', {
                 body: {
                     job_id: document.getElementById('oferta_vinculada').value,
@@ -147,10 +148,11 @@
             });
 
             if (ingresoError) throw new Error("Error en ingreso: " + ingresoError.message);
+            console.log("Ingreso exitoso. ID generado:", ingresoData.id);
 
-            // 2. Disparar el parseo explícitamente desde aquí
-            console.log("Ingreso exitoso, disparando parseo...");
-            const { error: parseoError } = await sb.functions.invoke('hbt_parsear_cv', {
+            // 2. Disparar el parseo explícitamente
+            console.log("Disparando parseo para:", ingresoData.id);
+            const { data: pData, error: parseoError } = await sb.functions.invoke('hbt_parsear_cv', {
                 body: { 
                     parent_id: ingresoData.id, 
                     url: cData.publicUrl 
@@ -158,7 +160,10 @@
             });
 
             if (parseoError) {
-                console.error("El parseo falló, pero el postulante ya está guardado:", parseoError);
+                console.error("❌ El parseo falló (esto es lo que hay que mirar):", parseoError);
+                // No lanzamos error aquí para que el postulante vea el éxito de su registro
+            } else {
+                console.log("✅ Parseo ejecutado con éxito:", pData);
             }
 
             // Si todo sale bien (o el parseo falló pero el ingreso fue exitoso)
@@ -168,13 +173,13 @@
             document.getElementById('success-screen').style.display = 'flex';
 
         } catch (err) { 
-            console.error(err);
+            console.error("❌ Error general:", err);
             alert("Error al enviar: " + err.message); 
             btn.innerText = "ENVIAR POSTULACIÓN"; 
         }
     };
 </script>
-
+    
 
     
 </body>
