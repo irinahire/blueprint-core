@@ -92,74 +92,76 @@
         </div>
     </div>
 
-    <script>
 
-// Inicialización del cliente Supabase
-const sb = supabase.createClient(
-    'TU_SUPABASE_URL', 
-    'TU_SUPABASE_ANON_KEY'
-);
+<script>
+    // 1. Inicialización
+    const sb = supabase.createClient('TU_SUPABASE_URL', 'TU_SUPABASE_ANON_KEY');
 
-window.onload = () => {
-    const params = new URLSearchParams(window.location.search);
-    document.getElementById('oferta_vinculada').value = params.get('oferta') || 'DIRECTA';
-};
-
-document.getElementById('foto').onchange = (e) => {
-    const reader = new FileReader();
-    reader.onload = (event) => {
-        const img = document.getElementById('preview-img-form');
-        img.src = event.target.result;
-        img.style.display = 'block';
-        document.getElementById('placeholder-text').style.display = 'none';
+    window.onload = () => {
+        const params = new URLSearchParams(window.location.search);
+        document.getElementById('oferta_vinculada').value = params.get('oferta') || 'DIRECTA';
     };
-    reader.readAsDataURL(e.target.files[0]);
-};
 
-document.getElementById('postulacion-form').onsubmit = async (e) => {
-    e.preventDefault();
-    const btn = document.getElementById('submit-btn');
-    btn.innerText = "PROCESANDO...";
+    // 2. Previsualización de Foto (Corregido)
+    document.getElementById('foto').onchange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = document.getElementById('preview-img-form');
+                img.src = event.target.result;
+                img.style.display = 'block';
+                document.getElementById('placeholder-text').style.display = 'none';
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        }
+    };
 
-    try {
-        const uid = "POST_" + Date.now();
-        const fotoFile = document.getElementById('foto').files[0];
-        const cvFile = document.getElementById('cv').files[0];
-        const jobId = document.getElementById('oferta_vinculada').value;
+    // 3. Envío del Formulario (Corregido)
+    document.getElementById('postulacion-form').onsubmit = async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('submit-btn');
+        btn.innerText = "PROCESANDO...";
 
-        // Subida a Storage
-        await sb.storage.from('fotos').upload(`foto_${uid}.png`, fotoFile);
-        await sb.storage.from('curriculums').upload(`cv_${uid}.pdf`, cvFile);
-        
-        const { data: { publicUrl: fUrl } } = sb.storage.from('fotos').getPublicUrl(`foto_${uid}.png`);
-        const { data: { publicUrl: cUrl } } = sb.storage.from('curriculums').getPublicUrl(`cv_${uid}.pdf`);
+        try {
+            const uid = "POST_" + Date.now();
+            const fotoFile = document.getElementById('foto').files[0];
+            const cvFile = document.getElementById('cv').files[0];
+            const jobId = document.getElementById('oferta_vinculada').value;
 
-        // Llamada a la Edge Function
-        const { error } = await sb.functions.invoke('ingreso-postulante-01', {
-            body: {
-                jobId: jobId,
-                nombre: document.getElementById('nombre').value,
-                email: document.getElementById('email').value,
-                telefono: document.getElementById('telefono').value,
-                linkedin: document.getElementById('linkedin').value,
-                urlFoto: fUrl,
-                cvUrl: cUrl
-            }
-        });
+            // Subida a Storage
+            await sb.storage.from('fotos').upload(`foto_${uid}.png`, fotoFile);
+            await sb.storage.from('curriculums').upload(`cv_${uid}.pdf`, cvFile);
+            
+            const { data: { publicUrl: fUrl } } = sb.storage.from('fotos').getPublicUrl(`foto_${uid}.png`);
+            const { data: { publicUrl: cUrl } } = sb.storage.from('curriculums').getPublicUrl(`cv_${uid}.pdf`);
 
-        if (error) throw error;
+            // Llamada a la Edge Function
+            const { error } = await sb.functions.invoke('ingreso-postulante-01', {
+                body: {
+                    jobId: jobId,
+                    nombre: document.getElementById('nombre').value,
+                    email: document.getElementById('email').value,
+                    telefono: document.getElementById('telefono').value,
+                    linkedin: document.getElementById('linkedin').value,
+                    urlFoto: fUrl,
+                    cvUrl: cUrl
+                }
+            });
 
-        document.getElementById('display-name').innerText = document.getElementById('nombre').value;
-        document.getElementById('final-photo').src = document.getElementById('preview-img-form').src;
-        document.getElementById('postulacion-form').style.display = 'none';
-        document.getElementById('success-screen').style.display = 'flex';
-    } catch (err) { 
-        console.error(err);
-        alert("Error al enviar: " + err.message); 
-        btn.innerText = "ENVIAR POSTULACIÓN"; 
-    }
-};
-        
-    </script>
+            if (error) throw error;
+
+            // Transición a pantalla de éxito
+            document.getElementById('display-name').innerText = document.getElementById('nombre').value;
+            document.getElementById('final-photo').src = document.getElementById('preview-img-form').src;
+            document.getElementById('postulacion-form').style.display = 'none';
+            document.getElementById('success-screen').style.display = 'flex';
+        } catch (err) { 
+            console.error("Detalle del error:", err);
+            alert("Error al enviar: " + err.message); 
+            btn.innerText = "ENVIAR POSTULACIÓN"; 
+        }
+    };
+</script>
+    
 </body>
 </html>
