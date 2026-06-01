@@ -93,7 +93,28 @@
     </div>
 
     <script>
-// ... dentro del script de la página ...
+
+// Inicialización del cliente Supabase
+const sb = supabase.createClient(
+    'TU_SUPABASE_URL', 
+    'TU_SUPABASE_ANON_KEY'
+);
+
+window.onload = () => {
+    const params = new URLSearchParams(window.location.search);
+    document.getElementById('oferta_vinculada').value = params.get('oferta') || 'DIRECTA';
+};
+
+document.getElementById('foto').onchange = (e) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        const img = document.getElementById('preview-img-form');
+        img.src = event.target.result;
+        img.style.display = 'block';
+        document.getElementById('placeholder-text').style.display = 'none';
+    };
+    reader.readAsDataURL(e.target.files[0]);
+};
 
 document.getElementById('postulacion-form').onsubmit = async (e) => {
     e.preventDefault();
@@ -106,17 +127,17 @@ document.getElementById('postulacion-form').onsubmit = async (e) => {
         const cvFile = document.getElementById('cv').files[0];
         const jobId = document.getElementById('oferta_vinculada').value;
 
-        // Subida a Storage (se mantiene igual)
+        // Subida a Storage
         await sb.storage.from('fotos').upload(`foto_${uid}.png`, fotoFile);
         await sb.storage.from('curriculums').upload(`cv_${uid}.pdf`, cvFile);
         
         const { data: { publicUrl: fUrl } } = sb.storage.from('fotos').getPublicUrl(`foto_${uid}.png`);
         const { data: { publicUrl: cUrl } } = sb.storage.from('curriculums').getPublicUrl(`cv_${uid}.pdf`);
 
-        // Llamada a la nueva Edge Function
+        // Llamada a la Edge Function
         const { error } = await sb.functions.invoke('ingreso-postulante-01', {
             body: {
-                jobId: jobId, // Pasamos el ID de la oferta para vincular el nodo
+                jobId: jobId,
                 nombre: document.getElementById('nombre').value,
                 email: document.getElementById('email').value,
                 telefono: document.getElementById('telefono').value,
@@ -128,16 +149,17 @@ document.getElementById('postulacion-form').onsubmit = async (e) => {
 
         if (error) throw error;
 
-        // Éxito
         document.getElementById('display-name').innerText = document.getElementById('nombre').value;
         document.getElementById('final-photo').src = document.getElementById('preview-img-form').src;
         document.getElementById('postulacion-form').style.display = 'none';
         document.getElementById('success-screen').style.display = 'flex';
     } catch (err) { 
+        console.error(err);
         alert("Error al enviar: " + err.message); 
         btn.innerText = "ENVIAR POSTULACIÓN"; 
     }
 };
+        
     </script>
 </body>
 </html>
