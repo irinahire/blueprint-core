@@ -34,7 +34,9 @@
         .foto-title { font-size: 11px; font-weight: 800; color: var(--fucsia); text-transform: uppercase; margin-bottom: 6px; display: block; }
         .foto-preview-box { width: 120px; height: 120px; border: 2px dashed var(--fucsia); border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #f9f9f9; cursor: pointer; }
         
-        .irina-bg { width: 100%; height: 100%; object-fit: cover; mask-image: linear-gradient(to right, transparent 0%, black 15%); }
+        input[type="file"]::file-selector-button { background: var(--fucsia); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
+
+        .irina-bg { width: 35%; height: 100%; object-fit: cover; mask-image: linear-gradient(to right, transparent 0%, black 15%); }
         #success-screen { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; }
         #preview-img-form { width: 100%; height: 100%; object-fit: cover; display: none; }
     </style>
@@ -80,9 +82,7 @@
                     <p>Gracias por registrarte, <span id="display-name"></span>.</p>
                 </div>
 
-                <div class="visual-side" style="width: 35%; height: 100%; position: relative;">
-                    <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg">
-                </div>
+                <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg">
             </div>
         </div>
     </div>
