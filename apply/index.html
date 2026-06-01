@@ -88,7 +88,15 @@
     </div>
 
     <script>
-        const sb = supabase.createClient('https://zuzvozgjsppkxvdlptmk.supabase.co', 'TU_ANON_KEY_AQUI');
+        const sb = supabase.createClient(
+            'https://zuzvozgjsppkxvdlptmk.supabase.co', 
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0'
+        );
+
+        window.onload = () => {
+            const params = new URLSearchParams(window.location.search);
+            document.getElementById('oferta_vinculada').value = params.get('oferta') || 'DIRECTA';
+        };
 
         document.getElementById('foto').onchange = (e) => {
             const reader = new FileReader();
