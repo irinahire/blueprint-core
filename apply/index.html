@@ -137,7 +137,7 @@
             // Llamar a la Edge Function
             const { data, error } = await sb.functions.invoke('ingreso-postulante-01', {
                 body: {
-                    jobId: document.getElementById('oferta_vinculada').value,
+                    job_id: document.getElementById('oferta_vinculada').value,
                     nombre: document.getElementById('nombre').value,
                     email: document.getElementById('email').value,
                     telefono: document.getElementById('telefono').value,
