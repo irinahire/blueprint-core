@@ -93,63 +93,51 @@
     </div>
 
     <script>
-        const sb = supabase.createClient('https://zuzvozgjsppkxvdlptmk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0');
+// ... dentro del script de la página ...
 
-        window.onload = () => {
-            const params = new URLSearchParams(window.location.search);
-            document.getElementById('oferta_vinculada').value = params.get('oferta') || 'DIRECTA';
-        };
+document.getElementById('postulacion-form').onsubmit = async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('submit-btn');
+    btn.innerText = "PROCESANDO...";
 
-        document.getElementById('foto').onchange = (e) => {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const img = document.getElementById('preview-img-form');
-                img.src = event.target.result;
-                img.style.display = 'block';
-                document.getElementById('placeholder-text').style.display = 'none';
-            };
-            reader.readAsDataURL(e.target.files[0]);
-        };
+    try {
+        const uid = "POST_" + Date.now();
+        const fotoFile = document.getElementById('foto').files[0];
+        const cvFile = document.getElementById('cv').files[0];
+        const jobId = document.getElementById('oferta_vinculada').value;
 
-        document.getElementById('postulacion-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('submit-btn');
-            btn.innerText = "PROCESANDO...";
+        // Subida a Storage (se mantiene igual)
+        await sb.storage.from('fotos').upload(`foto_${uid}.png`, fotoFile);
+        await sb.storage.from('curriculums').upload(`cv_${uid}.pdf`, cvFile);
+        
+        const { data: { publicUrl: fUrl } } = sb.storage.from('fotos').getPublicUrl(`foto_${uid}.png`);
+        const { data: { publicUrl: cUrl } } = sb.storage.from('curriculums').getPublicUrl(`cv_${uid}.pdf`);
 
-            try {
-                const uid = "POST_" + Date.now();
-                const fotoFile = document.getElementById('foto').files[0];
-                const cvFile = document.getElementById('cv').files[0];
-
-                await sb.storage.from('fotos').upload(`foto_${uid}.png`, fotoFile);
-                await sb.storage.from('curriculums').upload(`cv_${uid}.pdf`, cvFile);
-                
-                const { data: { publicUrl: fUrl } } = sb.storage.from('fotos').getPublicUrl(`foto_${uid}.png`);
-                const { data: { publicUrl: cUrl } } = sb.storage.from('curriculums').getPublicUrl(`cv_${uid}.pdf`);
-
-                const { error } = await sb.functions.invoke('dna_content', {
-                    body: {
-                        unique_id: uid,
-                        nombre: document.getElementById('nombre').value,
-                        email: document.getElementById('email').value,
-                        telefono: document.getElementById('telefono').value,
-                        linkedin: document.getElementById('linkedin').value,
-                        urlFoto: fUrl,
-                        cvUrl: cUrl
-                    }
-                });
-
-                if (error) throw error;
-
-                document.getElementById('display-name').innerText = document.getElementById('nombre').value;
-                document.getElementById('final-photo').src = document.getElementById('preview-img-form').src;
-                document.getElementById('postulacion-form').style.display = 'none';
-                document.getElementById('success-screen').style.display = 'flex';
-            } catch (err) { 
-                alert("Error al enviar: " + err.message); 
-                btn.innerText = "ENVIAR POSTULACIÓN"; 
+        // Llamada a la nueva Edge Function
+        const { error } = await sb.functions.invoke('ingreso-postulante-01', {
+            body: {
+                jobId: jobId, // Pasamos el ID de la oferta para vincular el nodo
+                nombre: document.getElementById('nombre').value,
+                email: document.getElementById('email').value,
+                telefono: document.getElementById('telefono').value,
+                linkedin: document.getElementById('linkedin').value,
+                urlFoto: fUrl,
+                cvUrl: cUrl
             }
-        };
+        });
+
+        if (error) throw error;
+
+        // Éxito
+        document.getElementById('display-name').innerText = document.getElementById('nombre').value;
+        document.getElementById('final-photo').src = document.getElementById('preview-img-form').src;
+        document.getElementById('postulacion-form').style.display = 'none';
+        document.getElementById('success-screen').style.display = 'flex';
+    } catch (err) { 
+        alert("Error al enviar: " + err.message); 
+        btn.innerText = "ENVIAR POSTULACIÓN"; 
+    }
+};
     </script>
 </body>
 </html>
