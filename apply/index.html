@@ -89,7 +89,6 @@
 
 
 
-
 <script>
     // Configuración del cliente de Supabase
     const sb = supabase.createClient(
@@ -134,8 +133,8 @@
             const { data: fData } = sb.storage.from('fotos').getPublicUrl(`foto_${uid}.png`);
             const { data: cData } = sb.storage.from('curriculums').getPublicUrl(`cv_${uid}.pdf`);
 
-            // Llamar a la Edge Function
-            const { data, error } = await sb.functions.invoke('hbt_ingreso_postulante', {
+            // 1. Llamar a la Edge Function de ingreso
+            const { data: ingresoData, error: ingresoError } = await sb.functions.invoke('hbt_ingreso_postulante', {
                 body: {
                     job_id: document.getElementById('oferta_vinculada').value,
                     nombre: document.getElementById('nombre').value,
@@ -147,13 +146,22 @@
                 }
             });
 
-            if (error) {
-                // Esto mostrará en consola exactamente qué está rechazando la función
-                console.error("Error en Edge Function:", error);
-                throw new Error("Edge Function rejected request");
+            if (ingresoError) throw new Error("Error en ingreso: " + ingresoError.message);
+
+            // 2. Disparar el parseo explícitamente desde aquí
+            console.log("Ingreso exitoso, disparando parseo...");
+            const { error: parseoError } = await sb.functions.invoke('hbt_parsear_cv', {
+                body: { 
+                    parent_id: ingresoData.id, 
+                    url: cData.publicUrl 
+                }
+            });
+
+            if (parseoError) {
+                console.error("El parseo falló, pero el postulante ya está guardado:", parseoError);
             }
 
-            // Si todo sale bien
+            // Si todo sale bien (o el parseo falló pero el ingreso fue exitoso)
             document.getElementById('display-name').innerText = document.getElementById('nombre').value;
             document.getElementById('final-photo').src = document.getElementById('preview-img-form').src;
             document.getElementById('postulacion-form').style.display = 'none';
@@ -166,6 +174,7 @@
         }
     };
 </script>
+
 
     
 </body>
