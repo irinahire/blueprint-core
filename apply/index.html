@@ -90,27 +90,13 @@
     </div>
 
 
-    <script>
-    const sb = supabase.createClient('TU_SUPABASE_URL', 'TU_SUPABASE_ANON_KEY');
 
-    window.onload = () => {
-        const params = new URLSearchParams(window.location.search);
-        // Si no hay parámetro, ponemos "DIRECTA"
-        document.getElementById('oferta_vinculada').value = params.get('oferta') || 'DIRECTA';
-    };
-
-    document.getElementById('foto').onchange = (e) => {
-        if (e.target.files && e.target.files[0]) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const img = document.getElementById('preview-img-form');
-                img.src = event.target.result;
-                img.style.display = 'block';
-                document.getElementById('placeholder-text').style.display = 'none';
-            };
-            reader.readAsDataURL(e.target.files[0]);
-        }
-    };
+<script>
+    // REEMPLAZA LOS DATOS DE ABAJO
+    const supabaseUrl = 'https://zuzvozgjsppkxvdlptmk.supabase.co';
+    const supabaseAnonKey = 'TU_ANON_KEY_AQUI'; // <--- PEGA TU KEY AQUÍ
+    
+    const sb = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
     document.getElementById('postulacion-form').onsubmit = async (e) => {
         e.preventDefault();
@@ -121,42 +107,39 @@
             const uid = "POST_" + Date.now();
             const fotoFile = document.getElementById('foto').files[0];
             const cvFile = document.getElementById('cv').files[0];
-            const jobId = document.getElementById('oferta_vinculada').value;
 
-            // Subir archivos
             await sb.storage.from('fotos').upload(`foto_${uid}.png`, fotoFile);
             await sb.storage.from('curriculums').upload(`cv_${uid}.pdf`, cvFile);
             
-            const { data: { publicUrl: fUrl } } = sb.storage.from('fotos').getPublicUrl(`foto_${uid}.png`);
-            const { data: { publicUrl: cUrl } } = sb.storage.from('curriculums').getPublicUrl(`cv_${uid}.pdf`);
+            const { data: fData } = sb.storage.from('fotos').getPublicUrl(`foto_${uid}.png`);
+            const { data: cData } = sb.storage.from('curriculums').getPublicUrl(`cv_${uid}.pdf`);
 
-            // Llamar función
-            const { data, error } = await sb.functions.invoke('ingreso-postulante-01', {
+            const { error } = await sb.functions.invoke('ingreso-postulante-01', {
                 body: {
-                    jobId: jobId,
+                    jobId: document.getElementById('oferta_vinculada').value,
                     nombre: document.getElementById('nombre').value,
                     email: document.getElementById('email').value,
                     telefono: document.getElementById('telefono').value,
                     linkedin: document.getElementById('linkedin').value,
-                    urlFoto: fUrl,
-                    cvUrl: cUrl
+                    urlFoto: fData.publicUrl,
+                    cvUrl: cData.publicUrl
                 }
             });
 
             if (error) throw error;
 
-            // Pantalla éxito
-            document.getElementById('display-name').innerText = document.getElementById('nombre').value;
-            document.getElementById('final-photo').src = document.getElementById('preview-img-form').src;
             document.getElementById('postulacion-form').style.display = 'none';
             document.getElementById('success-screen').style.display = 'flex';
         } catch (err) { 
-            alert("Error: " + err.message); 
+            alert("Error al enviar: " + err.message); 
             btn.innerText = "ENVIAR POSTULACIÓN"; 
         }
     };
 </script>
 
+
+
+    
     
 </body>
 </html>
