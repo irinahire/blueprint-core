@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Irina Hire Selection | Nueva Oferta</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { 
             --fucsia: #bc8abf; 
@@ -98,14 +98,17 @@
 </div>
 
 <script>
+    // Inicialización del cliente Supabase
     const sb = supabase.createClient('https://zuzvozgjsppkxvdlptmk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0');
 
+    // Función para limpiar el formulario tras un envío exitoso
     function resetForm() {
         document.getElementById('form-wrapper').style.display = 'flex';
         document.getElementById('success-screen').style.display = 'none';
         document.querySelectorAll('input').forEach(el => el.value = '');
     }
 
+    // Función para copiar la URL generada al portapapeles
     function copiarUrl() {
         const input = document.getElementById('full-url');
         const feedback = document.getElementById('copy-feedback');
@@ -115,32 +118,48 @@
         setTimeout(() => { feedback.innerText = ""; }, 2000);
     }
 
+    // Lógica principal: Invocación de la Edge Function Fractal
     async function publicarOferta() {
         const btn = document.querySelector('.btn-pub');
         btn.innerText = "Publicando...";
         
+        // Generamos un ID único para la oferta (el "hilo" del grafo)
         const jobId = "JOBS_" + Math.random().toString(36).substr(2, 9).toUpperCase();
         const fullUrl = `https://www.bluelab.online/apply?oferta=${jobId}`;
         
         try {
-            const { error } = await sb.from('crear_oferta').insert([{
-                titulo: document.getElementById('titulo').value,
-                jsonf: { 
-                    job_id: jobId, 
-                    data: { 
-                        desc: document.getElementById('desc').value, req: document.getElementById('req').value,
-                        mod: document.getElementById('m1').value, sal: document.getElementById('m2').value,
-                        exp: document.getElementById('m3').value, cult: document.getElementById('m4').value,
-                        ben: document.getElementById('m5').value, ubi: document.getElementById('m6').value
+            // Invocamos a la Edge Function 'crear-oferta-01' en lugar de insertar directamente en una tabla
+            const { data, error } = await sb.functions.invoke('crear-oferta-01', {
+                body: {
+                    titulo: document.getElementById('titulo').value,
+                    jobId: jobId, // Pasamos el ID para el vínculo fractal
+                    detalles: { // Agrupamos todo el contenido en el objeto 'detalles'
+                        desc: document.getElementById('desc').value,
+                        req: document.getElementById('req').value,
+                        mod: document.getElementById('m1').value,
+                        sal: document.getElementById('m2').value,
+                        exp: document.getElementById('m3').value,
+                        cult: document.getElementById('m4').value,
+                        ben: document.getElementById('m5').value,
+                        ubi: document.getElementById('m6').value
                     }
                 }
-            }]);
+            });
+
             if (error) throw error;
             
+            // Si la función responde exitosamente, mostramos la pantalla de éxito
             document.getElementById('full-url').value = fullUrl;
             document.getElementById('form-wrapper').style.display = 'none';
             document.getElementById('success-screen').style.display = 'flex';
-        } catch (e) { alert("Error: " + e.message); } finally { btn.innerText = "PUBLICAR"; }
+
+        } catch (e) { 
+            // Manejo de errores en la consola y alerta al usuario
+            console.error("Error detallado:", e);
+            alert("Error al crear oferta: " + e.message); 
+        } finally { 
+            btn.innerText = "PUBLICAR"; 
+        }
     }
 </script>
 </body>
