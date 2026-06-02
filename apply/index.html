@@ -156,7 +156,11 @@
 
             // PASO A: Extraer texto plano
             const { error: errorExtraccion } = await sb.functions.invoke('hbt_extraer_cv', {
-                body: { parent_id: ingresoData.id, url: cData.publicUrl }
+                body: { 
+                    parent_id: ingresoData.id, 
+                    owner_id: ingresoData.id, 
+                    url: cData.publicUrl 
+                }
             });
             if (errorExtraccion) throw new Error("Error en extracción: " + errorExtraccion.message);
             console.log("✅ Texto extraído con éxito.");
@@ -182,7 +186,9 @@
             btn.innerText = "ENVIAR POSTULACIÓN"; 
         }
     };
-</script>    
+</script>
+
+    
 
     
 </body>
