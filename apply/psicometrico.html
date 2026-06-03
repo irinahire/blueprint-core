@@ -3,15 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PROCESO DE APLICACIÓN - Irina Hire Selection</title>
+    <title>Validación de Idoneidad - Irina Hire Selection</title>
     <style>
-        /* Reset de estilos básicos */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
+        /* Reset y Estilos Base */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background: linear-gradient(to bottom left, #8EE4D5, #B588C0);
@@ -22,198 +17,139 @@
             padding: 2rem;
         }
 
-        /* Contenedor blanco principal */
+        /* Tarjeta Principal */
         .main-container {
             background-color: #ffffff;
             width: 100%;
             max-width: 1200px;
-            height: 85vh; 
+            height: 85vh;
             min-height: 600px;
             display: flex;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
             border-radius: 12px;
-            overflow: hidden; 
+            overflow: hidden;
         }
 
-        /* Columna izquierda */
+        /* Columna Izquierda */
         .left-column {
-            flex: 1; 
-            /* Redujimos el padding arriba y a la izquierda para acercar todo a los bordes */
-            padding: 1.5rem 3rem 2rem 1.5rem; 
+            flex: 1;
+            padding: 1.5rem 3rem 2rem 1.5rem;
             display: flex;
             flex-direction: column;
         }
 
-        /* ----- NUEVO ENCABEZADO (Logo + Barra de Progreso) ----- */
         .header-container {
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
-            width: 100%;
             margin-bottom: 2rem;
         }
 
-        .logo-container {
-            flex-shrink: 0; /* Evita que el logo se aplaste */
-        }
+        .logo { max-width: 140px; height: auto; }
 
-        .logo {
-            max-width: 140px; 
-            height: auto;
-        }
-
-        /* ----- BARRA DE PROGRESO (Stepper) ----- */
+        /* Barra de Progreso */
         .stepper-container {
             display: flex;
-            align-items: flex-start;
-            flex: 1;
-            margin-left: 3rem; /* Separación entre el logo y los pasos */
-            margin-top: 0.5rem;
-        }
-
-        .step {
-            display: flex;
-            flex-direction: column;
             align-items: center;
-            position: relative;
-            z-index: 2;
-            width: 80px; /* Ancho fijo para centrar bien los textos */
+            margin-left: 3rem;
         }
 
+        .step { display: flex; flex-direction: column; align-items: center; width: 80px; }
         .step-circle {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
+            width: 32px; height: 32px; border-radius: 50%;
             background-color: #e0e0e0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: bold;
-            color: #777;
-            transition: all 0.3s;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; color: #777;
+        }
+        .step.completed .step-circle { background-color: #8EE4D5; color: #ffffff; }
+        .step.active .step-circle { background-color: #B588C0; color: #ffffff; transform: scale(1.1); }
+        .step-label { font-size: 11px; text-align: center; margin-top: 5px; color: #555; font-weight: 600; }
+        .step-line { flex: 1; height: 3px; background-color: #e0e0e0; margin-bottom: 15px; }
+        .step-line.completed { background-color: #8EE4D5; }
+
+        /* Contenedor de Tests */
+        .content-area { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .test-tarjeta { height: 100%; display: flex; flex-direction: column; justify-content: center; }
+        
+        button { 
+            padding: 1rem 2rem; background: #B588C0; color: white; 
+            border: none; border-radius: 8px; cursor: pointer; margin-top: 1rem; width: fit-content; 
         }
 
-        /* Estado Completado (Pasos 1 y 2) */
-        .step.completed .step-circle {
-            background-color: #8EE4D5; /* Turquesa del degradé */
-            color: #ffffff;
-        }
-
-        /* Estado Activo (Paso 3) */
-        .step.active .step-circle {
-            background-color: #B588C0; /* Fucsia del degradé */
-            color: #ffffff;
-            box-shadow: 0 0 10px rgba(181, 136, 192, 0.5); /* Efecto de brillo */
-            transform: scale(1.1); /* Lo hace apenitas más grande para destacar */
-        }
-
-        .step-label {
-            font-size: 11px;
-            text-align: center;
-            margin-top: 10px;
-            color: #555;
-            font-weight: 600;
-            line-height: 1.2;
-        }
-
-        .step-line {
-            flex: 1;
-            height: 3px;
-            background-color: #e0e0e0;
-            margin-top: 15px; /* Alineado al centro de los círculos */
-            z-index: 1;
-        }
-
-        /* Línea completada */
-        .step-line.completed {
-            background-color: #8EE4D5;
-        }
-
-        /* ------------------------------------------------------- */
-
-        /* Área dedicada a inyectar los tests psicométricos */
-        .content-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Columna derecha (Imagen de Irina) */
+        /* Columna Derecha (Irina) */
         .right-column {
-            width: 30%; 
+            width: 30%;
             background-image: url('https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg');
             background-size: cover;
-            background-position: 75% center; 
+            background-position: 75% center;
             background-repeat: no-repeat;
-        }
-
-        /* Diseño Responsivo */
-        @media (max-width: 900px) {
-            body { padding: 1rem; }
-            .main-container { flex-direction: column; height: auto; }
-            .header-container { flex-direction: column; align-items: center; gap: 1rem; }
-            .stepper-container { margin-left: 0; width: 100%; }
-            .left-column { padding: 2rem; }
-            .right-column { width: 100%; height: 400px; background-position: center top; }
         }
     </style>
 </head>
 <body>
 
     <div class="main-container">
-        
-        <!-- MITAD IZQUIERDA -->
         <div class="left-column">
-            
-            <!-- ENCABEZADO: Logo + Stepper -->
+            <!-- Encabezado con Título Corregido -->
             <div class="header-container">
-                <div class="logo-container">
-                    <img src="https://i.ibb.co/JFMJBm0S/logo-ihs.jpg" alt="Irina Hire Selection" class="logo">
+                <div>
+                    <img src="https://i.ibb.co/JFMJBm0S/logo-ihs.jpg" alt="Logo" class="logo">
+                    <h2 style="margin-top: 10px; color: #333;">Validación de Idoneidad</h2>
                 </div>
                 
-                <!-- BARRA DE PROGRESO -->
                 <div class="stepper-container">
-                    <!-- Paso 1 -->
-                    <div class="step completed">
-                        <div class="step-circle">✓</div>
-                        <div class="step-label">Postulación</div>
-                    </div>
+                    <div class="step completed"><div class="step-circle">✓</div><div class="step-label">Postulación</div></div>
                     <div class="step-line completed"></div>
-                    
-                    <!-- Paso 2 -->
-                    <div class="step completed">
-                        <div class="step-circle">✓</div>
-                        <div class="step-label">Análisis y<br>Ranqueo</div>
-                    </div>
+                    <div class="step completed"><div class="step-circle">✓</div><div class="step-label">Análisis</div></div>
                     <div class="step-line completed"></div>
-                    
-                    <!-- Paso 3 -->
-                    <div class="step active">
-                        <div class="step-circle">3</div>
-                        <div class="step-label">Psicométrico</div>
-                    </div>
+                    <div class="step active"><div class="step-circle">3</div><div class="step-label">Psicométrico</div></div>
                     <div class="step-line"></div>
-                    
-                    <!-- Paso 4 -->
-                    <div class="step pending">
-                        <div class="step-circle">4</div>
-                        <div class="step-label">Entrevista</div>
-                    </div>
+                    <div class="step"><div class="step-circle">4</div><div class="step-label">Entrevista</div></div>
                 </div>
             </div>
-            
-            <!-- CONTENEDOR DE LOS TESTS -->
-            <div class="content-area" id="psychometric-tests-container">
-                <!-- Aquí inyectaremos las tarjetas de los tests en el siguiente paso -->
+
+            <!-- Contenedor de Pasos (Wizard) -->
+            <div id="psychometric-tests-container" class="content-area">
+                <div id="pantalla-logica" class="test-tarjeta">
+                    <h3>1. Razonamiento Lógico</h3>
+                    <p>Resolvé esta secuencia para validar tu capacidad analítica.</p>
+                    <button onclick="resultados.logica = 10; next('logica', 'situacional')">Siguiente</button>
+                </div>
+                <div id="pantalla-situacional" class="test-tarjeta" style="display:none;">
+                    <h3>2. Juicio Situacional</h3>
+                    <p>Ante una urgencia del cliente, ¿cómo priorizás tus tareas?</p>
+                    <button onclick="resultados.situacional = 'alta'; next('situacional', 'bigfive')">Siguiente</button>
+                </div>
+                <div id="pantalla-bigfive" class="test-tarjeta" style="display:none;">
+                    <h3>3. Perfil de Personalidad (Big Five)</h3>
+                    <p>Respondé estas breves preguntas para conocernos mejor.</p>
+                    <button onclick="enviarDatos()">Finalizar y Entrevistar con Irina</button>
+                </div>
             </div>
-
         </div>
-
-        <!-- MITAD DERECHA (Imagen de Irina) -->
         <div class="right-column"></div>
-
     </div>
 
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const applicant_id = urlParams.get('applicantId');
+        let resultados = { applicant_id: applicant_id, logica: 0, situacional: '', bigfive: {} };
+
+        function next(actual, proxima) {
+            document.getElementById('pantalla-' + actual).style.display = 'none';
+            document.getElementById('pantalla-' + proxima).style.display = 'flex';
+        }
+
+        async function enviarDatos() {
+            const response = await fetch('https://TU_SUPABASE_URL.supabase.co/rest/v1/rpc/hbt_psicometricos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'apikey': 'TU_ANON_KEY', 'Authorization': 'Bearer TU_ANON_KEY' },
+                body: JSON.stringify(resultados)
+            });
+            if (response.ok) {
+                window.location.href = 'https://www.bluelab.online/interview?applicantId=' + applicant_id;
+            }
+        }
+    </script>
 </body>
 </html>
