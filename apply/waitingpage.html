@@ -7,7 +7,9 @@
     <style>
         :root {
             --fucsia: #bc8abf;
-            --irina-gradient: linear-gradient(to right, #bc8abf 0%, #96e8da 100%);
+            --turquesa: #96e8da;
+            /* Gradiente invertido: Turquesa a la izquierda, Fucsia a la derecha */
+            --irina-gradient: linear-gradient(to right, var(--turquesa) 0%, var(--fucsia) 100%);
             --bg-dark: #05070a;
         }
         body { margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
@@ -39,7 +41,7 @@
         
         h1 { font-family: 'Montserrat', sans-serif; font-size: 32px; color: #05070a; margin-bottom: 20px; }
         
-        /* Estilos de Progreso */
+        /* Estilos de Progreso con el nuevo gradiente */
         .progress-container { width: 100%; height: 8px; background: #eee; border-radius: 4px; margin-bottom: 30px; }
         #progress-fill { width: 0%; height: 100%; background: var(--irina-gradient); border-radius: 4px; transition: width 1s ease; }
         .step { margin-bottom: 15px; color: #888; font-weight: 600; transition: all 0.3s ease; }
