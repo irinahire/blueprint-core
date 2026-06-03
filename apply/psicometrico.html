@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gimnasio de Habilidades - Irina Hire Selection</title>
+    <title>Etapa 3 - Irina Hire Selection</title>
     <style>
         /* Reset de estilos básicos */
         * {
@@ -28,17 +28,17 @@
             background-color: #ffffff;
             width: 100%;
             max-width: 1200px;
-            height: 85vh; /* Altura dinámica para que parezca una aplicación */
+            height: 85vh; /* Altura dinámica */
             min-height: 600px;
             display: flex;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
             border-radius: 12px;
-            overflow: hidden; /* Evita que la imagen de la derecha sobresalga de los bordes redondeados */
+            overflow: hidden; 
         }
 
         /* Columna izquierda (Espacio en blanco para logo y tests) */
         .left-column {
-            flex: 1; /* Ocupa el espacio restante, aprox 60% */
+            flex: 1; /* Ocupa todo el espacio restante (ahora será el 70%) */
             padding: 3rem 4rem;
             display: flex;
             flex-direction: column;
@@ -49,7 +49,7 @@
         }
 
         .logo {
-            max-width: 280px;
+            max-width: 140px; /* Reducido a la mitad */
             height: auto;
         }
 
@@ -58,15 +58,15 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            /* El espacio se deja libre a propósito para insertar el HTML futuro */
         }
 
         /* Columna derecha (Imagen de Irina) */
         .right-column {
-            width: 40%; /* Ocupa el 40% del ancho del contenedor */
+            width: 30%; /* Más angosta para dejar más espacio a los tests */
             background-image: url('https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg');
             background-size: cover;
-            background-position: center center;
+            /* Ajustamos la posición para que Irina no quede cortada al afinar la columna */
+            background-position: 75% center; 
             background-repeat: no-repeat;
         }
 
@@ -84,7 +84,8 @@
             }
             .right-column {
                 width: 100%;
-                height: 400px; /* Altura fija para que Irina se vea en móviles */
+                height: 400px; 
+                background-position: center center;
             }
         }
     </style>
@@ -102,13 +103,13 @@
             
             <!-- Contenedor vacío donde irán la barra de progreso y las tarjetas de los tests -->
             <div class="content-area" id="psychometric-tests-container">
-                <!-- Aquí inyectaremos el contenido en el próximo paso -->
+                <!-- Aquí inyectaremos el contenido de los tests -->
             </div>
         </div>
 
         <!-- MITAD DERECHA (Imagen) -->
         <div class="right-column">
-            <!-- La imagen está configurada en el CSS como fondo para que siempre cubra el espacio perfecto -->
+            <!-- La imagen está configurada en el CSS como fondo -->
         </div>
 
     </div>
