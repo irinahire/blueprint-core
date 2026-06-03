@@ -97,6 +97,8 @@
     </div>
 </div>
 
+
+
 <script>
     // Inicialización del cliente Supabase
     const sb = supabase.createClient('https://zuzvozgjsppkxvdlptmk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0');
@@ -118,22 +120,22 @@
         setTimeout(() => { feedback.innerText = ""; }, 2000);
     }
 
-    // Lógica principal: Invocación de la Edge Function Fractal
+    // Lógica principal: Invocación de la Edge Function hbt_crear_oferta
     async function publicarOferta() {
         const btn = document.querySelector('.btn-pub');
         btn.innerText = "Publicando...";
         
-        // Generamos un ID único para la oferta (el "hilo" del grafo)
-        const jobId = "JOBS_" + Math.random().toString(36).substr(2, 9).toUpperCase();
-        const fullUrl = `https://www.bluelab.online/apply?oferta=${jobId}`;
+        // Generamos un UUID real para la oferta
+        const jobId = crypto.randomUUID();
+        const fullUrl = 'https://www.bluelab.online/apply?oferta=' + jobId;
         
         try {
-            // Invocamos a la Edge Function 'crear-oferta-01' en lugar de insertar directamente en una tabla
-            const { data, error } = await sb.functions.invoke('crear-oferta-01', {
+            // Invocamos a la nueva Edge Function 'hbt_crear_oferta'
+            const { data, error } = await sb.functions.invoke('hbt_crear_oferta', {
                 body: {
                     titulo: document.getElementById('titulo').value,
-                    jobId: jobId, // Pasamos el ID para el vínculo fractal
-                    detalles: { // Agrupamos todo el contenido en el objeto 'detalles'
+                    jobIdUuid: jobId, // Usamos el nombre correcto que espera la función
+                    detalles: {
                         desc: document.getElementById('desc').value,
                         req: document.getElementById('req').value,
                         mod: document.getElementById('m1').value,
@@ -154,7 +156,6 @@
             document.getElementById('success-screen').style.display = 'flex';
 
         } catch (e) { 
-            // Manejo de errores en la consola y alerta al usuario
             console.error("Error detallado:", e);
             alert("Error al crear oferta: " + e.message); 
         } finally { 
@@ -162,5 +163,7 @@
         }
     }
 </script>
+
+
 </body>
 </html>
