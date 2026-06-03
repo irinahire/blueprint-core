@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Irina Hire Selection | Blue Lab</title>
+    <title>Irina Hire Selection | Procesando...</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -12,22 +12,33 @@
         }
         body { margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
         
-        /* Contenedor principal con el marco gradiente */
         .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 92%; max-width: 1150px; }
         .card { background: white; width: 100%; border-radius: 40px; overflow: hidden; display: flex; flex-direction: column; min-height: 550px; }
         
-        /* Vincha superior */
         .header { height: 90px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 45px; }
         .brand-left { display: flex; flex-direction: column; color: white; font-family: 'Montserrat', sans-serif; }
         .blue-lab-text { font-weight: 900; font-size: 26px; }
         .blueprint-subtext { font-weight: 700; font-size: 11px; text-transform: uppercase; }
-        .vincha-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 24px; text-transform: uppercase; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+        
+        .vincha-title { 
+            font-family: 'Montserrat', sans-serif; 
+            font-weight: 900; 
+            font-size: 24px; 
+            text-transform: uppercase; 
+            background: white; 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-image: var(--irina-gradient); 
+            filter: drop-shadow(2px 0 0 white) drop-shadow(-2px 0 0 white) drop-shadow(0 2px 0 white) drop-shadow(0 -2px 0 white); 
+        }
 
-        /* Contenido: Izquierda (blanco) y Derecha (imagen) */
         .content { display: flex; flex: 1; }
         .left-col { padding: 60px; flex: 1; display: flex; flex-direction: column; justify-content: center; }
         .right-col { width: 400px; }
         .right-col img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 0 0 40px 0; }
+        
+        h1 { font-family: 'Montserrat', sans-serif; font-size: 32px; color: #05070a; margin-bottom: 20px; }
+        p { font-size: 16px; color: #555; }
     </style>
 </head>
 <body>
