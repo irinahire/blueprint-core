@@ -8,8 +8,10 @@
         :root {
             --fucsia: #bc8abf;
             --turquesa: #96e8da;
-            /* Gradiente invertido: Turquesa a la izquierda, Fucsia a la derecha */
-            --irina-gradient: linear-gradient(to right, var(--turquesa) 0%, var(--fucsia) 100%);
+            /* Gradiente original para el marco y header */
+            --irina-gradient: linear-gradient(to right, var(--fucsia) 0%, var(--turquesa) 100%);
+            /* Gradiente invertido solo para los elementos específicos */
+            --irina-gradient-inv: linear-gradient(to right, var(--turquesa) 0%, var(--fucsia) 100%);
             --bg-dark: #05070a;
         }
         body { margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
@@ -22,6 +24,7 @@
         .blue-lab-text { font-weight: 900; font-size: 26px; }
         .blueprint-subtext { font-weight: 700; font-size: 11px; text-transform: uppercase; }
         
+        /* Vincha invertida */
         .vincha-title { 
             font-family: 'Montserrat', sans-serif; 
             font-weight: 900; 
@@ -30,7 +33,7 @@
             background: white; 
             -webkit-background-clip: text; 
             -webkit-text-fill-color: transparent; 
-            background-image: var(--irina-gradient); 
+            background-image: var(--irina-gradient-inv); 
             filter: drop-shadow(2px 0 0 white) drop-shadow(-2px 0 0 white) drop-shadow(0 2px 0 white) drop-shadow(0 -2px 0 white); 
         }
 
@@ -41,9 +44,9 @@
         
         h1 { font-family: 'Montserrat', sans-serif; font-size: 32px; color: #05070a; margin-bottom: 20px; }
         
-        /* Estilos de Progreso con el nuevo gradiente */
+        /* Barra de progreso invertida */
         .progress-container { width: 100%; height: 8px; background: #eee; border-radius: 4px; margin-bottom: 30px; }
-        #progress-fill { width: 0%; height: 100%; background: var(--irina-gradient); border-radius: 4px; transition: width 1s ease; }
+        #progress-fill { width: 0%; height: 100%; background: var(--irina-gradient-inv); border-radius: 4px; transition: width 1s ease; }
         .step { margin-bottom: 15px; color: #888; font-weight: 600; transition: all 0.3s ease; }
         .step.active { color: #05070a; transform: scale(1.02); }
         .step.done { color: var(--fucsia); }
@@ -83,24 +86,17 @@
 
 <script>
     async function iniciarAnalisis() {
-        const applicantId = new URLSearchParams(window.location.search).get('applicantId');
         const progressBar = document.getElementById('progress-fill');
         const steps = [1, 2, 3, 4];
         
         for (let i of steps) {
             document.getElementById(`step-${i}`).classList.add('active');
             progressBar.style.width = `${i * 25}%`;
-            
-            // Simulación de tiempo de proceso
             await new Promise(r => setTimeout(r, 1200)); 
-            
             document.getElementById(`step-${i}`).classList.remove('active');
             document.getElementById(`step-${i}`).classList.add('done');
             document.getElementById(`step-${i}`).innerText = `✅ ` + document.getElementById(`step-${i}`).innerText.substring(2);
         }
-
-        // Aquí redirigirás a la entrevista o agradecimiento según el resultado
-        // window.location.href = `entrevista.html?applicantId=${applicantId}`;
     }
     window.onload = iniciarAnalisis;
 </script>
