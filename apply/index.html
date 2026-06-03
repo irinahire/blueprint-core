@@ -176,14 +176,20 @@
             document.getElementById('postulacion-form').style.display = 'none';
             document.getElementById('success-screen').style.display = 'flex';
 
+            // Redirección automática a la Waiting Page
+            setTimeout(() => {
+                const idPostulante = ingresoData.id;
+                const urlDestino = `https://www.bluelab.online/apply/waitingpage.html?id=${idPostulante}`;
+                window.location.href = urlDestino;
+            }, 3000);
+
         } catch (err) { 
             console.error("❌ Error general:", err);
             alert("Error al enviar: " + err.message); 
             btn.innerText = "ENVIAR POSTULACIÓN"; 
         }
     };
-</script>
-    
+</script>    
 
     
 </body>
