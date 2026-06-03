@@ -121,11 +121,11 @@
             statusTitle.innerText = "Análisis Finalizado";
             diagnosticBox.innerHTML = `<strong>Resultado:</strong> ${result.idoneo ? '✅ Idóneo' : '❌ No cumple el perfil'}<br><br><small>${result.resumen || 'Sin resumen disponible'}</small>`;
             
-            if (result.idoneo) {
-                window.location.href = '[https://www.bluelab.online/interview?applicantId=](https://www.bluelab.online/interview?applicantId=)' + applicant_id;
-            } else {
-                window.location.href = '[https://www.bluelab.online/interview/gym?applicantId=](https://www.bluelab.online/interview/gym?applicantId=)' + applicant_id;
-            }
+if (result.idoneo) {
+window.location.href = 'https://www.bluelab.online/interview?applicantId=' + applicant_id;
+} else {
+window.location.href = 'https://www.bluelab.online/interview/gym.html?applicantId=' + applicant_id;
+}
 
         } else {
             statusTitle.innerText = "Error en el proceso";
