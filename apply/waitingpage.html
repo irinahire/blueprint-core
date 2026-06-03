@@ -8,9 +8,7 @@
         :root {
             --fucsia: #bc8abf;
             --turquesa: #96e8da;
-            /* Gradiente original para el marco y header */
             --irina-gradient: linear-gradient(to right, var(--fucsia) 0%, var(--turquesa) 100%);
-            /* Gradiente invertido solo para los elementos específicos */
             --irina-gradient-inv: linear-gradient(to right, var(--turquesa) 0%, var(--fucsia) 100%);
             --bg-dark: #05070a;
         }
@@ -24,7 +22,6 @@
         .blue-lab-text { font-weight: 900; font-size: 26px; }
         .blueprint-subtext { font-weight: 700; font-size: 11px; text-transform: uppercase; }
         
-        /* Vincha invertida */
         .vincha-title { 
             font-family: 'Montserrat', sans-serif; 
             font-weight: 900; 
@@ -44,7 +41,6 @@
         
         h1 { font-family: 'Montserrat', sans-serif; font-size: 32px; color: #05070a; margin-bottom: 20px; }
         
-        /* Barra de progreso invertida */
         .progress-container { width: 100%; height: 8px; background: #eee; border-radius: 4px; margin-bottom: 30px; }
         #progress-fill { width: 0%; height: 100%; background: var(--irina-gradient-inv); border-radius: 4px; transition: width 1s ease; }
         .step { margin-bottom: 15px; color: #888; font-weight: 600; transition: all 0.3s ease; }
@@ -89,6 +85,11 @@
         const progressBar = document.getElementById('progress-fill');
         const steps = [1, 2, 3, 4];
         
+        // Obtenemos el ID del postulante (asumiendo que viene en la URL o localStorage)
+        const params = new URLSearchParams(window.location.search);
+        const applicant_id = params.get('id'); 
+
+        // Visualización de pasos
         for (let i of steps) {
             document.getElementById(`step-${i}`).classList.add('active');
             progressBar.style.width = `${i * 25}%`;
@@ -96,6 +97,27 @@
             document.getElementById(`step-${i}`).classList.remove('active');
             document.getElementById(`step-${i}`).classList.add('done');
             document.getElementById(`step-${i}`).innerText = `✅ ` + document.getElementById(`step-${i}`).innerText.substring(2);
+        }
+
+        // Llamada a la función de comparación
+        try {
+            const response = await fetch('TU_URL_DE_SUPABASE_FUNCTION/hbt_irina_compara_cv', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ applicant_id })
+            });
+            
+            const result = await response.json();
+
+            if (result.idoneo) {
+                // Si es idóneo, redirigir a entrevista
+                window.location.href = `/entrevista?id=${applicant_id}`;
+            } else {
+                // Si no es idóneo, redirigir a mensaje de agradecimiento
+                window.location.href = `/gracias`;
+            }
+        } catch (error) {
+            console.error("Error en el análisis:", error);
         }
     }
     window.onload = iniciarAnalisis;
