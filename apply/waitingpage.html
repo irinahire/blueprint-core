@@ -114,22 +114,28 @@
                 },
                 body: JSON.stringify({ applicant_id })
             });
-            
             const result = await response.json();
-            diagnosticBox.style.display = 'block';
+        diagnosticBox.style.display = 'block';
 
-            if (response.ok) {
-                statusTitle.innerText = "Análisis Finalizado";
-                diagnosticBox.innerHTML = `<strong>Resultado:</strong> ${result.idoneo ? '✅ Idóneo' : '❌ No cumple el perfil'}<br><br><small>${result.resumen || 'Sin resumen disponible'}</small>`;
+        if (response.ok) {
+            statusTitle.innerText = "Análisis Finalizado";
+            diagnosticBox.innerHTML = `<strong>Resultado:</strong> ${result.idoneo ? '✅ Idóneo' : '❌ No cumple el perfil'}<br><br><small>${result.resumen || 'Sin resumen disponible'}</small>`;
+            
+            if (result.idoneo) {
+                window.location.href = '[https://www.bluelab.online/interview?applicantId=](https://www.bluelab.online/interview?applicantId=)' + applicant_id;
             } else {
-                statusTitle.innerText = "Error en el proceso";
-                diagnosticBox.innerHTML = `<strong style="color:red;">Error del servidor:</strong><br>${result.error || JSON.stringify(result)}`;
+                window.location.href = '[https://www.bluelab.online/interview/gym?applicantId=](https://www.bluelab.online/interview/gym?applicantId=)' + applicant_id;
             }
-        } catch (error) {
-            diagnosticBox.style.display = 'block';
-            diagnosticBox.innerHTML = `<strong style="color:red;">Error de red:</strong> ${error.message}`;
+
+        } else {
+            statusTitle.innerText = "Error en el proceso";
+            diagnosticBox.innerHTML = `<strong style="color:red;">Error del servidor:</strong><br>${result.error || JSON.stringify(result)}`;
         }
+    } catch (error) {
+        diagnosticBox.style.display = 'block';
+        diagnosticBox.innerHTML = `<strong style="color:red;">Error de red:</strong> ${error.message}`;
     }
+}
     window.onload = iniciarAnalisis;
 </script>
 
