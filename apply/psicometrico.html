@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Etapa 3 - Irina Hire Selection</title>
+    <title>PROCESO DE APLICACIÓN - Irina Hire Selection</title>
     <style>
         /* Reset de estilos básicos */
         * {
@@ -14,7 +14,6 @@
 
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            /* Fondo degradé diagonal: turquesa a fucsia/lila */
             background: linear-gradient(to bottom left, #8EE4D5, #B588C0);
             min-height: 100vh;
             display: flex;
@@ -23,12 +22,12 @@
             padding: 2rem;
         }
 
-        /* Contenedor blanco principal (La tarjeta) */
+        /* Contenedor blanco principal */
         .main-container {
             background-color: #ffffff;
             width: 100%;
             max-width: 1200px;
-            height: 85vh; /* Altura dinámica */
+            height: 85vh; 
             min-height: 600px;
             display: flex;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
@@ -36,22 +35,102 @@
             overflow: hidden; 
         }
 
-        /* Columna izquierda (Espacio en blanco para logo y tests) */
+        /* Columna izquierda */
         .left-column {
-            flex: 1; /* Ocupa todo el espacio restante (ahora será el 70%) */
-            padding: 3rem 4rem;
+            flex: 1; 
+            /* Redujimos el padding arriba y a la izquierda para acercar todo a los bordes */
+            padding: 1.5rem 3rem 2rem 1.5rem; 
             display: flex;
             flex-direction: column;
         }
 
-        .logo-container {
+        /* ----- NUEVO ENCABEZADO (Logo + Barra de Progreso) ----- */
+        .header-container {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            width: 100%;
             margin-bottom: 2rem;
         }
 
+        .logo-container {
+            flex-shrink: 0; /* Evita que el logo se aplaste */
+        }
+
         .logo {
-            max-width: 140px; /* Reducido a la mitad */
+            max-width: 140px; 
             height: auto;
         }
+
+        /* ----- BARRA DE PROGRESO (Stepper) ----- */
+        .stepper-container {
+            display: flex;
+            align-items: flex-start;
+            flex: 1;
+            margin-left: 3rem; /* Separación entre el logo y los pasos */
+            margin-top: 0.5rem;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            width: 80px; /* Ancho fijo para centrar bien los textos */
+        }
+
+        .step-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #777;
+            transition: all 0.3s;
+        }
+
+        /* Estado Completado (Pasos 1 y 2) */
+        .step.completed .step-circle {
+            background-color: #8EE4D5; /* Turquesa del degradé */
+            color: #ffffff;
+        }
+
+        /* Estado Activo (Paso 3) */
+        .step.active .step-circle {
+            background-color: #B588C0; /* Fucsia del degradé */
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(181, 136, 192, 0.5); /* Efecto de brillo */
+            transform: scale(1.1); /* Lo hace apenitas más grande para destacar */
+        }
+
+        .step-label {
+            font-size: 11px;
+            text-align: center;
+            margin-top: 10px;
+            color: #555;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .step-line {
+            flex: 1;
+            height: 3px;
+            background-color: #e0e0e0;
+            margin-top: 15px; /* Alineado al centro de los círculos */
+            z-index: 1;
+        }
+
+        /* Línea completada */
+        .step-line.completed {
+            background-color: #8EE4D5;
+        }
+
+        /* ------------------------------------------------------- */
 
         /* Área dedicada a inyectar los tests psicométricos */
         .content-area {
@@ -62,31 +141,21 @@
 
         /* Columna derecha (Imagen de Irina) */
         .right-column {
-            width: 30%; /* Más angosta para dejar más espacio a los tests */
+            width: 30%; 
             background-image: url('https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg');
             background-size: cover;
-            /* Ajustamos la posición para que Irina no quede cortada al afinar la columna */
             background-position: 75% center; 
             background-repeat: no-repeat;
         }
 
-        /* Diseño Responsivo (Para tablets y celulares) */
+        /* Diseño Responsivo */
         @media (max-width: 900px) {
-            body {
-                padding: 1rem;
-            }
-            .main-container {
-                flex-direction: column;
-                height: auto;
-            }
-            .left-column {
-                padding: 2rem;
-            }
-            .right-column {
-                width: 100%;
-                height: 400px; 
-                background-position: center center;
-            }
+            body { padding: 1rem; }
+            .main-container { flex-direction: column; height: auto; }
+            .header-container { flex-direction: column; align-items: center; gap: 1rem; }
+            .stepper-container { margin-left: 0; width: 100%; }
+            .left-column { padding: 2rem; }
+            .right-column { width: 100%; height: 400px; background-position: center top; }
         }
     </style>
 </head>
@@ -96,21 +165,53 @@
         
         <!-- MITAD IZQUIERDA -->
         <div class="left-column">
-            <!-- Logo de Irina -->
-            <div class="logo-container">
-                <img src="https://i.ibb.co/JFMJBm0S/logo-ihs.jpg" alt="Irina Hire Selection" class="logo">
+            
+            <!-- ENCABEZADO: Logo + Stepper -->
+            <div class="header-container">
+                <div class="logo-container">
+                    <img src="https://i.ibb.co/JFMJBm0S/logo-ihs.jpg" alt="Irina Hire Selection" class="logo">
+                </div>
+                
+                <!-- BARRA DE PROGRESO -->
+                <div class="stepper-container">
+                    <!-- Paso 1 -->
+                    <div class="step completed">
+                        <div class="step-circle">✓</div>
+                        <div class="step-label">Postulación</div>
+                    </div>
+                    <div class="step-line completed"></div>
+                    
+                    <!-- Paso 2 -->
+                    <div class="step completed">
+                        <div class="step-circle">✓</div>
+                        <div class="step-label">Análisis y<br>Ranqueo</div>
+                    </div>
+                    <div class="step-line completed"></div>
+                    
+                    <!-- Paso 3 -->
+                    <div class="step active">
+                        <div class="step-circle">3</div>
+                        <div class="step-label">Psicométrico</div>
+                    </div>
+                    <div class="step-line"></div>
+                    
+                    <!-- Paso 4 -->
+                    <div class="step pending">
+                        <div class="step-circle">4</div>
+                        <div class="step-label">Entrevista</div>
+                    </div>
+                </div>
             </div>
             
-            <!-- Contenedor vacío donde irán la barra de progreso y las tarjetas de los tests -->
+            <!-- CONTENEDOR DE LOS TESTS -->
             <div class="content-area" id="psychometric-tests-container">
-                <!-- Aquí inyectaremos el contenido de los tests -->
+                <!-- Aquí inyectaremos las tarjetas de los tests en el siguiente paso -->
             </div>
+
         </div>
 
-        <!-- MITAD DERECHA (Imagen) -->
-        <div class="right-column">
-            <!-- La imagen está configurada en el CSS como fondo -->
-        </div>
+        <!-- MITAD DERECHA (Imagen de Irina) -->
+        <div class="right-column"></div>
 
     </div>
 
