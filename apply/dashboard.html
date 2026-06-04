@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard Blic - Irina Hire Selection</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -23,14 +22,10 @@
         .bg-rojo { background-color: #e74c3c; color: white; }
         .bg-amarillo { background-color: #f1c40f; color: black; }
         .bg-verde { background-color: #2ecc71; color: white; }
-        
-        /* Verde Esmeralda Metalizado (90-97) */
         .bg-emerald-metal { 
             background: radial-gradient(circle at 30% 30%, #50C878, #2E8B57);
             color: white; box-shadow: inset 0 0 30px rgba(0,0,0,0.3);
         }
-
-        /* Degradado Irina Animado (98-100) - Movimiento más largo */
         .bg-irina-animado { 
             background: linear-gradient(135deg, #8EE4D5, #B588C0, #8EE4D5, #B588C0); 
             background-size: 400% 400%; 
@@ -43,62 +38,63 @@
         .radar-container { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
         .icons-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 5px; padding: 0 10px; }
         .icon { background: rgba(255,255,255,0.3); aspect-ratio: 1 / 1; border-radius: 4px; }
-        .buttons-group { display: flex; gap: 5px; margin-top: 15px; }
-        .btn-card { flex: 1; padding: 8px 2px; border: none; border-radius: 6px; cursor: pointer; font-size: 8px; font-weight: bold; background: #222; color: white; box-shadow: 0 4px 0 #000; transition: all 0.1s; }
-        .btn-card:active { transform: translateY(2px); box-shadow: 0 2px 0 #000; }
+        .btn-card { flex: 1; padding: 8px 2px; border: none; border-radius: 6px; cursor: pointer; font-size: 8px; font-weight: bold; background: #222; color: white; box-shadow: 0 3px 0 #000; }
     </style>
 </head>
 <body>
 
     <div class="header-top">
         <img src="https://i.ibb.co/JFMJBm0S/logo-ihs.jpg" class="logo">
-        <h2>Dashboard Blic</h2>
+        <h2>Dashboard Blic - Talentos</h2>
         <div style="width: 40px; height: 40px; border-radius: 50%; background: url('https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg') center/cover;"></div>
     </div>
 
     <div class="grid-container" id="dashboard"></div>
 
 <script>
-    const supabase = supabase.createClient('https://zuzvozgjsppkxvdlptmk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0');
-
-    async function cargarDashboard() {
-        // Ejemplo de datos para visualización
-        const candidatos = [
-            { id: "02546", score: 99 }, { id: "01123", score: 94 }, 
-            { id: "08892", score: 45 }, { id: "03341", score: 75 }
-        ];
+    // 6 Ejemplos para validar toda la paleta de colores
+    const candidatos = [
+        { id: "00001", score: 100 }, // Degradado Animado
+        { id: "00002", score: 95 },  // Verde Esmeralda Metalizado
+        { id: "00003", score: 85 },  // Verde Mate
+        { id: "00004", score: 70 },  // Amarillo
+        { id: "00005", score: 55 },  // Rojo
+        { id: "00006", score: 30 }   // Marrón
+    ];
+    
+    const grid = document.getElementById('dashboard');
+    
+    candidatos.forEach((c, index) => {
+        let clase = (c.score >= 98) ? 'bg-irina-animado' : 
+                    (c.score >= 90 ? 'bg-emerald-metal' : 
+                    (c.score >= 80 ? 'bg-verde' : 
+                    (c.score >= 60 ? 'bg-amarillo' : 
+                    (c.score >= 50 ? 'bg-rojo' : 'bg-marron'))));
         
-        const grid = document.getElementById('dashboard');
+        const card = document.createElement('div');
+        card.className = `blic-card ${clase}`;
+        card.innerHTML = `
+            <div class="title-score"><span>BLIC #${c.id}</span><span>SCORE: ${c.score}</span></div>
+            <div class="radar-container"><canvas id="radar-${index}"></canvas></div>
+            <div class="icons-grid">${Array(6).fill('<div class="icon"></div>').join('')}</div>
+            <div style="display:flex; gap:5px; margin-top:15px;">
+                <button class="btn-card">CV</button><button class="btn-card">AUDIO</button><button class="btn-card">REPORT</button>
+            </div>
+        `;
+        grid.appendChild(card);
         
-        candidatos.forEach((c, index) => {
-            let clase = (c.score >= 98) ? 'bg-irina-animado' : (c.score >= 90 ? 'bg-emerald-metal' : (c.score >= 80 ? 'bg-verde' : (c.score >= 60 ? 'bg-amarillo' : (c.score >= 50 ? 'bg-rojo' : 'bg-marron'))));
-            
-            const card = document.createElement('div');
-            card.className = `blic-card ${clase}`;
-            card.innerHTML = `
-                <div class="title-score"><span>BLIC #${c.id}</span><span>SCORE: ${c.score}</span></div>
-                <div class="radar-container"><canvas id="radar-${index}"></canvas></div>
-                <div class="icons-grid">${Array(6).fill('<div class="icon"></div>').join('')}</div>
-                <div class="buttons-group">
-                    <button class="btn-card">CV</button><button class="btn-card">AUDIO</button><button class="btn-card">REPORT</button>
-                </div>
-            `;
-            grid.appendChild(card);
-            
-            new Chart(document.getElementById(`radar-${index}`), {
-                type: 'radar',
-                data: {
-                    labels: ['Ext', 'Ama', 'Res', 'Est', 'Ape'],
-                    datasets: [{ data: [3, 4, 2, 5, 4], backgroundColor: 'rgba(255,255,255,0.2)', borderColor: '#fff' }]
-                },
-                options: { 
-                    plugins: { legend: { display: false } }, 
-                    scales: { r: { beginAtZero: true, max: 5, ticks: { display: false }, grid: { color: 'rgba(255,255,255,0.3)' }, angleLines: { color: 'rgba(255,255,255,0.3)' } } } 
-                }
-            });
+        new Chart(document.getElementById(`radar-${index}`), {
+            type: 'radar',
+            data: {
+                labels: ['Ext', 'Ama', 'Res', 'Est', 'Ape'],
+                datasets: [{ data: [3, 4, 2, 5, 4], backgroundColor: 'rgba(255,255,255,0.2)', borderColor: '#fff' }]
+            },
+            options: { 
+                plugins: { legend: { display: false } }, 
+                scales: { r: { beginAtZero: true, max: 5, ticks: { display: false }, grid: { color: 'rgba(255,255,255,0.3)' } } } 
+            }
         });
-    }
-    cargarDashboard();
+    });
 </script>
 </body>
 </html>
