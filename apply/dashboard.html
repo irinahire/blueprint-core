@@ -39,7 +39,6 @@
     </div>
     <div id="modal-perfil" onclick="this.style.display='none'">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <div style="background:#000; color:#0f0; padding:10px; font-size:10px; margin-bottom:20px;">DEBUG: <pre id="m-debug-data"></pre></div>
             <div class="profile-layout">
                 <div>
                     <div id="m-foto" class="profile-photo"></div>
@@ -48,8 +47,8 @@
                     <p id="m-telefono" style="font-weight:bold;"></p>
                 </div>
                 <div>
-                    <h3>Trayectoria</h3><p id="m-trayectoria"></p>
-                    <h3>Formación</h3><p id="m-estudios"></p>
+                    <h3>Trayectoria</h3><div id="m-trayectoria"></div>
+                    <h3>Formación</h3><div id="m-estudios"></div>
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
                         <div><h3>Blandas</h3><p id="m-blandas"></p></div>
                         <div><h3>Duras</h3><p id="m-duras"></p></div>
@@ -71,30 +70,34 @@
                 const card = document.createElement('div');
                 card.className = "blic-card " + clase;
                 card.onclick = () => abrirModal(d);
-                card.innerHTML = `
-                    <div style="font-weight:900;">SCORE: ${score}</div>
-                    <div class="radar-container"><canvas id="radar-${index}"></canvas></div>
-                    <div class="icons-grid">${['🚀', '🛡️', '🧠', '🔗'].map(i => `<div class="icon-box">${i}</div>`).join('')}</div>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:5px; margin-top:5px;">
-                        <button class="btn-card">CV</button><button class="btn-card">AUDIO</button><button class="btn-card">REPORT</button>
-                    </div>`;
+                card.innerHTML = `<div style="font-weight:900;">SCORE: ${score}</div><div class="radar-container"><canvas id="radar-${index}"></canvas></div><div class="icons-grid">${['🚀', '🛡️', '🧠', '🔗'].map(i => `<div class="icon-box">${i}</div>`).join('')}</div><div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:5px; margin-top:5px;"><button class="btn-card">CV</button><button class="btn-card">AUDIO</button><button class="btn-card">REPORT</button></div>`;
                 grid.appendChild(card);
                 new Chart(document.getElementById("radar-" + index), { type: 'radar', data: { labels: ['Téc', 'Exp', 'Ada', 'Lid', 'IA'], datasets: [{ data: [4, 5, 3, 4, 5], backgroundColor: 'rgba(255,255,255,0.4)' }] }, options: { plugins: { legend: { display: false } } } });
             });
         }
         function abrirModal(d) {
-            console.log("🚩 PROCESANDO DATOS:", d);
-            document.getElementById('m-debug-data').innerText = JSON.stringify(d, null, 2);
-            // Extracción corregida según lo que se ve en la imagen:
-            const p = d; 
+            console.log("🚩 Datos recibidos:", d);
             const base = d["!perfil"]?.["perfil-base"] || {};
             const cont = d["!perfil"]?.["perfil-contacto"] || {};
+            
             document.getElementById('m-nombre').innerText = base.nombre || "Sin nombre";
             document.getElementById('m-mail').innerText = cont.email || "Sin email";
             document.getElementById('m-telefono').innerText = cont.telefono || "Sin teléfono";
             document.getElementById('m-foto').style.backgroundImage = base.foto ? `url('${base.foto}')` : 'none';
-            // Aquí leemos la clave "experiencia" que viene en tu JSON:
-            document.getElementById('m-trayectoria').innerText = d.experiencia ? JSON.stringify(d.experiencia[0]?.descripcion) : "No disponible";
+            
+            // Lógica corregida para arrays:
+            const trayContainer = document.getElementById('m-trayectoria');
+            trayContainer.innerHTML = '';
+            if (Array.isArray(d.experiencia)) {
+                d.experiencia.forEach(exp => {
+                    const p = document.createElement('p');
+                    p.innerText = exp.descripcion || "Sin descripción";
+                    trayContainer.appendChild(p);
+                });
+            } else {
+                trayContainer.innerText = "No disponible";
+            }
+
             document.getElementById('m-estudios').innerText = d["!perfil"]?.estudios || "No disponible";
             document.getElementById('m-blandas').innerText = d["!perfil"]?.habilidades_blandas || "No disponible";
             document.getElementById('m-duras').innerText = d["!perfil"]?.habilidades_duras || "No disponible";
