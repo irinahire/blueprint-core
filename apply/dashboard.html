@@ -1,23 +1,45 @@
-async function testConexion() {
-    console.log("--- INICIANDO TEST DE DATOS ---");
-    
-    // Probamos traer UNA SOLA fila
-    const { data, error } = await sb.from('habitat').select('*').limit(1);
-    
-    if (error) {
-        console.error("❌ ERROR EN LA CONSULTA:", error.message);
-    } else if (data && data.length > 0) {
-        console.log("✅ DATOS RECIBIDOS CON ÉXITO:");
-        console.log("Contenido de 'data' en la fila 1:", data[0].data);
-        
-        // Intentamos acceder al Score
-        const fractal = typeof data[0].data === 'string' ? JSON.parse(data[0].data) : data[0].data;
-        const score = fractal?.["!irina"]?.evaluacion?.score_general;
-        console.log("🎯 Score extraído:", score);
-    } else {
-        console.warn("⚠️ La consulta no arrojó errores, pero la tabla está vacía.");
-    }
-}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Conexión Blic</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <h1>Revisando conexión...</h1>
+    <p>Abre la consola (F12) para ver el resultado de la conexión.</p>
 
-// Ejecutamos este test en lugar del dashboard completo
-testConexion();
+    <script>
+        // Inicialización
+        const sb = supabase.createClient(
+            'https://zuzvozgjsppkxvdlptmk.supabase.co', 
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0'
+        );
+
+        async function probarConexion() {
+            console.log("Iniciando prueba de conexión...");
+            
+            try {
+                // Intentamos traer solo una fila
+                const { data, error } = await sb.from('habitat').select('*').limit(1);
+                
+                if (error) {
+                    console.error("❌ ERROR DE SUPABASE:", error);
+                    alert("Error en la conexión. Revisa la consola (F12).");
+                } else {
+                    console.log("✅ ÉXITO. Datos recibidos:", data);
+                    if (data.length > 0) {
+                        console.log("Primer objeto de datos:", data[0]);
+                    } else {
+                        console.warn("⚠️ La consulta funcionó pero la tabla está vacía.");
+                    }
+                }
+            } catch (err) {
+                console.error("❌ ERROR INESPERADO:", err);
+            }
+        }
+
+        probarConexion();
+    </script>
+</body>
+</html>
