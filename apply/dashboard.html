@@ -12,7 +12,6 @@
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
         .blic-card { background: white; border-radius: 12px; padding: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); display: flex; flex-direction: column; gap: 8px; aspect-ratio: 1 / 1.5; }
         
-        /* Colores BLIC */
         .bg-marron { background-color: #8B4513; color: white; }
         .bg-rojo { background-color: #e74c3c; color: white; }
         .bg-amarillo { background-color: #f1c40f; color: black; }
@@ -23,12 +22,11 @@
 
         .title-score { font-size: 13px; font-weight: 900; display: flex; justify-content: space-between; }
         
-        /* Radar ocupa más espacio */
-        .radar-container { flex: 2; min-height: 0; display: flex; align-items: center; justify-content: center; padding: 5px; }
+        .radar-container { flex: 2; min-height: 0; display: flex; align-items: center; justify-content: center; padding: 5px; margin-bottom: 5px; }
         
-        /* Icons grid reducidos */
-        .icons-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; margin-top: 5px; padding: 0 10px; }
-        .icon-box { background: rgba(0,0,0,0.05); aspect-ratio: 1/1; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+        /* Ajuste fino: iconos más compactos y desplazados hacia abajo */
+        .icons-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding: 0 20px; margin-bottom: 5px; }
+        .icon-box { background: rgba(0,0,0,0.05); aspect-ratio: 1/1; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 10px; }
         
         .btn-card { padding: 6px; border: none; border-radius: 6px; cursor: pointer; font-size: 8px; font-weight: bold; background: rgba(0,0,0,0.1); color: #333; }
     </style>
@@ -55,7 +53,6 @@
             if (error) { console.error("❌ Error:", error); return; }
 
             grid.innerHTML = '';
-            // Lista de símbolos de prueba
             const iconos = ['🚀', '🛡️', '🧠', '🔗', '⚙️', '📈'];
 
             data.forEach((row, index) => {
