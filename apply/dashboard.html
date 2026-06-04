@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard Blic - Irina Hire Selection</title>
+    <!-- Librerías Externas -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: linear-gradient(to bottom left, #8EE4D5, #B588C0); min-height: 100vh; padding: 2rem; }
@@ -13,7 +15,7 @@
         .grid-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
         .blic-card { background: white; border-radius: 12px; padding: 10px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); display: flex; flex-direction: column; gap: 8px; aspect-ratio: 1 / 1.5; }
         
-        /* Colores */
+        /* Estilos de Colores */
         .bg-marron { background-color: #8B4513; color: white; }
         .bg-rojo { background-color: #e74c3c; color: white; }
         .bg-amarillo { background-color: #f1c40f; color: black; }
@@ -39,56 +41,68 @@
 
     <div class="grid-container" id="dashboard"></div>
 
-<script>
-    const supabase = supabase.createClient('https://zuzvozgjsppkxvdlptmk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0');
+    <script>
+        // 1. Inicialización única y segura
+        const sb = supabase.createClient(
+            'https://zuzvozgjsppkxvdlptmk.supabase.co', 
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0'
+        );
 
-    async function cargarDashboard() {
-        const grid = document.getElementById('dashboard');
-        
-        // 1. Renderizar ejemplos estáticos
-        const ejemplos = [
-            { id: "00001", score: 99 }, { id: "00002", score: 95 }, 
-            { id: "00003", score: 85 }, { id: "00004", score: 70 },
-            { id: "00005", score: 55 }, { id: "00006", score: 30 }
-        ];
+        // 2. Función maestra de renderizado
+        async function initDashboard() {
+            const grid = document.getElementById('dashboard');
+            grid.innerHTML = ''; 
 
-        ejemplos.forEach((c, i) => renderCard(c.id, c.score, null, i));
+            // A. Ejemplos estáticos (para probar diseño)
+            const ejemplos = [
+                { id: "00001", score: 99 }, { id: "00002", score: 95 }, 
+                { id: "00003", score: 85 }, { id: "00004", score: 70 },
+                { id: "00005", score: 55 }, { id: "00006", score: 30 }
+            ];
+            ejemplos.forEach((c, i) => createCard(c.id, c.score, null, i));
 
-        // 2. Traer datos reales
-        const { data: registros } = await supabase.from('habitat').select('*');
-        if (registros) {
-            registros.forEach((row, i) => {
-                const fractal = typeof row.data === 'string' ? JSON.parse(row.data) : row.data;
-                const score = fractal["!irina"]?.evaluacion?.score_general || 50;
-                renderCard(row.id.slice(-5).toUpperCase(), score, fractal, i + 100);
+            // B. Carga desde Supabase
+            const { data: registros, error } = await sb.from('habitat').select('*');
+            if (error) {
+                console.error("Error al conectar:", error.message);
+                return;
+            }
+
+            if (registros) {
+                registros.forEach((row, i) => {
+                    const fractal = typeof row.data === 'string' ? JSON.parse(row.data) : row.data;
+                    const score = fractal?.["!irina"]?.evaluacion?.score_general || 0;
+                    if(score > 0) createCard(row.id.slice(-5).toUpperCase(), score, fractal, i + 100);
+                });
+            }
+        }
+
+        function createCard(id, score, fractal, index) {
+            let clase = (score >= 98) ? 'bg-irina-animado' : (score >= 90 ? 'bg-emerald-metal' : (score >= 80 ? 'bg-verde' : (score >= 60 ? 'bg-amarillo' : (score >= 50 ? 'bg-rojo' : 'bg-marron'))));
+            const grid = document.getElementById('dashboard');
+            const card = document.createElement('div');
+            card.className = `blic-card ${clase}`;
+            card.innerHTML = `
+                <div class="title-score"><span>BLIC #${id}</span><span>SCORE: ${score}</span></div>
+                <div class="radar-container"><canvas id="radar-${index}"></canvas></div>
+                <div class="icons-grid">${Array(6).fill('<div class="icon"></div>').join('')}</div>
+                <div style="display:flex; gap:5px; margin-top:15px;">
+                    <button class="btn-card" onclick="window.open('${fractal?.["!documento"]?.url || '#'}')">CV</button>
+                    <button class="btn-card">AUDIO</button>
+                    <button class="btn-card">REPORT</button>
+                </div>
+            `;
+            grid.appendChild(card);
+            
+            new Chart(document.getElementById(`radar-${index}`), {
+                type: 'radar',
+                data: { labels: ['Téc', 'Exp', 'Ada', 'Lid', 'IA'], datasets: [{ data: [4, 3, 5, 2, 4], backgroundColor: 'rgba(255,255,255,0.2)', borderColor: '#fff' }] },
+                options: { plugins: { legend: { display: false } }, scales: { r: { beginAtZero: true, max: 5, ticks: { display: false }, grid: { color: 'rgba(255,255,255,0.3)' } } } }
             });
         }
-    }
 
-    function renderCard(id, score, fractal, index) {
-        let clase = (score >= 98) ? 'bg-irina-animado' : (score >= 90 ? 'bg-emerald-metal' : (score >= 80 ? 'bg-verde' : (score >= 60 ? 'bg-amarillo' : (score >= 50 ? 'bg-rojo' : 'bg-marron'))));
-        const grid = document.getElementById('dashboard');
-        const card = document.createElement('div');
-        card.className = `blic-card ${clase}`;
-        card.innerHTML = `
-            <div class="title-score"><span>BLIC #${id}</span><span>SCORE: ${score}</span></div>
-            <div class="radar-container"><canvas id="radar-${index}"></canvas></div>
-            <div class="icons-grid">${Array(6).fill('<div class="icon"></div>').join('')}</div>
-            <div style="display:flex; gap:5px; margin-top:15px;">
-                <button class="btn-card" onclick="window.open('${fractal?.["!documento"]?.url || '#'}')">CV</button>
-                <button class="btn-card">AUDIO</button>
-                <button class="btn-card">REPORT</button>
-            </div>
-        `;
-        grid.appendChild(card);
-        new Chart(document.getElementById(`radar-${index}`), {
-            type: 'radar',
-            data: { labels: ['Téc', 'Exp', 'Ada', 'Lid', 'IA'], datasets: [{ data: [Math.random()*2+3, 4, 3, 5, 4], backgroundColor: 'rgba(255,255,255,0.2)', borderColor: '#fff' }] },
-            options: { plugins: { legend: { display: false } }, scales: { r: { beginAtZero: true, max: 5, ticks: { display: false }, grid: { color: 'rgba(255,255,255,0.3)' } } } }
-        });
-    }
-
-    cargarDashboard();
-</script>
+        // Ejecutar
+        initDashboard();
+    </script>
 </body>
 </html>
