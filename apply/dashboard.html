@@ -76,31 +76,32 @@
             });
         }
         function abrirModal(d) {
-            console.log("🚩 Datos recibidos:", d);
-            const base = d["!perfil"]?.["perfil-base"] || {};
-            const cont = d["!perfil"]?.["perfil-contacto"] || {};
+            // Buscamos la información sin importar dónde esté, usando búsqueda por "fuzziness" o llaves conocidas
+            const perf = d["!perfil"] || d;
+            const base = perf["perfil-base"] || {};
+            const cont = perf["perfil-contacto"] || {};
             
-            document.getElementById('m-nombre').innerText = base.nombre || "Sin nombre";
-            document.getElementById('m-mail').innerText = cont.email || "Sin email";
-            document.getElementById('m-telefono').innerText = cont.telefono || "Sin teléfono";
+            document.getElementById('m-nombre').innerText = base.nombre || d.nombre || "Sin nombre";
+            document.getElementById('m-mail').innerText = cont.email || d.email || "Sin email";
+            document.getElementById('m-telefono').innerText = cont.telefono || d.telefono || "Sin teléfono";
             document.getElementById('m-foto').style.backgroundImage = base.foto ? `url('${base.foto}')` : 'none';
             
-            // Lógica corregida para arrays:
+            // Buscamos trayectoria en varios niveles posibles
+            const trayectoriaRaw = d.experiencia || d["!trayectoria"]?.experiencia || perf.experiencia || [];
             const trayContainer = document.getElementById('m-trayectoria');
             trayContainer.innerHTML = '';
-            if (Array.isArray(d.experiencia)) {
-                d.experiencia.forEach(exp => {
+            if (Array.isArray(trayectoriaRaw)) {
+                trayectoriaRaw.forEach(exp => {
                     const p = document.createElement('p');
-                    p.innerText = exp.descripcion || "Sin descripción";
+                    p.innerText = exp.descripcion || exp || "Sin descripción";
                     trayContainer.appendChild(p);
                 });
             } else {
                 trayContainer.innerText = "No disponible";
             }
-
-            document.getElementById('m-estudios').innerText = d["!perfil"]?.estudios || "No disponible";
-            document.getElementById('m-blandas').innerText = d["!perfil"]?.habilidades_blandas || "No disponible";
-            document.getElementById('m-duras').innerText = d["!perfil"]?.habilidades_duras || "No disponible";
+            document.getElementById('m-estudios').innerText = perf.estudios || d.estudios || "No disponible";
+            document.getElementById('m-blandas').innerText = perf.habilidades_blandas || d.habilidades_blandas || "No disponible";
+            document.getElementById('m-duras').innerText = perf.habilidades_duras || d.habilidades_duras || "No disponible";
             document.getElementById('modal-perfil').style.display = 'flex';
         }
         cargarDatos();
