@@ -17,7 +17,8 @@
         .bg-irina-animado { background: linear-gradient(135deg, #8EE4D5, #B588C0); color: white; }
         .radar-container { flex: 4; min-height: 0; display: flex; align-items: center; justify-content: center; }
         .icons-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 0 10px; }
-        .icon-box { background: rgba(0,0,0,0.15); aspect-ratio: 1/1; border-radius: 4px; display: flex; align-items: center; justify-content: center; }
+        .icon-box { background: rgba(0,0,0,0.15); aspect-ratio: 1/1; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; }
+        .btn-card { padding: 6px; border: none; border-radius: 6px; cursor: pointer; font-size: 8px; font-weight: bold; background: rgba(0,0,0,0.2); color: white; }
         #modal-perfil { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index:1000; padding: 30px; overflow-y: auto; }
         .modal-content { width: 90%; max-width: 1100px; margin: auto; background: white; padding: 50px; border-radius: 20px; position: relative; }
         .profile-layout { display: grid; grid-template-columns: 250px 1fr; gap: 40px; }
@@ -28,6 +29,7 @@
     <div class="main-container">
         <div class="header">
             <img src="https://i.ibb.co/JFMJBm0S/logo-ihs.jpg" style="max-width: 150px;">
+            <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" style="max-width: 60px; border-radius: 50%;">
         </div>
         <div class="grid-container" id="dashboard"></div>
     </div>
@@ -36,7 +38,7 @@
             <div class="profile-layout">
                 <div>
                     <div id="m-foto" class="profile-photo"></div>
-                    <h2 id="m-nombre">Nombre</h2>
+                    <h2 id="m-nombre" style="margin-top:20px;">Nombre</h2>
                     <p id="m-mail" style="color:#666;"></p>
                     <p id="m-telefono" style="font-weight:bold;"></p>
                 </div>
@@ -49,7 +51,7 @@
                     </div>
                 </div>
             </div>
-            <button onclick="document.getElementById('modal-perfil').style.display='none'" style="margin-top:20px; padding:10px 20px;">Cerrar</button>
+            <button onclick="document.getElementById('modal-perfil').style.display='none'" style="margin-top:40px; padding:15px 30px; cursor:pointer;">Cerrar Perfil</button>
         </div>
     </div>
     <script>
@@ -60,19 +62,25 @@
             data.forEach((row, index) => {
                 const d = typeof row.data === 'string' ? JSON.parse(row.data) : row.data;
                 const card = document.createElement('div');
-                card.className = "blic-card";
+                card.className = "blic-card bg-irina-animado";
                 card.onclick = () => abrirModal(d);
-                card.innerHTML = `<div>Candidato #${index + 1}</div><div class="radar-container"><canvas id="radar-${index}"></canvas></div><div class="icons-grid">${['🚀', '🛡️', '🧠', '🔗'].map(i => `<div class="icon-box">${i}</div>`).join('')}</div>`;
+                card.innerHTML = `
+                    <div style="font-size:12px; font-weight:bold;">CANDIDATO #${index + 1}</div>
+                    <div class="radar-container"><canvas id="radar-${index}"></canvas></div>
+                    <div class="icons-grid">${['🚀', '🛡️', '🧠', '🔗'].map(i => `<div class="icon-box">${i}</div>`).join('')}</div>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:5px; margin-top:5px;">
+                        <button class="btn-card">CV</button><button class="btn-card">AUDIO</button><button class="btn-card">REPORT</button>
+                    </div>`;
                 grid.appendChild(card);
-                new Chart(document.getElementById("radar-" + index), { type: 'radar', data: { labels: ['Téc', 'Exp', 'Ada', 'Lid', 'IA'], datasets: [{ data: [4, 5, 3, 4, 5], backgroundColor: 'rgba(0,0,0,0.1)' }] } });
+                new Chart(document.getElementById("radar-" + index), { type: 'radar', data: { labels: ['Téc', 'Exp', 'Ada', 'Lid', 'IA'], datasets: [{ data: [4, 5, 3, 4, 5], backgroundColor: 'rgba(255,255,255,0.4)' }] }, options: { plugins: { legend: { display: false } } } });
             });
         }
         function abrirModal(d) {
-            // Busqueda profunda para evitar que falle si la estructura cambió
-            const p = d["!perfil"] || d.perfil || {};
+            console.log("Datos para modal:", d);
+            // Intenta extraer de varias estructuras posibles
+            const p = d["!perfil"] || d.perfil || d;
             const base = p["perfil-base"] || p.base || {};
             const cont = p["perfil-contacto"] || p.contacto || {};
-            
             document.getElementById('m-nombre').innerText = base.nombre || "Sin nombre";
             document.getElementById('m-mail').innerText = cont.email || "Sin email";
             document.getElementById('m-telefono').innerText = cont.telefono || "Sin teléfono";
