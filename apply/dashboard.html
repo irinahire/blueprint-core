@@ -2,51 +2,57 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard Blic</title>
+    <title>Irina Hire Selection - Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: linear-gradient(to bottom left, #8EE4D5, #B588C0); min-height: 100vh; padding: 2rem; }
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #8EE4D5, #B588C0); 
+            min-height: 100vh; 
+            padding: 2rem; 
+            margin: 0;
+        }
+        /* Contenedor central blanco */
+        .main-container { 
+            background: rgba(255, 255, 255, 0.95); 
+            border-radius: 20px; 
+            padding: 2rem; 
+            max-width: 1200px; 
+            margin: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        .header { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #eee; padding-bottom: 1rem; margin-bottom: 2rem; }
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
         
         .blic-card { 
             background: white; border-radius: 12px; padding: 12px; 
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2); 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
             display: flex; flex-direction: column; gap: 8px; 
-            aspect-ratio: 1 / 1.5; cursor: pointer; transition: all 0.3s ease;
+            aspect-ratio: 1 / 1.5; cursor: pointer; transition: 0.3s;
         }
-        .blic-card:hover { transform: translateY(-10px); box-shadow: 0 15px 35px rgba(255,255,255,0.6); }
-
-        /* Estilos de colores */
-        .bg-marron { background-color: #8B4513; color: white; }
-        .bg-rojo { background-color: #e74c3c; color: white; }
-        .bg-amarillo { background-color: #f1c40f; color: black; }
-        .bg-verde { background-color: #2ecc71; color: white; }
-        .bg-emerald-metal { background: radial-gradient(circle at 30% 30%, #50C878, #2E8B57); color: white; }
-        .bg-irina-animado { background: linear-gradient(135deg, #8EE4D5, #B588C0, #8EE4D5, #B588C0); background-size: 400% 400%; animation: moveGradient 12s ease infinite; color: white; }
-        @keyframes moveGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-
-        .radar-container { flex: 4; min-height: 0; display: flex; align-items: center; justify-content: center; }
-        .icons-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 0 10px; margin-bottom: 8px; }
-        .icon-box { background: rgba(0,0,0,0.1); aspect-ratio: 1/1; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        .blic-card:hover { transform: translateY(-8px); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         
-        /* Modal Estilo Overlay */
-        #modal-perfil { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index:1000; padding: 50px; color: white; overflow-y: auto; }
-        .modal-content { max-width: 800px; margin: auto; background: #222; padding: 40px; border-radius: 20px; }
+        /* Clases de color (degradados) */
+        .bg-irina-animado { background: linear-gradient(135deg, #8EE4D5, #B588C0); color: white; }
+        
+        .radar-container { flex: 4; min-height: 0; display: flex; align-items: center; justify-content: center; }
+        .icons-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 0 10px; }
+        .icon-box { background: rgba(0,0,0,0.1); aspect-ratio: 1/1; border-radius: 4px; display: flex; align-items: center; justify-content: center; }
+        
+        /* Modal */
+        #modal-perfil { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); z-index:1000; justify-content: center; align-items: center; }
     </style>
 </head>
 <body>
 
-    <div class="grid-container" id="dashboard"></div>
-
-    <div id="modal-perfil" onclick="this.style.display='none'">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <h2 id="m-nombre">Candidato</h2>
-            <p id="m-resumen" style="margin: 20px 0;"></p>
-            <a id="btn-whatsapp" target="_blank" style="display:inline-block; padding: 15px; background: #25D366; color: white; text-decoration: none; border-radius: 8px;">Contactar por WhatsApp</a>
-            <button onclick="document.getElementById('modal-perfil').style.display='none'" style="margin-left:10px;">Cerrar</button>
+    <div class="main-container">
+        <div class="header">
+            <img src="https://i.ibb.co/JFMJBm0S/logo-ihs.jpg" style="max-width: 150px;">
+            <img src="https://i.ibb.co/VMyD7QZ/irina-perfil.png" style="max-width: 50px; border-radius: 50%;">
         </div>
+        <div class="grid-container" id="dashboard"></div>
     </div>
 
     <script>
@@ -54,41 +60,38 @@
 
         async function cargarDatos() {
             const grid = document.getElementById('dashboard');
-            const { data } = await sb.from('habitat').select('*');
+            // Ordenamos por fecha de creación para que el número sea consecutivo
+            const { data } = await sb.from('habitat').select('*').order('created_at', { ascending: true });
+            
             grid.innerHTML = '';
+            let contador = 1;
 
             data.forEach((row, index) => {
                 const d = typeof row.data === 'string' ? JSON.parse(row.data) : row.data;
                 const score = d?.["!irina"]?.evaluacion?.score_general;
+                
                 if (score) {
                     const card = document.createElement('div');
-                    card.className = `blic-card ${getClase(score)}`;
+                    card.className = `blic-card`;
                     card.onclick = () => abrirModal(d);
+                    
                     card.innerHTML = `
-                        <div style="font-size:12px; font-weight:900;">BLIC #${row.id.slice(-5)} | SCORE: ${score}</div>
+                        <div style="font-size:12px; font-weight:900;">BLIC #${contador.toString().padStart(3, '0')} | SCORE: ${score}</div>
                         <div class="radar-container"><canvas id="radar-${index}"></canvas></div>
                         <div class="icons-grid">${['🚀', '🛡️', '🧠', '🔗'].map(i => `<div class="icon-box">${i}</div>`).join('')}</div>
                     `;
                     grid.appendChild(card);
+                    contador++; // Aumenta el número correlativo
+                    
                     new Chart(document.getElementById(`radar-${index}`), {
                         type: 'radar',
-                        data: { labels: ['Téc', 'Exp', 'Ada', 'Lid', 'IA'], datasets: [{ data: [4, 5, 3, 4, 5], backgroundColor: 'rgba(255,255,255,0.3)' }] },
+                        data: { labels: ['Téc', 'Exp', 'Ada', 'Lid', 'IA'], datasets: [{ data: [4, 5, 3, 4, 5], backgroundColor: 'rgba(0,0,0,0.1)' }] },
                         options: { plugins: { legend: { display: false } }, scales: { r: { ticks: { display: false } } } }
                     });
                 }
             });
         }
-
-        function abrirModal(d) {
-            document.getElementById('m-nombre').innerText = d?.["!perfil"]?.["perfil-base"]?.nombre || "Candidato";
-            document.getElementById('m-resumen').innerText = d?.["!perfil"]?.resumen || "Sin resumen disponible.";
-            const tel = d?.["!perfil"]?.["perfil-contacto"]?.telefono;
-            document.getElementById('btn-whatsapp').href = `https://wa.me/${tel}`;
-            document.getElementById('modal-perfil').style.display = 'flex';
-        }
-
-        function getClase(s) { return s >= 98 ? 'bg-irina-animado' : s >= 90 ? 'bg-emerald-metal' : s >= 80 ? 'bg-verde' : s >= 60 ? 'bg-amarillo' : s >= 50 ? 'bg-rojo' : 'bg-marron'; }
-
+        
         cargarDatos();
     </script>
 </body>
