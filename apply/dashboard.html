@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Blic - Irina Hire Selection</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; padding: 2rem; }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
+        
+        /* La Tarjeta Blic */
+        .blic-card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); position: relative; overflow: hidden; }
+        
+        /* Fondo Dinámico */
+        .bg-emerald-comic { background: radial-gradient(circle, #2ecc71 10%, transparent 10%) 0 0 / 20px 20px; }
+        .bg-irina-gradient { background: linear-gradient(135deg, #8EE4D5, #B588C0); background-size: 200% 200%; animation: rotate 5s linear infinite; }
+        @keyframes rotate { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        .header-card { display: flex; justify-content: space-between; align-items: center; }
+        .title { font-size: 24px; font-weight: bold; }
+        .score-box { background: rgba(255,255,255,0.8); padding: 5px 15px; border-radius: 10px; font-weight: bold; }
+        
+        .radar-placeholder { height: 200px; background: #eee; margin: 20px 0; display: flex; align-items: center; justify-content: center; }
+        
+        .icons-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+        .icon { background: #ddd; height: 40px; border-radius: 8px; }
+
+        .buttons-group { display: flex; gap: 10px; }
+        .btn-card { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+    <h1>Dashboard de Candidatos Blic</h1>
+    <div class="grid-container" id="dashboard">
+        <!-- Aquí se inyectarán las tarjetas mediante JS -->
+    </div>
+
+<script>
+    // Función para cargar candidatos desde Supabase
+    async function cargarDashboard() {
+        const response = await fetch('https://TU_SUPABASE_URL.supabase.co/rest/v1/perfil?select=*&order=score.desc', {
+            headers: { 'apikey': 'TU_ANON_KEY', 'Authorization': 'Bearer TU_ANON_KEY' }
+        });
+        const candidatos = await response.json();
+        
+        const grid = document.getElementById('dashboard');
+        
+        candidatos.forEach(c => {
+            const blic = c.trayectoria.blic; // Asumiendo la estructura que mencionaste
+            const card = document.createElement('div');
+            card.className = `blic-card ${getBackgroundClass(c.score)}`;
+            
+            card.innerHTML = `
+                <div class="header-card">
+                    <div class="title">Blic Sharp #${c.id}</div>
+                    <div class="score-box">Score: ${c.score}%</div>
+                </div>
+                <div class="radar-placeholder"><!-- Aquí va el gráfico Chart.js --></div>
+                <div class="icons-grid">
+                    ${[1,2,3,4,5,6].map(() => '<div class="icon"></div>').join('')}
+                </div>
+                <div class="buttons-group">
+                    <button class="btn-card" onclick="window.open('${c.cv_url}')">CV</button>
+                    <button class="btn-card" onclick="window.open('${c.audio_url}')">Audio</button>
+                    <button class="btn-card" onclick="window.open('${c.reporte_url}')">Resumen</button>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    function getBackgroundClass(score) {
+        if (score >= 99) return 'bg-irina-gradient';
+        if (score >= 90) return 'bg-emerald-comic';
+        return ''; // Aquí manejarías los colores marrón, rojo, amarillo
+    }
+
+    cargarDashboard();
+</script>
+</body>
+</html>
