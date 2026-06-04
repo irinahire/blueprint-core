@@ -11,28 +11,30 @@
         .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; background: white; padding: 1rem 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .logo { max-width: 120px; }
 
-        /* Grid más compacto para que entren más naipes */
-        .grid-container { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+        .grid-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
 
         .blic-card { 
-            background: white; border-radius: 12px; padding: 12px; box-shadow: 0 6px 15px rgba(0,0,0,0.2);
-            display: flex; flex-direction: column; gap: 8px;
-            aspect-ratio: 1 / 1.5; /* Naipe un poquito más compacto */
+            background: white; border-radius: 12px; padding: 10px; box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            display: flex; flex-direction: column; gap: 8px; aspect-ratio: 1 / 1.5;
         }
 
-        /* Título a pantalla completa: BLIC #00000 SCORE: 00 */
-        .header-card { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        .title-score { font-size: 13px; font-weight: 900; color: #333; width: 100%; display: flex; justify-content: space-between; }
+        /* Título BLIC y SCORE más grande (16px) */
+        .title-score { font-size: 16px; font-weight: 900; color: #333; width: 100%; display: flex; justify-content: space-between; }
 
         .radar-container { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
         
-        /* Iconos más cuadraditos */
-        .icons-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 5px; }
-        .icon { background: #eee; aspect-ratio: 1 / 1; border-radius: 4px; }
+        /* Iconos más chicos y cuadrados */
+        .icons-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 5px; padding: 0 10px; }
+        .icon { background: #eee; aspect-ratio: 1 / 1; border-radius: 4px; transform: scale(0.85); }
 
-        /* Distancia separadora para botones */
-        .buttons-group { display: flex; gap: 5px; margin-top: 10px; }
-        .btn-card { flex: 1; padding: 6px 2px; border: none; border-radius: 4px; cursor: pointer; font-size: 8px; font-weight: bold; background: #333; color: white; }
+        /* Botones 3D */
+        .buttons-group { display: flex; gap: 5px; margin-top: 15px; }
+        .btn-card { 
+            flex: 1; padding: 10px 2px; border: none; border-radius: 6px; cursor: pointer; 
+            font-size: 8px; font-weight: bold; background: #333; color: white;
+            box-shadow: 0 4px 0 #000; transition: all 0.1s;
+        }
+        .btn-card:active { transform: translateY(2px); box-shadow: 0 2px 0 #000; }
 
         .bg-emerald-comic { background: radial-gradient(circle, #2ecc71 10%, #ffffff 10%) 0 0 / 12px 12px; }
         .bg-irina-gradient { background: linear-gradient(135deg, #8EE4D5, #B588C0); background-size: 200% 200%; animation: rotate 5s linear infinite; }
@@ -52,7 +54,8 @@
 <script>
     const candidatos = [
         { id: "02546", score: 94 }, { id: "01123", score: 99 }, 
-        { id: "08892", score: 72 }, { id: "03341", score: 91 }, { id: "04455", score: 88 }
+        { id: "08892", score: 72 }, { id: "03341", score: 91 },
+        { id: "04455", score: 88 }, { id: "09981", score: 95 }
     ];
     
     const grid = document.getElementById('dashboard');
@@ -83,7 +86,7 @@
             type: 'radar',
             data: {
                 labels: ['Ext', 'Ama', 'Res', 'Est', 'Ape'],
-                datasets: [{ data: [3, 4, 2, 5, 4], backgroundColor: 'rgba(181, 136, 192, 0.4)' }]
+                datasets: [{ data: [3, 4, 2, 5, 4], backgroundColor: 'rgba(181, 136, 192, 0.4)', borderColor: '#B588C0' }]
             },
             options: { plugins: { legend: { display: false } }, scales: { r: { beginAtZero: true, max: 5, ticks: { display: false } } } }
         });
