@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard Blic - Irina Hire Selection</title>
-    <!-- Incluimos Chart.js para las telarañas -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -12,29 +11,30 @@
         .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; background: white; padding: 1rem 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .logo { max-width: 120px; }
 
-        .grid-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        /* Grid más compacto para que entren más naipes */
+        .grid-container { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
 
-        /* Proporción Naipe (Ancho 1, Alto 1.6) */
         .blic-card { 
-            background: white; border-radius: 15px; padding: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            display: flex; flex-direction: column; gap: 10px;
-            aspect-ratio: 1 / 1.6; /* Proporción naipe */
+            background: white; border-radius: 12px; padding: 12px; box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+            display: flex; flex-direction: column; gap: 8px;
+            aspect-ratio: 1 / 1.5; /* Naipe un poquito más compacto */
         }
 
-        .header-card { display: flex; flex-direction: column; gap: 5px; }
-        .title { font-size: 14px; font-weight: 800; color: #333; }
-        .score-box { font-size: 16px; font-weight: 900; color: #B588C0; }
-        
+        /* Título a pantalla completa: BLIC #00000 SCORE: 00 */
+        .header-card { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .title-score { font-size: 13px; font-weight: 900; color: #333; width: 100%; display: flex; justify-content: space-between; }
+
         .radar-container { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
         
-        .icons-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
-        .icon { background: #eee; height: 30px; border-radius: 4px; }
+        /* Iconos más cuadraditos */
+        .icons-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 5px; }
+        .icon { background: #eee; aspect-ratio: 1 / 1; border-radius: 4px; }
 
-        .buttons-group { display: flex; gap: 5px; }
-        .btn-card { flex: 1; padding: 8px 2px; border: none; border-radius: 5px; cursor: pointer; font-size: 9px; font-weight: bold; background: #333; color: white; }
+        /* Distancia separadora para botones */
+        .buttons-group { display: flex; gap: 5px; margin-top: 10px; }
+        .btn-card { flex: 1; padding: 6px 2px; border: none; border-radius: 4px; cursor: pointer; font-size: 8px; font-weight: bold; background: #333; color: white; }
 
-        /* Estados fondo */
-        .bg-emerald-comic { background: radial-gradient(circle, #2ecc71 10%, #ffffff 10%) 0 0 / 15px 15px; }
+        .bg-emerald-comic { background: radial-gradient(circle, #2ecc71 10%, #ffffff 10%) 0 0 / 12px 12px; }
         .bg-irina-gradient { background: linear-gradient(135deg, #8EE4D5, #B588C0); background-size: 200% 200%; animation: rotate 5s linear infinite; }
         @keyframes rotate { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
     </style>
@@ -44,7 +44,7 @@
     <div class="header-top">
         <img src="https://i.ibb.co/JFMJBm0S/logo-ihs.jpg" class="logo">
         <h2>Dashboard Blic - Talentos</h2>
-        <div style="width: 50px; height: 50px; border-radius: 50%; background: url('https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg') center/cover;"></div>
+        <div style="width: 40px; height: 40px; border-radius: 50%; background: url('https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg') center/cover;"></div>
     </div>
 
     <div class="grid-container" id="dashboard"></div>
@@ -52,7 +52,7 @@
 <script>
     const candidatos = [
         { id: "02546", score: 94 }, { id: "01123", score: 99 }, 
-        { id: "08892", score: 72 }, { id: "03341", score: 91 }
+        { id: "08892", score: 72 }, { id: "03341", score: 91 }, { id: "04455", score: 88 }
     ];
     
     const grid = document.getElementById('dashboard');
@@ -64,8 +64,10 @@
         card.className = `blic-card ${bgClass}`;
         card.innerHTML = `
             <div class="header-card">
-                <div class="title">BLIC #${c.id}</div>
-                <div class="score-box">SCORE: ${c.score}</div>
+                <div class="title-score">
+                    <span>BLIC #${c.id}</span>
+                    <span>SCORE: ${c.score}</span>
+                </div>
             </div>
             <div class="radar-container"><canvas id="radar-${index}"></canvas></div>
             <div class="icons-grid">${Array(6).fill('<div class="icon"></div>').join('')}</div>
@@ -77,14 +79,13 @@
         `;
         grid.appendChild(card);
         
-        // Crear gráfico de prueba
         new Chart(document.getElementById(`radar-${index}`), {
             type: 'radar',
             data: {
                 labels: ['Ext', 'Ama', 'Res', 'Est', 'Ape'],
-                datasets: [{ data: [Math.random()*5, Math.random()*5, Math.random()*5, Math.random()*5, Math.random()*5], backgroundColor: 'rgba(181, 136, 192, 0.4)' }]
+                datasets: [{ data: [3, 4, 2, 5, 4], backgroundColor: 'rgba(181, 136, 192, 0.4)' }]
             },
-            options: { plugins: { legend: { display: false } }, scales: { r: { beginAtZero: true, max: 5 } } }
+            options: { plugins: { legend: { display: false } }, scales: { r: { beginAtZero: true, max: 5, ticks: { display: false } } } }
         });
     });
 </script>
