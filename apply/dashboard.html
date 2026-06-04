@@ -24,7 +24,7 @@
         .title-score { font-size: 14px; font-weight: 900; width: 100%; display: flex; justify-content: space-between; }
         .radar-container { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
         .icons-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 5px; padding: 0 10px; }
-        .icon { background: rgba(255,255,255,0.3); aspect-ratio: 1 / 1; border-radius: 4px; }
+        .icon { background: rgba(0,0,0,0.1); aspect-ratio: 1 / 1; border-radius: 4px; }
         .btn-card { flex: 1; padding: 8px 2px; border: none; border-radius: 6px; cursor: pointer; font-size: 8px; font-weight: bold; background: #222; color: white; }
     </style>
 </head>
@@ -48,24 +48,29 @@
             const grid = document.getElementById('dashboard');
             grid.innerHTML = ''; 
 
-            console.log("Iniciando carga de datos...");
+            // 1. Renderizar ejemplos estáticos SIEMPRE para visualizar el diseño
+            const ejemplos = [
+                { id: "00001", score: 99 }, { id: "00002", score: 95 }, 
+                { id: "00003", score: 85 }, { id: "00004", score: 70 },
+                { id: "00005", score: 55 }, { id: "00006", score: 30 }
+            ];
+            ejemplos.forEach((c, i) => createCard(c.id, c.score, null, i));
+
+            // 2. Intentar cargar de la base
+            console.log("Consultando tabla habitat...");
             const { data: registros, error } = await sb.from('habitat').select('*');
             
             if (error) {
-                console.error("ERROR CRÍTICO AL CONECTAR CON HABITAT:", error);
-                return;
-            }
-
-            console.log("Registros obtenidos:", registros);
-
-            if (registros && registros.length > 0) {
+                console.error("ERROR EN CONSULTA:", error);
+            } else if (registros && registros.length > 0) {
+                console.log("Registros reales hallados:", registros.length);
                 registros.forEach((row, i) => {
                     const fractal = typeof row.data === 'string' ? JSON.parse(row.data) : row.data;
                     const score = fractal?.["!irina"]?.evaluacion?.score_general || 0;
-                    if(score > 0) createCard(row.id.slice(-5).toUpperCase(), score, fractal, i);
+                    if(score > 0) createCard(row.id.slice(-5).toUpperCase(), score, fractal, i + 100);
                 });
             } else {
-                console.warn("La tabla está vacía o no devolvió resultados.");
+                console.warn("La tabla habitat existe pero no retornó registros.");
             }
         }
 
