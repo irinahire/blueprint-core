@@ -10,7 +10,7 @@
         body { font-family: 'Inter', sans-serif; background: linear-gradient(to bottom left, #8EE4D5, #B588C0); min-height: 100vh; padding: 2rem; }
         .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; background: white; padding: 1rem 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-        .blic-card { background: white; border-radius: 12px; padding: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); display: flex; flex-direction: column; gap: 10px; aspect-ratio: 1 / 1.5; }
+        .blic-card { background: white; border-radius: 12px; padding: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); display: flex; flex-direction: column; gap: 8px; aspect-ratio: 1 / 1.5; }
         
         /* Colores BLIC */
         .bg-marron { background-color: #8B4513; color: white; }
@@ -22,13 +22,15 @@
         @keyframes moveGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
         .title-score { font-size: 13px; font-weight: 900; display: flex; justify-content: space-between; }
-        .radar-container { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
         
-        /* Grid de 6 iconos */
-        .icons-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 5px; }
-        .icon-box { background: rgba(0,0,0,0.1); aspect-ratio: 1/1; border-radius: 4px; }
+        /* Radar ocupa más espacio */
+        .radar-container { flex: 2; min-height: 0; display: flex; align-items: center; justify-content: center; padding: 5px; }
         
-        .btn-card { padding: 6px; border: none; border-radius: 6px; cursor: pointer; font-size: 9px; font-weight: bold; background: rgba(0,0,0,0.2); color: white; }
+        /* Icons grid reducidos */
+        .icons-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; margin-top: 5px; padding: 0 10px; }
+        .icon-box { background: rgba(0,0,0,0.05); aspect-ratio: 1/1; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+        
+        .btn-card { padding: 6px; border: none; border-radius: 6px; cursor: pointer; font-size: 8px; font-weight: bold; background: rgba(0,0,0,0.1); color: #333; }
     </style>
 </head>
 <body>
@@ -48,52 +50,44 @@
 
         async function cargarDatos() {
             const grid = document.getElementById('dashboard');
-            console.log("🔍 [BLIC] Conectando a Supabase...");
-            
             const { data, error } = await sb.from('habitat').select('*');
             
             if (error) { console.error("❌ Error:", error); return; }
 
-            console.log(`📡 [BLIC] Datos recibidos: ${data.length} filas.`);
             grid.innerHTML = '';
+            // Lista de símbolos de prueba
+            const iconos = ['🚀', '🛡️', '🧠', '🔗', '⚙️', '📈'];
 
             data.forEach((row, index) => {
                 const d = typeof row.data === 'string' ? JSON.parse(row.data) : row.data;
                 const score = d?.["!irina"]?.evaluacion?.score_general;
                 
                 if (score) {
-                    console.log(`✅ [BLIC] Renderizando ${row.id.slice(-5)} (Score: ${score})`);
-                    createCard(row.id.slice(-5), score, d, index);
-                }
-            });
-        }
-
-        function createCard(id, score, data, index) {
-            let clase = (score >= 98) ? 'bg-irina-animado' : (score >= 90 ? 'bg-emerald-metal' : (score >= 80 ? 'bg-verde' : (score >= 60 ? 'bg-amarillo' : (score >= 50 ? 'bg-rojo' : 'bg-marron'))));
-            const grid = document.getElementById('dashboard');
-            const card = document.createElement('div');
-            card.className = `blic-card ${clase}`;
-            card.innerHTML = `
-                <div class="title-score"><span>BLIC #${id}</span><span>SCORE: ${score}</span></div>
-                <div class="radar-container"><canvas id="radar-${index}"></canvas></div>
-                <div class="icons-grid">${Array(6).fill('<div class="icon-box"></div>').join('')}</div>
-                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:5px; margin-top:5px;">
-                    <button class="btn-card" onclick="window.open('${data?.["!documento"]?.url || '#'}')">CV</button>
-                    <button class="btn-card">AUDIO</button>
-                    <button class="btn-card">REPORT</button>
-                </div>
-            `;
-            grid.appendChild(card);
-            
-            new Chart(document.getElementById(`radar-${index}`), {
-                type: 'radar',
-                data: { 
-                    labels: ['Téc', 'Exp', 'Ada', 'Lid', 'IA'], 
-                    datasets: [{ data: [4, 5, 3, 4, 5], backgroundColor: 'rgba(255,255,255,0.4)', borderColor: '#fff', borderWidth: 1 }] 
-                },
-                options: { 
-                    plugins: { legend: { display: false } }, 
-                    scales: { r: { beginAtZero: true, max: 5, ticks: { display: false }, grid: { color: 'rgba(255,255,255,0.3)' }, angleLines: { color: 'rgba(255,255,255,0.3)' } } } 
+                    const id = row.id.slice(-5);
+                    const clase = (score >= 98) ? 'bg-irina-animado' : (score >= 90 ? 'bg-emerald-metal' : (score >= 80 ? 'bg-verde' : (score >= 60 ? 'bg-amarillo' : (score >= 50 ? 'bg-rojo' : 'bg-marron'))));
+                    
+                    const card = document.createElement('div');
+                    card.className = `blic-card ${clase}`;
+                    card.innerHTML = `
+                        <div class="title-score"><span>BLIC #${id}</span><span>SCORE: ${score}</span></div>
+                        <div class="radar-container"><canvas id="radar-${index}"></canvas></div>
+                        <div class="icons-grid">${iconos.map(i => `<div class="icon-box">${i}</div>`).join('')}</div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:5px; margin-top:8px;">
+                            <button class="btn-card" onclick="window.open('${d?.["!documento"]?.url || '#'}')">CV</button>
+                            <button class="btn-card">AUDIO</button>
+                            <button class="btn-card">REPORT</button>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                    
+                    new Chart(document.getElementById(`radar-${index}`), {
+                        type: 'radar',
+                        data: { 
+                            labels: ['Téc', 'Exp', 'Ada', 'Lid', 'IA'], 
+                            datasets: [{ data: [4, 5, 3, 4, 5], backgroundColor: 'rgba(255,255,255,0.3)', borderColor: '#fff', borderWidth: 1 }] 
+                        },
+                        options: { plugins: { legend: { display: false } }, scales: { r: { beginAtZero: true, max: 5, ticks: { display: false }, grid: { color: 'rgba(255,255,255,0.2)' }, angleLines: { color: 'rgba(255,255,255,0.2)' } } } }
+                    });
                 }
             });
         }
