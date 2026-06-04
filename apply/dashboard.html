@@ -2,44 +2,88 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Test Conexión Blic</title>
+    <title>Dashboard Blic - Irina Hire Selection</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(to bottom left, #8EE4D5, #B588C0); min-height: 100vh; padding: 2rem; }
+        .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; background: white; padding: 1rem 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
+        .blic-card { background: white; border-radius: 12px; padding: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); display: flex; flex-direction: column; gap: 8px; aspect-ratio: 1 / 1.5; }
+        
+        /* Colores según el Manifiesto BLIC */
+        .bg-marron { background-color: #8B4513; color: white; }
+        .bg-rojo { background-color: #e74c3c; color: white; }
+        .bg-amarillo { background-color: #f1c40f; color: black; }
+        .bg-verde { background-color: #2ecc71; color: white; }
+        .bg-emerald-metal { background: radial-gradient(circle at 30% 30%, #50C878, #2E8B57); color: white; }
+        .bg-irina-animado { background: linear-gradient(135deg, #8EE4D5, #B588C0, #8EE4D5, #B588C0); background-size: 400% 400%; animation: moveGradient 12s ease infinite; color: white; }
+        @keyframes moveGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        .title-score { font-size: 13px; font-weight: 900; display: flex; justify-content: space-between; }
+        .radar-container { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
+        .btn-card { padding: 6px; border: none; border-radius: 6px; cursor: pointer; font-size: 9px; font-weight: bold; background: rgba(0,0,0,0.2); color: white; }
+    </style>
 </head>
 <body>
-    <h1>Revisando conexión...</h1>
-    <p>Abre la consola (F12) para ver el resultado de la conexión.</p>
+
+    <div class="header-top">
+        <img src="https://i.ibb.co/JFMJBm0S/logo-ihs.jpg" style="max-width: 120px;">
+        <h2>Dashboard Blic - Idoneidad (Agnóstico)</h2>
+    </div>
+
+    <div class="grid-container" id="dashboard"></div>
 
     <script>
-        // Inicialización
         const sb = supabase.createClient(
             'https://zuzvozgjsppkxvdlptmk.supabase.co', 
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0'
         );
 
-        async function probarConexion() {
-            console.log("Iniciando prueba de conexión...");
+        async function cargarDatos() {
+            const grid = document.getElementById('dashboard');
+            // Buscamos solo filas que tengan el campo data con la estructura de Irina
+            const { data, error } = await sb.from('habitat').select('*');
             
-            try {
-                // Intentamos traer solo una fila
-                const { data, error } = await sb.from('habitat').select('*').limit(1);
+            if (error) { console.error("Error:", error); return; }
+
+            grid.innerHTML = '';
+            data.forEach((row, index) => {
+                // Verificamos si la fila contiene datos de evaluación
+                const d = typeof row.data === 'string' ? JSON.parse(row.data) : row.data;
+                const score = d?.["!irina"]?.evaluacion?.score_general;
                 
-                if (error) {
-                    console.error("❌ ERROR DE SUPABASE:", error);
-                    alert("Error en la conexión. Revisa la consola (F12).");
-                } else {
-                    console.log("✅ ÉXITO. Datos recibidos:", data);
-                    if (data.length > 0) {
-                        console.log("Primer objeto de datos:", data[0]);
-                    } else {
-                        console.warn("⚠️ La consulta funcionó pero la tabla está vacía.");
-                    }
+                if (score) {
+                    createCard(row.id.slice(-5), score, d, index);
                 }
-            } catch (err) {
-                console.error("❌ ERROR INESPERADO:", err);
-            }
+            });
         }
 
-        probarConexion();
+        function createCard(id, score, data, index) {
+            let clase = (score >= 98) ? 'bg-irina-animado' : (score >= 90 ? 'bg-emerald-metal' : (score >= 80 ? 'bg-verde' : (score >= 60 ? 'bg-amarillo' : (score >= 50 ? 'bg-rojo' : 'bg-marron'))));
+            const grid = document.getElementById('dashboard');
+            const card = document.createElement('div');
+            card.className = `blic-card ${clase}`;
+            card.innerHTML = `
+                <div class="title-score"><span>BLIC #${id}</span><span>SCORE: ${score}</span></div>
+                <div class="radar-container"><canvas id="radar-${index}"></canvas></div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:5px;">
+                    <button class="btn-card" onclick="window.open('${data?.["!documento"]?.url || '#'}')">CV</button>
+                    <button class="btn-card">AUDIO</button>
+                    <button class="btn-card">REPORT</button>
+                </div>
+            `;
+            grid.appendChild(card);
+            // Chart.js básico
+            new Chart(document.getElementById(`radar-${index}`), {
+                type: 'radar',
+                data: { labels: ['Téc', 'Exp', 'Ada', 'Lid', 'IA'], datasets: [{ data: [4, 5, 3, 4, 5], backgroundColor: 'rgba(255,255,255,0.3)' }] },
+                options: { plugins: { legend: { display: false } }, scales: { r: { ticks: { display: false } } } }
+            });
+        }
+
+        cargarDatos();
     </script>
 </body>
 </html>
