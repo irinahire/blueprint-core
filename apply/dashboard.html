@@ -22,11 +22,11 @@
 
         .title-score { font-size: 13px; font-weight: 900; display: flex; justify-content: space-between; }
         
-        .radar-container { flex: 2; min-height: 0; display: flex; align-items: center; justify-content: center; padding: 5px; margin-bottom: 5px; }
+        .radar-container { flex: 3; min-height: 0; display: flex; align-items: center; justify-content: center; padding: 5px; }
         
-        /* Ajuste fino: iconos más compactos y desplazados hacia abajo */
-        .icons-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding: 0 20px; margin-bottom: 5px; }
-        .icon-box { background: rgba(0,0,0,0.05); aspect-ratio: 1/1; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+        /* Ajuste: Solo 1 fila de 3 iconos */
+        .icons-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0 30px; margin-bottom: 10px; }
+        .icon-box { background: rgba(0,0,0,0.05); aspect-ratio: 1/1; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
         
         .btn-card { padding: 6px; border: none; border-radius: 6px; cursor: pointer; font-size: 8px; font-weight: bold; background: rgba(0,0,0,0.1); color: #333; }
     </style>
@@ -53,7 +53,8 @@
             if (error) { console.error("❌ Error:", error); return; }
 
             grid.innerHTML = '';
-            const iconos = ['🚀', '🛡️', '🧠', '🔗', '⚙️', '📈'];
+            // Solo 3 iconos para la nueva vista minimalista
+            const iconos = ['🚀', '🛡️', '🧠'];
 
             data.forEach((row, index) => {
                 const d = typeof row.data === 'string' ? JSON.parse(row.data) : row.data;
@@ -69,7 +70,7 @@
                         <div class="title-score"><span>BLIC #${id}</span><span>SCORE: ${score}</span></div>
                         <div class="radar-container"><canvas id="radar-${index}"></canvas></div>
                         <div class="icons-grid">${iconos.map(i => `<div class="icon-box">${i}</div>`).join('')}</div>
-                        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:5px; margin-top:8px;">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:5px; margin-top:5px;">
                             <button class="btn-card" onclick="window.open('${d?.["!documento"]?.url || '#'}')">CV</button>
                             <button class="btn-card">AUDIO</button>
                             <button class="btn-card">REPORT</button>
