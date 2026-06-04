@@ -24,13 +24,13 @@
         .icons-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 0 10px; }
         .icon-box { background: rgba(0,0,0,0.15); aspect-ratio: 1/1; border-radius: 4px; display: flex; align-items: center; justify-content: center; }
         .btn-card { padding: 6px; border: none; border-radius: 6px; cursor: pointer; font-size: 8px; font-weight: bold; background: rgba(0,0,0,0.2); color: white; }
-        #modal-perfil { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); z-index:1000; padding: 50px; overflow-y: auto; }
-        .modal-content { max-width: 900px; margin: auto; background: white; padding: 40px; border-radius: 20px; position: relative; }
-        .profile-header { display: flex; gap: 20px; align-items: center; margin-bottom: 20px; }
+        #modal-perfil { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index:1000; padding: 30px; overflow-y: auto; }
+        .modal-content { width: 90%; max-width: 1100px; margin: auto; background: white; padding: 50px; border-radius: 20px; position: relative; }
+        .profile-layout { display: grid; grid-template-columns: 250px 1fr; gap: 40px; }
+        .profile-photo { width: 100%; aspect-ratio: 1/1; background: #eee; border-radius: 15px; background-size: cover; background-position: center; border: 2px solid #ddd; }
     </style>
 </head>
 <body>
-
     <div class="main-container">
         <div class="header">
             <img src="https://i.ibb.co/JFMJBm0S/logo-ihs.jpg" style="max-width: 150px;">
@@ -38,36 +38,42 @@
         </div>
         <div class="grid-container" id="dashboard"></div>
     </div>
-
+    
     <div id="modal-perfil" onclick="this.style.display='none'">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <div class="profile-header">
-                <div id="m-foto" style="width:100px; height:100px; background:#ddd; border-radius:50%; background-size:cover;"></div>
+            <div class="profile-layout">
                 <div>
-                    <h2 id="m-nombre">Nombre Completo</h2>
-                    <p id="m-mail">email@ejemplo.com</p>
+                    <div id="m-foto" class="profile-photo"></div>
+                    <h2 id="m-nombre" style="margin-top:20px;">Nombre</h2>
+                    <p id="m-mail" style="color:#666;">email@ejemplo.com</p>
+                    <p id="m-telefono" style="font-weight:bold;">Teléfono</p>
+                </div>
+                <div>
+                    <h3>Trayectoria Profesional</h3>
+                    <p id="m-trayectoria" style="margin-bottom:20px;"></p>
+                    <h3>Formación Académica</h3>
+                    <p id="m-estudios" style="margin-bottom:20px;"></p>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                        <div><h3>Habilidades Blandas</h3><p id="m-blandas"></p></div>
+                        <div><h3>Habilidades Duras</h3><p id="m-duras"></p></div>
+                    </div>
                 </div>
             </div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                <div><h3>Trayectoria</h3><p id="m-trayectoria"></p></div>
-                <div><h3>Habilidades</h3><p id="m-habilidades"></p></div>
-            </div>
-            <div style="margin-top:30px;">
-                <a id="btn-whatsapp" target="_blank" style="padding: 15px 30px; background: #25D366; color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">Enviar WhatsApp</a>
-                <button onclick="document.getElementById('modal-perfil').style.display='none'" style="margin-left:15px; padding: 15px 30px; cursor: pointer;">Cerrar</button>
+            <div style="margin-top:40px; border-top: 1px solid #eee; padding-top: 20px;">
+                <a id="btn-whatsapp" target="_blank" style="padding: 15px 30px; background: #25D366; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Contactar por WhatsApp</a>
+                <button onclick="document.getElementById('modal-perfil').style.display='none'" style="margin-left:15px; padding: 15px 30px; cursor: pointer; border-radius: 8px;">Cerrar Perfil</button>
             </div>
         </div>
     </div>
 
     <script>
         const sb = supabase.createClient('https://zuzvozgjsppkxvdlptmk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0');
-
+        
         async function cargarDatos() {
             const grid = document.getElementById('dashboard');
             const { data } = await sb.from('habitat').select('*').order('created_at', { ascending: true });
             grid.innerHTML = '';
-            let contador = 1;
-
+            
             data.forEach((row, index) => {
                 const d = typeof row.data === 'string' ? JSON.parse(row.data) : row.data;
                 const score = d?.["!irina"]?.evaluacion?.score_general;
@@ -77,14 +83,10 @@
                     card.className = "blic-card " + clase;
                     card.onclick = () => abrirModal(d);
                     card.innerHTML = `
-                        <div style="font-size:12px; font-weight:900;">BLIC #${contador.toString().padStart(3, '0')} | SCORE: ${score}</div>
+                        <div style="font-size:12px; font-weight:900;">SCORE: ${score}</div>
                         <div class="radar-container"><canvas id="radar-${index}"></canvas></div>
                         <div class="icons-grid">${['🚀', '🛡️', '🧠', '🔗'].map(i => `<div class="icon-box">${i}</div>`).join('')}</div>
-                        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:5px; margin-top:5px;">
-                            <button class="btn-card" onclick="event.stopPropagation(); window.open('${d?.["!documento"]?.url || '#'}')">CV</button>
-                            <button class="btn-card">AUDIO</button>
-                            <button class="btn-card">REPORT</button>
-                        </div>
+                        <button class="btn-card" style="width:100%; margin-top:10px;">VER PERFIL COMPLETO</button>
                     `;
                     grid.appendChild(card);
                     new Chart(document.getElementById("radar-" + index), {
@@ -92,21 +94,32 @@
                         data: { labels: ['Téc', 'Exp', 'Ada', 'Lid', 'IA'], datasets: [{ data: [4, 5, 3, 4, 5], backgroundColor: 'rgba(255,255,255,0.4)' }] },
                         options: { plugins: { legend: { display: false } }, scales: { r: { ticks: { display: false } } } }
                     });
-                    contador++;
                 }
             });
         }
 
         function abrirModal(d) {
-            const perfil = d?.["!perfil"]?.["perfil-base"];
-            const contacto = d?.["!perfil"]?.["perfil-contacto"];
-            document.getElementById('m-nombre').innerText = perfil?.nombre || "Candidato";
-            document.getElementById('m-mail').innerText = contacto?.email || "Sin email";
-            document.getElementById('m-trayectoria').innerText = d?.["!perfil"]?.trayectoria || "No disponible.";
-            document.getElementById('m-habilidades').innerText = d?.["!perfil"]?.habilidades || "No disponible.";
-            document.getElementById('btn-whatsapp').href = "https://wa.me/" + (contacto?.telefono || "");
+            // Depuración: Si siguen saliendo vacíos, presiona F12 y mira la consola
+            console.log("Datos del candidato:", d);
+
+            const perfil = d?.["!perfil"] || {};
+            const base = perfil["perfil-base"] || {};
+            const contacto = perfil["perfil-contacto"] || {};
+
+            document.getElementById('m-nombre').innerText = base.nombre || "Nombre no disponible";
+            document.getElementById('m-mail').innerText = contacto.email || "Email no disponible";
+            document.getElementById('m-telefono').innerText = contacto.telefono || "Teléfono no disponible";
+            document.getElementById('m-foto').style.backgroundImage = base.foto ? `url('${base.foto}')` : 'none';
+            
+            document.getElementById('m-trayectoria').innerText = perfil.trayectoria || "Trayectoria no especificada.";
+            document.getElementById('m-estudios').innerText = perfil.estudios || "Estudios no especificados.";
+            document.getElementById('m-blandas').innerText = perfil.habilidades_blandas || "No especificadas.";
+            document.getElementById('m-duras').innerText = perfil.habilidades_duras || "No especificadas.";
+            
+            document.getElementById('btn-whatsapp').href = contacto.telefono ? "https://wa.me/" + contacto.telefono.replace(/\D/g,'') : "#";
             document.getElementById('modal-perfil').style.display = 'flex';
         }
+
         cargarDatos();
     </script>
 </body>
