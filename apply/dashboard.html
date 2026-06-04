@@ -11,19 +11,24 @@
         .main-container { background: rgba(255, 255, 255, 0.95); border-radius: 20px; padding: 2rem; max-width: 1200px; margin: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
         .header { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #eee; padding-bottom: 1rem; margin-bottom: 2rem; }
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-        .blic-card { border-radius: 12px; padding: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 8px; aspect-ratio: 1 / 1.5; cursor: pointer; transition: 0.3s; color: white; }
-        .bg-marron { background-color: #8B4513; }
-        .bg-rojo { background-color: #e74c3c; }
+        
+        .blic-card { border-radius: 12px; padding: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 8px; aspect-ratio: 1 / 1.5; cursor: pointer; transition: 0.3s; }
+        .blic-card:hover { transform: translateY(-8px); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        
+        .bg-marron { background-color: #8B4513; color: white; }
+        .bg-rojo { background-color: #e74c3c; color: white; }
         .bg-amarillo { background-color: #f1c40f; color: black; }
-        .bg-verde { background-color: #2ecc71; }
-        .bg-emerald-metal { background: radial-gradient(circle at 30% 30%, #50C878, #2E8B57); }
-        .bg-irina-animado { background: linear-gradient(135deg, #8EE4D5, #B588C0); }
-        .radar-container { flex: 4; min-height: 0; display: flex; align-items: center; justify-content: center; }
+        .bg-verde { background-color: #2ecc71; color: white; }
+        .bg-emerald-metal { background: radial-gradient(circle at 30% 30%, #50C878, #2E8B57); color: white; }
+        .bg-irina-animado { background: linear-gradient(135deg, #8EE4D5, #B588C0); color: white; }
+        
+        .radar-container { flex: 4; display: flex; align-items: center; justify-content: center; }
         .icons-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 0 10px; }
         .icon-box { background: rgba(0,0,0,0.15); aspect-ratio: 1/1; border-radius: 4px; display: flex; align-items: center; justify-content: center; }
         .btn-card { padding: 6px; border: none; border-radius: 6px; cursor: pointer; font-size: 8px; font-weight: bold; background: rgba(0,0,0,0.2); color: white; }
+        
         #modal-perfil { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index:1000; padding: 30px; overflow-y: auto; }
-        .modal-content { width: 90%; max-width: 1100px; margin: auto; background: white; padding: 50px; border-radius: 20px; position: relative; color: #333; }
+        .modal-content { width: 90%; max-width: 1100px; margin: auto; background: white; padding: 50px; border-radius: 20px; color: #333; }
         .profile-layout { display: grid; grid-template-columns: 250px 1fr; gap: 40px; }
         .profile-photo { width: 100%; aspect-ratio: 1/1; background: #eee; border-radius: 15px; background-size: cover; background-position: center; }
     </style>
@@ -36,12 +41,18 @@
         </div>
         <div class="grid-container" id="dashboard"></div>
     </div>
+
     <div id="modal-perfil" onclick="this.style.display='none'">
         <div class="modal-content" onclick="event.stopPropagation()">
+            <!-- BLOQUE DE DEPURACIÓN (DEBUG) -->
+            <div style="background:#000; color:#0f0; padding:10px; margin-bottom:20px; font-family:monospace; font-size:10px; overflow:auto; max-height:100px;">
+                DEBUG: <pre id="m-debug-data"></pre>
+            </div>
+            
             <div class="profile-layout">
                 <div>
                     <div id="m-foto" class="profile-photo"></div>
-                    <h2 id="m-nombre">Candidato</h2>
+                    <h2 id="m-nombre">Nombre</h2>
                     <p id="m-mail"></p>
                     <p id="m-telefono" style="font-weight:bold;"></p>
                 </div>
@@ -54,9 +65,10 @@
                     </div>
                 </div>
             </div>
-            <button onclick="document.getElementById('modal-perfil').style.display='none'" style="margin-top:40px; padding:15px 30px; cursor:pointer;">Cerrar</button>
+            <button onclick="document.getElementById('modal-perfil').style.display='none'" style="margin-top:20px; padding:10px 20px; cursor:pointer;">Cerrar</button>
         </div>
     </div>
+
     <script>
         const sb = supabase.createClient('https://zuzvozgjsppkxvdlptmk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0');
         
@@ -66,14 +78,13 @@
             data.forEach((row, index) => {
                 const d = typeof row.data === 'string' ? JSON.parse(row.data) : row.data;
                 const score = d?.["!irina"]?.evaluacion?.score_general || 0;
-                
                 const clase = score >= 98 ? 'bg-irina-animado' : (score >= 90 ? 'bg-emerald-metal' : (score >= 80 ? 'bg-verde' : (score >= 60 ? 'bg-amarillo' : (score >= 50 ? 'bg-rojo' : 'bg-marron'))));
                 
                 const card = document.createElement('div');
                 card.className = "blic-card " + clase;
                 card.onclick = () => abrirModal(d);
                 card.innerHTML = `
-                    <div style="font-weight:900;">SCORE: ${score}</div>
+                    <div style="font-size:12px; font-weight:900;">SCORE: ${score}</div>
                     <div class="radar-container"><canvas id="radar-${index}"></canvas></div>
                     <div class="icons-grid">${['🚀', '🛡️', '🧠', '🔗'].map(i => `<div class="icon-box">${i}</div>`).join('')}</div>
                     <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:5px; margin-top:5px;">
@@ -85,20 +96,22 @@
         }
         
         function abrirModal(d) {
-            // Depuración profunda: si esto falla, es que el JSON tiene otra ruta
-            console.log("Objeto JSON:", d);
-            const p = d["!perfil"] || {};
-            const base = p["perfil-base"] || {};
-            const cont = p["perfil-contacto"] || {};
+            console.log("🚩 Datos crudos recibidos:", d);
+            document.getElementById('m-debug-data').innerText = JSON.stringify(d, null, 2);
+            
+            // Acceso jerárquico flexible
+            const perf = d["!perfil"] || d.perfil || {};
+            const base = perf["perfil-base"] || perf.base || {};
+            const cont = perf["perfil-contacto"] || perf.contacto || {};
             
             document.getElementById('m-nombre').innerText = base.nombre || "Sin nombre";
             document.getElementById('m-mail').innerText = cont.email || "Sin email";
             document.getElementById('m-telefono').innerText = cont.telefono || "Sin teléfono";
             document.getElementById('m-foto').style.backgroundImage = base.foto ? `url('${base.foto}')` : 'none';
-            document.getElementById('m-trayectoria').innerText = p.trayectoria || "No disponible";
-            document.getElementById('m-estudios').innerText = p.estudios || "No disponible";
-            document.getElementById('m-blandas').innerText = p.habilidades_blandas || "No disponible";
-            document.getElementById('m-duras').innerText = p.habilidades_duras || "No disponible";
+            document.getElementById('m-trayectoria').innerText = perf.trayectoria || "No disponible";
+            document.getElementById('m-estudios').innerText = perf.estudios || "No disponible";
+            document.getElementById('m-blandas').innerText = perf.habilidades_blandas || "No disponible";
+            document.getElementById('m-duras').innerText = perf.habilidades_duras || "No disponible";
             document.getElementById('modal-perfil').style.display = 'flex';
         }
         cargarDatos();
