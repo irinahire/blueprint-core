@@ -2,49 +2,36 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Blic - Irina Hire Selection</title>
+    <!-- Incluimos Chart.js para las telarañas -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            background: linear-gradient(to bottom left, #8EE4D5, #B588C0); 
-            min-height: 100vh; 
-            padding: 2rem; 
-        }
-
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(to bottom left, #8EE4D5, #B588C0); min-height: 100vh; padding: 2rem; }
+        
         .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; background: white; padding: 1rem 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .logo { max-width: 120px; }
 
-        /* Grid para 4 tarjetas */
-        .grid-container { 
-            display: grid; 
-            grid-template-columns: repeat(4, 1fr); 
-            gap: 15px; 
-        }
+        .grid-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
 
-        /* Tarjeta Blic Compacta */
+        /* Proporción Naipe (Ancho 1, Alto 1.6) */
         .blic-card { 
-            background: white; 
-            border-radius: 16px; 
-            padding: 15px; 
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
-            display: flex; 
-            flex-direction: column; 
-            gap: 10px;
+            background: white; border-radius: 15px; padding: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: flex; flex-direction: column; gap: 10px;
+            aspect-ratio: 1 / 1.6; /* Proporción naipe */
         }
 
-        .header-card { display: flex; justify-content: space-between; align-items: center; }
-        .title { font-size: 16px; font-weight: bold; color: #333; }
-        .score-box { background: #f0f0f0; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: bold; }
+        .header-card { display: flex; flex-direction: column; gap: 5px; }
+        .title { font-size: 14px; font-weight: 800; color: #333; }
+        .score-box { font-size: 16px; font-weight: 900; color: #B588C0; }
         
-        .radar-placeholder { height: 150px; background: #f9f9f9; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #aaa; }
+        .radar-container { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
         
-        .icons-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-        .icon { background: #eee; height: 30px; border-radius: 6px; }
+        .icons-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+        .icon { background: #eee; height: 30px; border-radius: 4px; }
 
         .buttons-group { display: flex; gap: 5px; }
-        .btn-card { flex: 1; padding: 8px 4px; border: none; border-radius: 6px; cursor: pointer; font-size: 10px; font-weight: 600; background: #333; color: white; }
+        .btn-card { flex: 1; padding: 8px 2px; border: none; border-radius: 5px; cursor: pointer; font-size: 9px; font-weight: bold; background: #333; color: white; }
 
         /* Estados fondo */
         .bg-emerald-comic { background: radial-gradient(circle, #2ecc71 10%, #ffffff 10%) 0 0 / 15px 15px; }
@@ -55,50 +42,51 @@
 <body>
 
     <div class="header-top">
-        <img src="https://i.ibb.co/JFMJBm0S/logo-ihs.jpg" class="logo" alt="Irina">
-        <h2 style="color: #555;">Dashboard de Proceso: Aplicaciones</h2>
+        <img src="https://i.ibb.co/JFMJBm0S/logo-ihs.jpg" class="logo">
+        <h2>Dashboard Blic - Talentos</h2>
         <div style="width: 50px; height: 50px; border-radius: 50%; background: url('https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg') center/cover;"></div>
     </div>
 
-    <div class="grid-container" id="dashboard">
-        <!-- Las tarjetas se generan aquí -->
-    </div>
+    <div class="grid-container" id="dashboard"></div>
 
 <script>
-    async function cargarDashboard() {
-        const candidatos = [
-            { id: 1, score: 99 }, { id: 2, score: 92 }, { id: 3, score: 75 }, { id: 4, score: 85 }
-        ];
+    const candidatos = [
+        { id: "02546", score: 94 }, { id: "01123", score: 99 }, 
+        { id: "08892", score: 72 }, { id: "03341", score: 91 }
+    ];
+    
+    const grid = document.getElementById('dashboard');
+    
+    candidatos.forEach((c, index) => {
+        const card = document.createElement('div');
+        let bgClass = (c.score >= 99) ? 'bg-irina-gradient' : (c.score >= 90 ? 'bg-emerald-comic' : '');
         
-        const grid = document.getElementById('dashboard');
+        card.className = `blic-card ${bgClass}`;
+        card.innerHTML = `
+            <div class="header-card">
+                <div class="title">BLIC #${c.id}</div>
+                <div class="score-box">SCORE: ${c.score}</div>
+            </div>
+            <div class="radar-container"><canvas id="radar-${index}"></canvas></div>
+            <div class="icons-grid">${Array(6).fill('<div class="icon"></div>').join('')}</div>
+            <div class="buttons-group">
+                <button class="btn-card">CV</button>
+                <button class="btn-card">AUDIO</button>
+                <button class="btn-card">REPORT</button>
+            </div>
+        `;
+        grid.appendChild(card);
         
-        candidatos.forEach(c => {
-            const card = document.createElement('div');
-            let bgClass = '';
-            if (c.score >= 99) bgClass = 'bg-irina-gradient';
-            else if (c.score >= 90) bgClass = 'bg-emerald-comic';
-            
-            card.className = `blic-card ${bgClass}`;
-            card.innerHTML = `
-                <div class="header-card">
-                    <div class="title">Blic #${c.id}</div>
-                    <div class="score-box">${c.score}%</div>
-                </div>
-                <div class="radar-placeholder">Telaraña Big Five</div>
-                <div class="icons-grid">
-                    ${Array(6).fill('<div class="icon"></div>').join('')}
-                </div>
-                <div class="buttons-group">
-                    <button class="btn-card">CV</button>
-                    <button class="btn-card">AUDIO</button>
-                    <button class="btn-card">REPORT</button>
-                </div>
-            `;
-            grid.appendChild(card);
+        // Crear gráfico de prueba
+        new Chart(document.getElementById(`radar-${index}`), {
+            type: 'radar',
+            data: {
+                labels: ['Ext', 'Ama', 'Res', 'Est', 'Ape'],
+                datasets: [{ data: [Math.random()*5, Math.random()*5, Math.random()*5, Math.random()*5, Math.random()*5], backgroundColor: 'rgba(181, 136, 192, 0.4)' }]
+            },
+            options: { plugins: { legend: { display: false } }, scales: { r: { beginAtZero: true, max: 5 } } }
         });
-    }
-
-    cargarDashboard();
+    });
 </script>
 </body>
 </html>
