@@ -12,114 +12,75 @@
         .main-container { background: rgba(255, 255, 255, 0.95); border-radius: 20px; padding: 2rem; max-width: 1200px; margin: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
         .header { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #eee; padding-bottom: 1rem; margin-bottom: 2rem; }
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-        .blic-card { border-radius: 12px; padding: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 8px; aspect-ratio: 1 / 1.5; cursor: pointer; transition: 0.3s; }
+        .blic-card { border-radius: 12px; padding: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 8px; aspect-ratio: 1 / 1.5; cursor: pointer; transition: 0.3s; background: white; }
         .blic-card:hover { transform: translateY(-8px); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .bg-marron { background-color: #8B4513; color: white; }
-        .bg-rojo { background-color: #e74c3c; color: white; }
-        .bg-amarillo { background-color: #f1c40f; color: black; }
-        .bg-verde { background-color: #2ecc71; color: white; }
-        .bg-emerald-metal { background: radial-gradient(circle at 30% 30%, #50C878, #2E8B57); color: white; }
-        .bg-irina-animado { background: linear-gradient(135deg, #8EE4D5, #B588C0); color: white; }
         .radar-container { flex: 4; min-height: 0; display: flex; align-items: center; justify-content: center; }
-        .icons-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 0 10px; }
-        .icon-box { background: rgba(0,0,0,0.15); aspect-ratio: 1/1; border-radius: 4px; display: flex; align-items: center; justify-content: center; }
-        .btn-card { padding: 6px; border: none; border-radius: 6px; cursor: pointer; font-size: 8px; font-weight: bold; background: rgba(0,0,0,0.2); color: white; }
         #modal-perfil { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index:1000; padding: 30px; overflow-y: auto; }
         .modal-content { width: 90%; max-width: 1100px; margin: auto; background: white; padding: 50px; border-radius: 20px; position: relative; }
         .profile-layout { display: grid; grid-template-columns: 250px 1fr; gap: 40px; }
-        .profile-photo { width: 100%; aspect-ratio: 1/1; background: #eee; border-radius: 15px; background-size: cover; background-position: center; border: 2px solid #ddd; }
+        .profile-photo { width: 100%; aspect-ratio: 1/1; background: #eee; border-radius: 15px; background-size: cover; background-position: center; }
     </style>
 </head>
 <body>
     <div class="main-container">
         <div class="header">
             <img src="https://i.ibb.co/JFMJBm0S/logo-ihs.jpg" style="max-width: 150px;">
-            <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" style="max-width: 60px; border-radius: 50%;">
         </div>
         <div class="grid-container" id="dashboard"></div>
     </div>
-    
     <div id="modal-perfil" onclick="this.style.display='none'">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="profile-layout">
                 <div>
                     <div id="m-foto" class="profile-photo"></div>
-                    <h2 id="m-nombre" style="margin-top:20px;">Nombre</h2>
-                    <p id="m-mail" style="color:#666;">email@ejemplo.com</p>
-                    <p id="m-telefono" style="font-weight:bold;">Teléfono</p>
+                    <h2 id="m-nombre">Nombre</h2>
+                    <p id="m-mail"></p>
+                    <p id="m-telefono" style="font-weight:bold;"></p>
                 </div>
                 <div>
-                    <h3>Trayectoria Profesional</h3>
-                    <p id="m-trayectoria" style="margin-bottom:20px;"></p>
-                    <h3>Formación Académica</h3>
-                    <p id="m-estudios" style="margin-bottom:20px;"></p>
+                    <h3>Trayectoria</h3>
+                    <p id="m-trayectoria"></p>
+                    <h3>Formación</h3>
+                    <p id="m-estudios"></p>
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-                        <div><h3>Habilidades Blandas</h3><p id="m-blandas"></p></div>
-                        <div><h3>Habilidades Duras</h3><p id="m-duras"></p></div>
+                        <div><h3>Blandas</h3><p id="m-blandas"></p></div>
+                        <div><h3>Duras</h3><p id="m-duras"></p></div>
                     </div>
                 </div>
             </div>
-            <div style="margin-top:40px; border-top: 1px solid #eee; padding-top: 20px;">
-                <a id="btn-whatsapp" target="_blank" style="padding: 15px 30px; background: #25D366; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Contactar por WhatsApp</a>
-                <button onclick="document.getElementById('modal-perfil').style.display='none'" style="margin-left:15px; padding: 15px 30px; cursor: pointer; border-radius: 8px;">Cerrar Perfil</button>
-            </div>
+            <button onclick="document.getElementById('modal-perfil').style.display='none'" style="margin-top:20px; padding:10px 20px;">Cerrar</button>
         </div>
     </div>
-
     <script>
         const sb = supabase.createClient('https://zuzvozgjsppkxvdlptmk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0');
-        
         async function cargarDatos() {
+            const { data } = await sb.from('habitat').select('*');
             const grid = document.getElementById('dashboard');
-            const { data } = await sb.from('habitat').select('*').order('created_at', { ascending: true });
-            grid.innerHTML = '';
-            
             data.forEach((row, index) => {
                 const d = typeof row.data === 'string' ? JSON.parse(row.data) : row.data;
-                const score = d?.["!irina"]?.evaluacion?.score_general;
-                if (score) {
-                    const clase = (score >= 98) ? 'bg-irina-animado' : (score >= 90 ? 'bg-emerald-metal' : (score >= 80 ? 'bg-verde' : (score >= 60 ? 'bg-amarillo' : (score >= 50 ? 'bg-rojo' : 'bg-marron'))));
-                    const card = document.createElement('div');
-                    card.className = "blic-card " + clase;
-                    card.onclick = () => abrirModal(d);
-                    card.innerHTML = `
-                        <div style="font-size:12px; font-weight:900;">SCORE: ${score}</div>
-                        <div class="radar-container"><canvas id="radar-${index}"></canvas></div>
-                        <div class="icons-grid">${['🚀', '🛡️', '🧠', '🔗'].map(i => `<div class="icon-box">${i}</div>`).join('')}</div>
-                        <button class="btn-card" style="width:100%; margin-top:10px;">VER PERFIL COMPLETO</button>
-                    `;
-                    grid.appendChild(card);
-                    new Chart(document.getElementById("radar-" + index), {
-                        type: 'radar',
-                        data: { labels: ['Téc', 'Exp', 'Ada', 'Lid', 'IA'], datasets: [{ data: [4, 5, 3, 4, 5], backgroundColor: 'rgba(255,255,255,0.4)' }] },
-                        options: { plugins: { legend: { display: false } }, scales: { r: { ticks: { display: false } } } }
-                    });
-                }
+                const card = document.createElement('div');
+                card.className = "blic-card";
+                card.onclick = () => abrirModal(d);
+                card.innerHTML = `<div>Candidato ${index + 1}</div><div class="radar-container"><canvas id="radar-${index}"></canvas></div>`;
+                grid.appendChild(card);
+                new Chart(document.getElementById("radar-" + index), { type: 'radar', data: { labels: ['Téc', 'Exp', 'Ada', 'Lid', 'IA'], datasets: [{ data: [4, 5, 3, 4, 5], backgroundColor: 'rgba(0,0,0,0.1)' }] } });
             });
         }
-
         function abrirModal(d) {
-            // Depuración: Si siguen saliendo vacíos, presiona F12 y mira la consola
-            console.log("Datos del candidato:", d);
-
-            const perfil = d?.["!perfil"] || {};
-            const base = perfil["perfil-base"] || {};
-            const contacto = perfil["perfil-contacto"] || {};
-
-            document.getElementById('m-nombre').innerText = base.nombre || "Nombre no disponible";
-            document.getElementById('m-mail').innerText = contacto.email || "Email no disponible";
-            document.getElementById('m-telefono').innerText = contacto.telefono || "Teléfono no disponible";
+            console.log("Datos:", d);
+            const p = d["!perfil"] || {};
+            const base = p["perfil-base"] || {};
+            const cont = p["perfil-contacto"] || {};
+            document.getElementById('m-nombre').innerText = base.nombre || "Sin nombre";
+            document.getElementById('m-mail').innerText = cont.email || "Sin email";
+            document.getElementById('m-telefono').innerText = cont.telefono || "Sin teléfono";
             document.getElementById('m-foto').style.backgroundImage = base.foto ? `url('${base.foto}')` : 'none';
-            
-            document.getElementById('m-trayectoria').innerText = perfil.trayectoria || "Trayectoria no especificada.";
-            document.getElementById('m-estudios').innerText = perfil.estudios || "Estudios no especificados.";
-            document.getElementById('m-blandas').innerText = perfil.habilidades_blandas || "No especificadas.";
-            document.getElementById('m-duras').innerText = perfil.habilidades_duras || "No especificadas.";
-            
-            document.getElementById('btn-whatsapp').href = contacto.telefono ? "https://wa.me/" + contacto.telefono.replace(/\D/g,'') : "#";
+            document.getElementById('m-trayectoria').innerText = p.trayectoria || "Sin info";
+            document.getElementById('m-estudios').innerText = p.estudios || "Sin info";
+            document.getElementById('m-blandas').innerText = p.habilidades_blandas || "Sin info";
+            document.getElementById('m-duras').innerText = p.habilidades_duras || "Sin info";
             document.getElementById('modal-perfil').style.display = 'flex';
         }
-
         cargarDatos();
     </script>
 </body>
