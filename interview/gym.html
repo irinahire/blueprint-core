@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Proceso de Aplicación - Irina Hire Selection</title>
+    <title>Gimnasio de Habilidades - Irina Hire Selection</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -11,96 +11,58 @@
             font-family: 'Segoe UI', sans-serif; 
             background: linear-gradient(to bottom left, #8EE4D5, #B588C0); 
             min-height: 100vh; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            padding: 2rem; 
+            display: flex; align-items: center; justify-content: center; padding: 2rem; 
         }
 
-        /* Estructura Maestra Original */
         .main-container { 
-            background: #fff; 
-            width: 100%; 
-            max-width: 1200px; 
-            height: 85vh; 
-            display: flex; 
-            flex-direction: column; /* Cambiado a columna para el título arriba */
-            border-radius: 12px; 
-            overflow: hidden; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2); 
+            background: #fff; width: 100%; max-width: 1200px; height: 85vh; 
+            display: flex; flex-direction: column; border-radius: 12px; 
+            overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.2); 
             border: 4px solid #fff;
         }
 
-        /* Header con el título y logo unificados arriba */
         .header-container { 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            padding: 1rem 3rem; 
-            border-bottom: 1px solid #eee;
-            background: #fff;
-            z-index: 10;
+            display: flex; align-items: center; justify-content: space-between; 
+            padding: 1rem 3rem; border-bottom: 1px solid #eee; background: #fff;
         }
         .logo { max-width: 120px; }
-        
-        /* Estilo del Título GIMNASIO DE HABILIDADES */
-        .gym-title {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 900;
-            font-size: 1.6rem;
-            color: #333;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
+        .gym-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.6rem; color: #333; letter-spacing: 2px; text-transform: uppercase; }
 
-        /* Área Operativa del Gimnasio (donde flota el fondo y las tarjetas) */
+        /* EL FONDO CON TU IMAGEN INTEGRADA */
         .content-area { 
             flex: 1; 
-            /* REEMPLAZAR ESTA URL CON LA IMAGEN DE IRINA EJERCITÁNDOSE A LA DERECHA */
-            background: url('path_to_image_3.png') no-repeat center center/cover;
+            background: url('https://i.ibb.co/TDxyQKGg/309eb931-3bcb-44a9-abeb-bc0b6cf996e6-0.jpg') no-repeat center center/cover;
             position: relative; 
             overflow: hidden; 
         }
 
-        /* Las Tarjetas en formato NAIPE que flotan */
+        /* DISEÑO DE NAIPE REAL */
         .tarjeta-naipe {
             position: absolute;
-            background: rgba(255, 255, 255, 0.95); /* Fondo blanco translúcido */
-            backdrop-filter: blur(5px); /* Efecto de desenfoque de fondo */
-            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.9); /* Fondo blanco con opacidad */
+            backdrop-filter: blur(8px);
+            border-radius: 20px; /* Bordes redondeados de naipe */
             padding: 1.5rem;
-            width: 250px;
-            height: 350px; /* Proporción de Naipe vertical */
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            width: 240px; height: 320px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
             transition: all 0.4s ease;
             cursor: pointer;
             z-index: 5;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            overflow: hidden;
-            border-left: 6px solid #B588C0;
+            display: flex; flex-direction: column; justify-content: space-between;
+            border: 1px solid rgba(255,255,255,0.3);
         }
 
-        /* Efecto al pasar el ratón (se levanta) */
-        .tarjeta-naipe:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-            z-index: 6;
-        }
+        .tarjeta-naipe:hover { transform: translateY(-10px) rotate(0deg) !important; z-index: 10; }
 
-        /* Marcadores de Estado */
-        .tarjeta-naipe.completado { border-left-color: #8EE4D5; }
-        .tarjeta-naipe.en_curso { border-left-color: #B588C0; }
-        .tarjeta-naipe.pendiente { border-left-color: #dcdcdc; }
+        /* COLORES Y ESTADOS */
+        .tarjeta-naipe.completado { border-bottom: 8px solid #8EE4D5; }
+        .tarjeta-naipe.en_curso { border-bottom: 8px solid #B588C0; }
+        .tarjeta-naipe.pendiente { border-bottom: 8px solid #dcdcdc; }
 
-        .naipe-header { font-size: 0.8rem; font-weight: bold; text-transform: uppercase; color: #777; margin-bottom: 10px; }
-        .ejercicio-titulo { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1.1rem; color: #333; margin-bottom: 5px; }
-        .ejercicio-desc { font-size: 0.9rem; color: #555; line-height: 1.4; flex: 1; }
-        
-        .sets-reps { font-size: 0.8rem; color: #888; font-style: italic; margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px; }
-        .icono-ejercicio { font-size: 1.5rem; color: #B588C0; margin-bottom: 5px;}
-
+        .naipe-header { font-size: 0.7rem; font-weight: 800; color: #999; margin-bottom: 8px; }
+        .ejercicio-titulo { font-family: 'Montserrat'; font-weight: 900; font-size: 1.1rem; color: #222; }
+        .ejercicio-desc { font-size: 0.85rem; color: #444; margin-top: 10px; }
+        .sets-reps { font-size: 0.75rem; color: #666; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -112,34 +74,26 @@
     </div>
 
     <div class="content-area">
-        
-        <div class="tarjeta-naipe completado" style="top: 15%; left: 8%;">
-            <div>
-                <div class="naipe-header">SERIE 01 - LÓGICA</div>
-                <div class="ejercicio-titulo">Análisis Algorítmico</div>
-                <p class="ejercicio-desc">Ejecución de flujos y detección de patrones secuenciales.</p>
-            </div>
-            <div class="sets-reps">Carga: Media | Reps: 15 | Sets: 3</div>
+        <div class="tarjeta-naipe completado" style="top: 15%; left: 10%; rotate: -5deg;">
+            <div class="naipe-header">SERIE 01</div>
+            <div class="ejercicio-titulo">LÓGICA ALGORÍTMICA</div>
+            <p class="ejercicio-desc">Ejecución de flujos y detección de anomalías en secuencias de datos.</p>
+            <div class="sets-reps">CARGA: ALTA | 3 SETS</div>
         </div>
 
-        <div class="tarjeta-naipe en_curso" style="top: 25%; left: 35%;">
-            <div>
-                <div class="naipe-header">SERIE 02 - SITUACIONAL</div>
-                <div class="ejercicio-titulo">Gestión de Crisis</div>
-                <p class="ejercicio-desc">Resolución de conflictos críticos en entornos de alta presión.</p>
-            </div>
-            <div class="sets-reps">Carga: Máxima | Reps: 10 | Sets: 4</div>
+        <div class="tarjeta-naipe en_curso" style="top: 25%; left: 32%; rotate: 3deg;">
+            <div class="naipe-header">SERIE 02</div>
+            <div class="ejercicio-titulo">GESTIÓN DE CRISIS</div>
+            <p class="ejercicio-desc">Resolución de conflictos críticos en entornos de alta presión.</p>
+            <div class="sets-reps">CARGA: MÁXIMA | 4 SETS</div>
         </div>
 
-        <div class="tarjeta-naipe pendiente" style="top: 55%; left: 20%;">
-            <div>
-                <div class="naipe-header">SERIE 03 - PSICOMETRÍA</div>
-                <div class="ejercicio-titulo">Perfil Adaptativo</div>
-                <p class="ejercicio-desc">Evaluación de neuroticismo y apertura al cambio.</p>
-            </div>
-            <div class="sets-reps">Carga: Baja | Reps: 20 | Sets: 2</div>
+        <div class="tarjeta-naipe pendiente" style="top: 45%; left: 12%; rotate: -2deg;">
+            <div class="naipe-header">SERIE 03</div>
+            <div class="ejercicio-titulo">PERFIL ADAPTATIVO</div>
+            <p class="ejercicio-desc">Evaluación psicométrica sobre respuesta al estrés y apertura.</p>
+            <div class="sets-reps">CARGA: MEDIA | 2 SETS</div>
         </div>
-
     </div>
 </div>
 
