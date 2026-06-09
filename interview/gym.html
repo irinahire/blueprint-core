@@ -28,41 +28,41 @@
         .logo { max-width: 120px; }
         .gym-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.6rem; color: #333; letter-spacing: 2px; text-transform: uppercase; }
 
-        /* EL FONDO CON TU IMAGEN INTEGRADA */
         .content-area { 
             flex: 1; 
-            background: url('https://i.ibb.co/TDxyQKGg/309eb931-3bcb-44a9-abeb-bc0b6cf996e6-0.jpg') no-repeat center center/cover;
+            /* Degradado de fundido a blanco + Imagen de fondo */
+            background: 
+                linear-gradient(to right, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.8) 50%, #ffffff 100%),
+                url('https://i.ibb.co/TDxyQKGg/309eb931-3bcb-44a9-abeb-bc0b6cf996e6-0.jpg') no-repeat center center/cover;
             position: relative; 
-            overflow: hidden; 
+            display: flex;
+            justify-content: flex-end; 
+            align-items: center;
+            padding-right: 50px;
+            gap: 20px;
         }
 
-        /* DISEÑO DE NAIPE REAL */
         .tarjeta-naipe {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.9); /* Fondo blanco con opacidad */
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(8px);
-            border-radius: 20px; /* Bordes redondeados de naipe */
+            border-radius: 20px;
             padding: 1.5rem;
-            width: 240px; height: 320px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            transition: all 0.4s ease;
+            width: 220px; height: 300px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             cursor: pointer;
-            z-index: 5;
+            transition: all 0.3s ease;
             display: flex; flex-direction: column; justify-content: space-between;
-            border: 1px solid rgba(255,255,255,0.3);
+            border-bottom: 8px solid #dcdcdc;
         }
 
-        .tarjeta-naipe:hover { transform: translateY(-10px) rotate(0deg) !important; z-index: 10; }
-
-        /* COLORES Y ESTADOS */
-        .tarjeta-naipe.completado { border-bottom: 8px solid #8EE4D5; }
-        .tarjeta-naipe.en_curso { border-bottom: 8px solid #B588C0; }
-        .tarjeta-naipe.pendiente { border-bottom: 8px solid #dcdcdc; }
+        .tarjeta-naipe:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.25); }
+        .tarjeta-naipe.completado { border-bottom-color: #8EE4D5; }
+        .tarjeta-naipe.en_curso { border-bottom-color: #B588C0; }
 
         .naipe-header { font-size: 0.7rem; font-weight: 800; color: #999; margin-bottom: 8px; }
         .ejercicio-titulo { font-family: 'Montserrat'; font-weight: 900; font-size: 1.1rem; color: #222; }
-        .ejercicio-desc { font-size: 0.85rem; color: #444; margin-top: 10px; }
-        .sets-reps { font-size: 0.75rem; color: #666; font-weight: bold; }
+        .ejercicio-desc { font-size: 0.85rem; color: #444; margin-top: 10px; flex: 1; }
+        .sets-reps { font-size: 0.75rem; color: #666; font-weight: bold; border-top: 1px solid #eee; padding-top: 10px; }
     </style>
 </head>
 <body>
@@ -74,28 +74,36 @@
     </div>
 
     <div class="content-area">
-        <div class="tarjeta-naipe completado" style="top: 15%; left: 10%; rotate: -5deg;">
+        <div class="tarjeta-naipe completado" onclick="iniciarEjercicio('logica')">
             <div class="naipe-header">SERIE 01</div>
             <div class="ejercicio-titulo">LÓGICA ALGORÍTMICA</div>
-            <p class="ejercicio-desc">Ejecución de flujos y detección de anomalías en secuencias de datos.</p>
+            <p class="ejercicio-desc">Ejecución de flujos y detección de anomalías en secuencias.</p>
             <div class="sets-reps">CARGA: ALTA | 3 SETS</div>
         </div>
 
-        <div class="tarjeta-naipe en_curso" style="top: 25%; left: 32%; rotate: 3deg;">
+        <div class="tarjeta-naipe en_curso" onclick="iniciarEjercicio('situacional')">
             <div class="naipe-header">SERIE 02</div>
             <div class="ejercicio-titulo">GESTIÓN DE CRISIS</div>
-            <p class="ejercicio-desc">Resolución de conflictos críticos en entornos de alta presión.</p>
+            <p class="ejercicio-desc">Resolución de conflictos críticos en entornos de presión.</p>
             <div class="sets-reps">CARGA: MÁXIMA | 4 SETS</div>
-        </div>
-
-        <div class="tarjeta-naipe pendiente" style="top: 45%; left: 12%; rotate: -2deg;">
-            <div class="naipe-header">SERIE 03</div>
-            <div class="ejercicio-titulo">PERFIL ADAPTATIVO</div>
-            <p class="ejercicio-desc">Evaluación psicométrica sobre respuesta al estrés y apertura.</p>
-            <div class="sets-reps">CARGA: MEDIA | 2 SETS</div>
         </div>
     </div>
 </div>
+
+<script>
+    function iniciarEjercicio(tipo) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const applicantId = urlParams.get('applicantId');
+        
+        if (!applicantId) {
+            alert("Error: No se encontró el ID del postulante.");
+            return;
+        }
+        
+        console.log(`Iniciando ejercicio ${tipo} para postulante: ${applicantId}`);
+        // Aquí conectaremos con la lógica de Supabase cuando definas el siguiente paso
+    }
+</script>
 
 </body>
 </html>
