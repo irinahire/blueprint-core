@@ -41,25 +41,24 @@
         .c-companion .card-inner { background: linear-gradient(135deg, #4e52a7 0%, #9b59b6 100%); }
         .c-pulse .card-inner { background: linear-gradient(135deg, #9b59b6 0%, #2ecc71 100%); }
         .c-next .card-inner { background: linear-gradient(135deg, #2ecc71 0%, #85c1e9 100%); }
-        /* Modal y Recuperar */
+        /* Modal Google */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; }
         .modal-content { background: #111; padding: 40px; border-radius: 20px; width: 320px; text-align: center; border: 1px solid var(--mint-irina); position: relative; }
         .close-btn { position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; }
-        .modal-content input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #333; background: #000; color: white; box-sizing: border-box; }
-        .modal-content button { width: 100%; padding: 12px; margin: 5px 0; border-radius: 8px; border: none; cursor: pointer; font-weight: 800; text-transform: uppercase; }
-        .forgot-link { display: block; margin-top: 15px; color: var(--mint-irina); font-size: 0.8rem; text-decoration: underline; cursor: pointer; }
+        .google-btn { background: white; color: #555; padding: 12px; width: 100%; border-radius: 8px; border: none; cursor: pointer; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 20px; }
+        .google-icon { width: 20px; }
     </style>
 </head>
 <body>
     <div id="loginModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="document.getElementById('loginModal').style.display='none'">×</span>
-            <h2>Acceso BlueLab</h2>
-            <input type="email" id="email" placeholder="Email">
-            <input type="password" id="password" placeholder="Contraseña">
-            <button style="background: var(--mint-irina);" onclick="ingresar()">Iniciar Sesión</button>
-            <button style="background: white;" onclick="registrarse()">Crear Cuenta</button>
-            <span class="forgot-link" onclick="alert('Funcionalidad de recuperación próximamente')">¿Olvidaste tu contraseña?</span>
+            <h2>BlueLab Acceso</h2>
+            <p style="font-size: 0.9rem; color: #888;">Ingresá con tu cuenta de Google para continuar.</p>
+            <button class="google-btn" onclick="ingresarConGoogle()">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" class="google-icon">
+                INGRESAR CON GOOGLE
+            </button>
         </div>
     </div>
     <div class="report-frame">
@@ -87,17 +86,9 @@
     <script>
         const supabase = supabase.createClient('https://zuzvozgjsppkxvdlptmk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0');
         
-        async function ingresar() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const { error } = await supabase.auth.signInWithPassword({ email, password });
-            if (error) alert(error.message); else { document.getElementById('loginModal').style.display='none'; location.reload(); }
-        }
-        async function registrarse() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const { error } = await supabase.auth.signUp({ email, password });
-            if (error) alert(error.message); else alert("Revisa tu correo para confirmar.");
+        async function ingresarConGoogle() {
+            const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' });
+            if (error) alert("Error: " + error.message);
         }
         async function cerrarSesion() { await supabase.auth.signOut(); location.reload(); }
         
