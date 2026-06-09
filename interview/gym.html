@@ -60,23 +60,24 @@
         .ejercicio-desc { font-size: 0.85rem; color: #444; margin-top: 10px; flex: 1; line-height: 1.4; }
         .sets-reps { font-size: 0.75rem; color: #666; font-weight: bold; border-top: 1px solid #eee; padding-top: 10px; }
 
-        /* Botón 3D con degradado + Luz perimetral en Hover */
+        /* Botón 3D con luz perimetral en hover */
         .btn-container { position: absolute; bottom: 30px; left: 30px; }
         .btn-luz { 
             position: relative; padding: 1.2rem 2.5rem; font-family: 'Montserrat'; font-weight: 900; 
             font-size: 0.9rem; text-transform: uppercase; color: white;
             background: linear-gradient(135deg, #B588C0, #8EE4D5); 
-            border: none; border-radius: 8px; cursor: pointer; 
-            box-shadow: 0 8px 15px rgba(181, 136, 192, 0.4);
-            border-bottom: 5px solid rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
+            border: none; border-radius: 8px; cursor: pointer; z-index: 10;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
         }
+        
         .btn-luz::before {
             content: ''; position: absolute; top: -3px; left: -3px; right: -3px; bottom: -3px;
             background: linear-gradient(45deg, #B588C0, #8EE4D5, #B588C0, #8EE4D5);
             background-size: 400%; border-radius: 10px; z-index: -1; 
             opacity: 0; transition: opacity 0.3s ease;
         }
+
         .btn-luz:hover::before { opacity: 1; animation: glow 2s linear infinite; }
         @keyframes glow { 0% { background-position: 0 0; } 100% { background-position: 400% 0; } }
 
