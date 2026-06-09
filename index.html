@@ -34,26 +34,32 @@
         .card-btn { background: white; border-radius: 12px; text-decoration: none; font-size: 0.75rem; font-weight: 800; color: #111; display: flex; align-items: center; justify-content: center; flex-grow: 1; text-transform: uppercase; }
         .btn-video { width: 48px; flex-grow: 0; background: rgba(255,255,255,0.2); color: white; font-size: 1.1rem; border: 1px solid rgba(255,255,255,0.2); }
         @keyframes rotate { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+        /* Degradados */
         .c-irina .card-inner { background: linear-gradient(135deg, #bc8abf 0%, #96e8da 100%); }
         .c-donny .card-inner { background: linear-gradient(135deg, #96e8da 0%, #ffb347 100%); }
         .c-qore .card-inner { background: linear-gradient(135deg, #ffb347 0%, #4e52a7 100%); }
         .c-companion .card-inner { background: linear-gradient(135deg, #4e52a7 0%, #9b59b6 100%); }
         .c-pulse .card-inner { background: linear-gradient(135deg, #9b59b6 0%, #2ecc71 100%); }
         .c-next .card-inner { background: linear-gradient(135deg, #2ecc71 0%, #85c1e9 100%); }
+        /* Modal y Recuperar */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; }
-        .modal-content { background: #111; padding: 40px; border-radius: 20px; width: 320px; text-align: center; border: 1px solid var(--mint-irina); }
+        .modal-content { background: #111; padding: 40px; border-radius: 20px; width: 320px; text-align: center; border: 1px solid var(--mint-irina); position: relative; }
+        .close-btn { position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; }
         .modal-content input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #333; background: #000; color: white; box-sizing: border-box; }
         .modal-content button { width: 100%; padding: 12px; margin: 5px 0; border-radius: 8px; border: none; cursor: pointer; font-weight: 800; text-transform: uppercase; }
+        .forgot-link { display: block; margin-top: 15px; color: var(--mint-irina); font-size: 0.8rem; text-decoration: underline; cursor: pointer; }
     </style>
 </head>
 <body>
     <div id="loginModal" class="modal">
         <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('loginModal').style.display='none'">×</span>
             <h2>Acceso BlueLab</h2>
             <input type="email" id="email" placeholder="Email">
             <input type="password" id="password" placeholder="Contraseña">
             <button style="background: var(--mint-irina);" onclick="ingresar()">Iniciar Sesión</button>
             <button style="background: white;" onclick="registrarse()">Crear Cuenta</button>
+            <span class="forgot-link" onclick="alert('Funcionalidad de recuperación próximamente')">¿Olvidaste tu contraseña?</span>
         </div>
     </div>
     <div class="report-frame">
@@ -71,9 +77,9 @@
                 <div class="card c-qore"><div class="card-inner"><div class="card-img-container"><img src="https://images.unsplash.com/photo-1580793241553-e9f1cce181af?q=60"></div><h2>Qore Retail</h2><p>Conectividad real.</p><div class="btn-row"><a href="#" class="card-btn">OPEN</a><a href="#" class="card-btn btn-video">▶</a></div></div></div>
                 <div class="card c-next"><div class="card-inner"><div class="card-img-container"><img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=60"></div><h2>!Real Estate</h2><p>Inteligencia inmobiliaria.</p><div class="btn-row"><a href="#" class="card-btn">EXPLORE</a><a href="#" class="card-btn btn-video">▶</a></div></div></div>
                 <div class="card c-companion"><div class="card-inner"><div class="card-img-container"><img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?q=60"></div><h2>Events</h2><p>Cine y teatro.</p><div class="btn-row"><a href="#" class="card-btn">VIEW</a><a href="#" class="card-btn btn-video">▶</a></div></div></div>
-                <div class="card c-pulse"><div class="card-inner"><div class="card-img-container"><img src="https://images.unsplash.com/photo-1507608616759-54948f58c303?q=60"></div><h2>Travel</h2><p>Turismo y viajes.</p><div class="btn-row"><a href="#" class="card-btn">PLAN</a><a href="#" class="card-btn btn-video">▶</a></div></div></div>
+                <div class="card c-pulse"><div class="card-inner"><div class="card-img-container"><img src="https://media.lacapital.com.ar/p/08bfc0cced41e984958a7f24d07e95c8/adjuntos/203/imagenes/103/170/0103170102/ia-y-vuelos.jpg"></div><h2>Travel</h2><p>Turismo y vuelos IA.</p><div class="btn-row"><a href="#" class="card-btn">PLAN</a><a href="#" class="card-btn btn-video">▶</a></div></div></div>
                 <div class="card c-pulse"><div class="card-inner"><div class="card-img-container"><img src="https://thumbs.dreamstime.com/b/close-up-quantum-computer-system-444197861.jpg"></div><h2>Pulse Insight</h2><p>Cultura y feedback.</p><div class="btn-row"><a href="#" class="card-btn">CONCEPT</a><a href="#" class="card-btn btn-video">▶</a></div></div></div>
-                <div class="card c-companion"><div class="card-inner"><div class="card-img-container"><img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80"></div><h2>Companion</h2><p>Asistencia integral.</p><div class="btn-row"><a href="#" class="card-btn">CONCEPT</a><a href="#" class="card-btn btn-video">▶</a></div></div></div>
+                <div class="card c-companion"><div class="card-inner"><div class="card-img-container"><img src="https://media.istockphoto.com/id/1358799033/es/foto/pareja-construyendo-tienda-de-campaña-en-el-bosque-durante-la-caminata.jpg?s=612x612"></div><h2>Companion</h2><p>Asistencia integral.</p><div class="btn-row"><a href="#" class="card-btn">CONCEPT</a><a href="#" class="card-btn btn-video">▶</a></div></div></div>
                 <div class="card c-next"><div class="card-inner"><div class="card-img-container"><img src="https://www.ruralprimicias.com.ar/wp-content/uploads/2025/11/cyber_monday_no_border.png"></div><h2>Blue POS</h2><p>Facturación cloud.</p><div class="btn-row"><a href="#" class="card-btn">CONCEPT</a><a href="#" class="card-btn btn-video">▶</a></div></div></div>
             </div>
         </div>
