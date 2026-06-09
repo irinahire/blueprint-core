@@ -2,56 +2,146 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Gimnasio de Habilidades - Irina Hire Selection</title>
+    <title>Proceso de Aplicación - Irina Hire Selection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(to bottom left, #8EE4D5, #B588C0); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
-        .main-container { background: #fff; width: 100%; max-width: 1200px; height: 85vh; display: flex; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
-        .left-column { flex: 1; padding: 1.5rem 3rem 2rem 1.5rem; display: flex; flex-direction: column; overflow: hidden; }
-        .header-container { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 2rem; }
-        .logo { max-width: 140px; }
         
-        /* Contenedor del Título del Gimnasio */
-        .gym-header { margin-bottom: 2rem; }
-        .gym-header h1 { color: #B588C0; font-size: 2rem; }
-        .gym-header p { color: #555; margin-top: 5px; }
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: linear-gradient(to bottom left, #8EE4D5, #B588C0); 
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 2rem; 
+        }
 
-        .right-column { width: 30%; background: url('https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg') 75% center/cover no-repeat; }
-        .content-area { flex: 1; overflow-y: auto; padding-right: 15px; }
+        /* Estructura Maestra Original */
+        .main-container { 
+            background: #fff; 
+            width: 100%; 
+            max-width: 1200px; 
+            height: 85vh; 
+            display: flex; 
+            flex-direction: column; /* Cambiado a columna para el título arriba */
+            border-radius: 12px; 
+            overflow: hidden; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2); 
+            border: 4px solid #fff;
+        }
+
+        /* Header con el título y logo unificados arriba */
+        .header-container { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 1rem 3rem; 
+            border-bottom: 1px solid #eee;
+            background: #fff;
+            z-index: 10;
+        }
+        .logo { max-width: 120px; }
         
-        .area-ejercicio { display: flex; flex-direction: column; gap: 20px; }
-        button { padding: 1rem 2rem; background: #B588C0; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; width: fit-content; transition: opacity 0.3s; }
-        button:hover { opacity: 0.9; }
+        /* Estilo del Título GIMNASIO DE HABILIDADES */
+        .gym-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 1.6rem;
+            color: #333;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Área Operativa del Gimnasio (donde flota el fondo y las tarjetas) */
+        .content-area { 
+            flex: 1; 
+            /* REEMPLAZAR ESTA URL CON LA IMAGEN DE IRINA EJERCITÁNDOSE A LA DERECHA */
+            background: url('path_to_image_3.png') no-repeat center center/cover;
+            position: relative; 
+            overflow: hidden; 
+        }
+
+        /* Las Tarjetas en formato NAIPE que flotan */
+        .tarjeta-naipe {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.95); /* Fondo blanco translúcido */
+            backdrop-filter: blur(5px); /* Efecto de desenfoque de fondo */
+            border-radius: 10px;
+            padding: 1.5rem;
+            width: 250px;
+            height: 350px; /* Proporción de Naipe vertical */
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            border-left: 6px solid #B588C0;
+        }
+
+        /* Efecto al pasar el ratón (se levanta) */
+        .tarjeta-naipe:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            z-index: 6;
+        }
+
+        /* Marcadores de Estado */
+        .tarjeta-naipe.completado { border-left-color: #8EE4D5; }
+        .tarjeta-naipe.en_curso { border-left-color: #B588C0; }
+        .tarjeta-naipe.pendiente { border-left-color: #dcdcdc; }
+
+        .naipe-header { font-size: 0.8rem; font-weight: bold; text-transform: uppercase; color: #777; margin-bottom: 10px; }
+        .ejercicio-titulo { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1.1rem; color: #333; margin-bottom: 5px; }
+        .ejercicio-desc { font-size: 0.9rem; color: #555; line-height: 1.4; flex: 1; }
+        
+        .sets-reps { font-size: 0.8rem; color: #888; font-style: italic; margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px; }
+        .icono-ejercicio { font-size: 1.5rem; color: #B588C0; margin-bottom: 5px;}
+
     </style>
 </head>
 <body>
 
 <div class="main-container">
-    <div class="left-column">
-        <div class="header-container">
-            <img src="https://i.ibb.co/JFMJBm0S/logo-ihs.jpg" class="logo">
-        </div>
-
-        <div class="gym-header">
-            <h1>Gimnasio de Habilidades</h1>
-            <p>Bienvenido al espacio de entrenamiento. Aquí Irina evaluará tu ejecución técnica.</p>
-        </div>
-
-        <div id="gimnasio-content" class="content-area">
-            <div class="area-ejercicio">
-                <h3>Desafío Actual: Optimización de Estructura</h3>
-                <textarea rows="6" style="width:100%; padding: 10px;" placeholder="Describe tu enfoque para resolver este problema..."></textarea>
-                <button onclick="finalizarEjecucion()">Completar Serie</button>
-            </div>
-        </div>
+    <div class="header-container">
+        <img src="https://i.ibb.co/JFMJBm0S/logo-ihs.jpg" class="logo">
+        <h1 class="gym-title">GIMNASIO DE HABILIDADES</h1>
     </div>
-    <div class="right-column"></div>
+
+    <div class="content-area">
+        
+        <div class="tarjeta-naipe completado" style="top: 15%; left: 8%;">
+            <div>
+                <div class="naipe-header">SERIE 01 - LÓGICA</div>
+                <div class="ejercicio-titulo">Análisis Algorítmico</div>
+                <p class="ejercicio-desc">Ejecución de flujos y detección de patrones secuenciales.</p>
+            </div>
+            <div class="sets-reps">Carga: Media | Reps: 15 | Sets: 3</div>
+        </div>
+
+        <div class="tarjeta-naipe en_curso" style="top: 25%; left: 35%;">
+            <div>
+                <div class="naipe-header">SERIE 02 - SITUACIONAL</div>
+                <div class="ejercicio-titulo">Gestión de Crisis</div>
+                <p class="ejercicio-desc">Resolución de conflictos críticos en entornos de alta presión.</p>
+            </div>
+            <div class="sets-reps">Carga: Máxima | Reps: 10 | Sets: 4</div>
+        </div>
+
+        <div class="tarjeta-naipe pendiente" style="top: 55%; left: 20%;">
+            <div>
+                <div class="naipe-header">SERIE 03 - PSICOMETRÍA</div>
+                <div class="ejercicio-titulo">Perfil Adaptativo</div>
+                <p class="ejercicio-desc">Evaluación de neuroticismo y apertura al cambio.</p>
+            </div>
+            <div class="sets-reps">Carga: Baja | Reps: 20 | Sets: 2</div>
+        </div>
+
+    </div>
 </div>
 
-<script>
-    function finalizarEjecucion() {
-        alert("Serie completada. Datos enviados a la base de datos.");
-    }
-</script>
 </body>
 </html>
