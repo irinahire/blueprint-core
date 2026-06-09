@@ -60,18 +60,21 @@
         .ejercicio-desc { font-size: 0.85rem; color: #444; margin-top: 10px; flex: 1; line-height: 1.4; }
         .sets-reps { font-size: 0.75rem; color: #666; font-weight: bold; border-top: 1px solid #eee; padding-top: 10px; }
 
+        /* Botón final: Degradado de Irina + Luz perimetral (sin giro) */
         .btn-container { position: absolute; bottom: 30px; left: 30px; }
         .btn-luz { 
             position: relative; padding: 1.2rem 2.5rem; font-family: 'Montserrat'; font-weight: 900; 
-            font-size: 0.9rem; text-transform: uppercase; color: white; background: #333; 
-            border: none; border-radius: 8px; cursor: pointer; overflow: hidden;
+            font-size: 0.9rem; text-transform: uppercase; color: white;
+            background: linear-gradient(135deg, #B588C0, #8EE4D5); 
+            border: none; border-radius: 8px; cursor: pointer; z-index: 1;
         }
         .btn-luz::before {
-            content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
-            background: linear-gradient(45deg, #B588C0, #8EE4D5, #B588C0);
-            background-size: 400%; border-radius: 10px; z-index: -1; animation: glow 5s linear infinite;
+            content: ''; position: absolute; top: -3px; left: -3px; right: -3px; bottom: -3px;
+            background: linear-gradient(45deg, #B588C0, #8EE4D5, #B588C0, #8EE4D5);
+            background-size: 400%; border-radius: 10px; z-index: -1; 
+            animation: glow 6s linear infinite;
         }
-        @keyframes glow { 0% { background-position: 0 0; } 50% { background-position: 400% 0; } 100% { background-position: 0 0; } }
+        @keyframes glow { 0% { background-position: 0 0; } 100% { background-position: 400% 0; } }
 
         #mensaje-entrenamiento { display: none; text-align: center; padding: 50px; font-size: 1.5rem; color: #333; font-weight: bold; }
     </style>
