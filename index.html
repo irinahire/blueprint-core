@@ -8,38 +8,26 @@
     <link href="https://fonts.googleapis.com/css2?family=Alkatra:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <style>
-        :root {
-            --pink-irina: #bc8abf; --mint-irina: #96e8da; --bg-dark: #05070a;
-            --orange-donny: #ffb347; --blue-qore: #4e52a7; --purple-comp: #9b59b6;
-            --green-pulse: #2ecc71; --blue-next: #85c1e9;
-        }
+        :root { --pink-irina: #bc8abf; --mint-irina: #96e8da; --bg-dark: #05070a; }
         body { margin: 0; padding: 0; background-color: var(--bg-dark); font-family: 'Inter', sans-serif; display: flex; justify-content: center; min-height: 100vh; color: white; background-image: radial-gradient(white, rgba(255,255,255,.1) 1px, transparent 2px); background-size: 100px 100px; }
         .report-frame { width: 95%; max-width: 1300px; margin: 40px 0; padding: 1px; border-radius: 30px; background: linear-gradient(135deg, rgba(255,255,255,0.3), transparent); box-shadow: 0 50px 100px rgba(0,0,0,0.9); overflow: hidden; }
         .report-content { background: linear-gradient(rgba(10, 14, 23, 0.7), rgba(10, 14, 23, 0.7)), url('https://i.ibb.co/1tx0dKMJ/fondoweb.jpg'); background-size: cover; background-position: center; border-radius: 29px; min-height: 100%; display: flex; flex-direction: column; }
         header { padding: 70px 60px; text-align: left; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(5px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); display: flex; justify-content: space-between; align-items: center; }
         .brand h1 { font-family: 'Alkatra', cursive; font-size: 5.5rem; margin: 0; background: linear-gradient(to right, #fff, var(--mint-irina)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .brand span { font-size: 1.1rem; letter-spacing: 8px; text-transform: uppercase; font-weight: 700; color: #85c1e9; display: block; margin-top: 10px; }
-        #auth-panel { display: flex; gap: 15px; }
-        .btn-auth { background: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
         .project-grid { padding: 60px; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; }
         .card { border-radius: 24px; padding: 2px; position: relative; overflow: hidden; transition: 0.3s ease; display: flex; flex-direction: column; aspect-ratio: 2 / 3.4; }
         .card.locked { opacity: 0.3; filter: grayscale(1); pointer-events: none; }
-        .card::before, .card::after { content: ''; position: absolute; top: 50%; left: 50%; width: 250%; height: 250%; background: conic-gradient(transparent, transparent, transparent, white); transform: translate(-50%, -50%); animation: rotate 4s linear infinite; display: none; z-index: 0; }
-        .card:hover::before, .card:hover::after { display: block; }
         .card-inner { position: relative; z-index: 2; height: 100%; width: 100%; border-radius: 22px; padding: 30px; display: flex; flex-direction: column; align-items: center; text-align: center; }
         .card-img-container { width: 100%; aspect-ratio: 1 / 1; border-radius: 20px; margin-bottom: 25px; overflow: hidden; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.15); }
         .card-img-container img { width: 100%; height: 100%; object-fit: cover; }
-        .card h2 { font-family: 'Alkatra', cursive; font-size: 1.9rem; margin: 0 0 12px 0; color: white; }
+        .card h2 { font-family: 'Alkatra', cursive; font-size: 1.9rem; margin: 0 0 12px 0; color: white; line-height: 1; }
+        .card p { font-size: 0.95rem; line-height: 1.4; margin-bottom: 20px; flex-grow: 1; color: rgba(255,255,255,0.95); }
         .btn-row { display: flex; gap: 10px; height: 48px; width: 100%; }
         .card-btn { background: white; border-radius: 12px; text-decoration: none; font-size: 0.75rem; font-weight: 800; color: #111; display: flex; align-items: center; justify-content: center; flex-grow: 1; text-transform: uppercase; }
-        @keyframes rotate { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
-        /* Degradados */
-        .c-irina .card-inner { background: linear-gradient(135deg, #bc8abf, #96e8da); }
-        .c-donny .card-inner { background: linear-gradient(135deg, #96e8da, #ffb347); }
-        .c-qore .card-inner { background: linear-gradient(135deg, #ffb347, #4e52a7); }
-        .c-companion .card-inner { background: linear-gradient(135deg, #4e52a7, #9b59b6); }
-        .c-pulse .card-inner { background: linear-gradient(135deg, #9b59b6, #2ecc71); }
-        .c-next .card-inner { background: linear-gradient(135deg, #2ecc71, #85c1e9); }
+        .btn-video { width: 48px; flex-grow: 0; background: rgba(255,255,255,0.2); color: white; font-size: 1.1rem; border: 1px solid rgba(255,255,255,0.2); }
+        .auth-btns { display: flex; gap: 10px; }
+        .btn-login { background: var(--mint-irina); color: #000; border: none; padding: 15px 30px; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -47,36 +35,35 @@
         <div class="report-content">
             <header>
                 <div class="brand"><h1>BlueLab</h1><span>Blueprint Integrations Lab</span></div>
-                <div id="auth-panel">
-                    <button class="btn-auth" id="btn-login" onclick="login()">Ingresar</button>
-                    <button class="btn-auth" id="btn-logout" onclick="logout()" style="display:none;">Salir</button>
+                <div class="auth-btns">
+                    <button id="btn-login" class="btn-login" onclick="login()">Ingresar</button>
+                    <button id="btn-logout" class="btn-login" style="display:none;" onclick="logout()">Salir</button>
                 </div>
             </header>
-            <div class="project-grid" id="project-grid">
-                <div class="card c-irina" id="card-irina"><div class="card-inner"><div class="card-img-container"><img src="https://i.ibb.co/wNPN7GP4/cuadrada-para-blic-de-sitio-bluelab.jpg"></div><h2>Irina Hire</h2><div class="btn-row"><a href="#" class="card-btn">SCHEDULE</a></div></div></div>
-                <div class="card c-donny" id="card-donny"><div class="card-inner"><div class="card-img-container"><img src="https://i.ibb.co/bjgN68bS/donny-sb-concept-v1.jpg"></div><h2>Donny SB</h2><div class="btn-row"><a href="#" class="card-btn">ACCESS</a></div></div></div>
-                <div class="card c-qore" id="card-qore"><div class="card-inner"><div class="card-img-container"><img src="https://images.unsplash.com/photo-1580793241553-e9f1cce181af?q=60"></div><h2>Qore Retail</h2><div class="btn-row"><a href="#" class="card-btn">OPEN</a></div></div></div>
-                <div class="card c-next" id="card-realestate"><div class="card-inner"><div class="card-img-container"><img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=60"></div><h2>!Real Estate</h2><div class="btn-row"><a href="#" class="card-btn">EXPLORE</a></div></div></div>
-                <div class="card c-companion" id="card-events"><div class="card-inner"><div class="card-img-container"><img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?q=60"></div><h2>Events</h2><div class="btn-row"><a href="#" class="card-btn">VIEW</a></div></div></div>
-                <div class="card c-pulse" id="card-travel"><div class="card-inner"><div class="card-img-container"><img src="https://images.unsplash.com/photo-1507608616759-54948f58c303?q=60"></div><h2>Travel</h2><div class="btn-row"><a href="#" class="card-btn">PLAN</a></div></div></div>
+            <div class="project-grid">
+                <div class="card" id="card-irina"><div class="card-inner"><div class="card-img-container"><img src="https://i.ibb.co/wNPN7GP4/cuadrada-para-blic-de-sitio-bluelab.jpg"></div><h2>Irina Hire</h2><p>Optimización inteligente.</p><div class="btn-row"><a href="#" class="card-btn">SCHEDULE</a><a href="#" class="card-btn btn-video">▶</a></div></div></div>
+                <div class="card" id="card-donny"><div class="card-inner"><div class="card-img-container"><img src="https://i.ibb.co/bjgN68bS/donny-sb-concept-v1.jpg"></div><h2>Donny SB</h2><p>Gestión de conocimiento.</p><div class="btn-row"><a href="#" class="card-btn">ACCESS</a><a href="#" class="card-btn btn-video">▶</a></div></div></div>
+                <div class="card" id="card-qore"><div class="card-inner"><div class="card-img-container"><img src="https://images.unsplash.com/photo-1580793241553-e9f1cce181af?q=60"></div><h2>Qore Retail</h2><p>Conectividad en tiempo real.</p><div class="btn-row"><a href="#" class="card-btn">OPEN</a><a href="#" class="card-btn btn-video">▶</a></div></div></div>
+                <div class="card" id="card-realestate"><div class="card-inner"><div class="card-img-container"><img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=60"></div><h2>!Real Estate</h2><p>Inteligencia inmobiliaria AR.</p><div class="btn-row"><a href="#" class="card-btn">EXPLORE</a><a href="#" class="card-btn btn-video">▶</a></div></div></div>
+                <div class="card" id="card-events"><div class="card-inner"><div class="card-img-container"><img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?q=60"></div><h2>Events</h2><p>Cine, teatro y espectáculos.</p><div class="btn-row"><a href="#" class="card-btn">VIEW</a><a href="#" class="card-btn btn-video">▶</a></div></div></div>
+                <div class="card" id="card-travel"><div class="card-inner"><div class="card-img-container"><img src="https://images.unsplash.com/photo-1507608616759-54948f58c303?q=60"></div><h2>Travel</h2><p>Turismo y gestión de viajes.</p><div class="btn-row"><a href="#" class="card-btn">PLAN</a><a href="#" class="card-btn btn-video">▶</a></div></div></div>
+                <div class="card" id="card-pulse"><div class="card-inner"><div class="card-img-container"><img src="https://thumbs.dreamstime.com/b/close-up-quantum-computer-system-444197861.jpg"></div><h2>Pulse Insight</h2><p>Cultura organizacional.</p><div class="btn-row"><a href="#" class="card-btn">CONCEPT</a><a href="#" class="card-btn btn-video">▶</a></div></div></div>
+                <div class="card" id="card-companion"><div class="card-inner"><div class="card-img-container"><img src="https://media.istockphoto.com/id/1358799033/es/foto/pareja-construyendo-tienda-de-campaña-en-el-bosque-durante-la-caminata.jpg?s=612x612"></div><h2>Companion</h2><p>Asistencia integral.</p><div class="btn-row"><a href="#" class="card-btn">CONCEPT</a><a href="#" class="card-btn btn-video">▶</a></div></div></div>
+                <div class="card" id="card-next"><div class="card-inner"><div class="card-img-container"><img src="https://www.ruralprimicias.com.ar/wp-content/uploads/2025/11/cyber_monday_no_border.png"></div><h2>Blue POS</h2><p>Facturación cloud.</p><div class="btn-row"><a href="#" class="card-btn">CONCEPT</a><a href="#" class="card-btn btn-video">▶</a></div></div></div>
             </div>
         </div>
     </div>
     <script>
-        const supabase = supabase.createClient('TU_SUPABASE_URL', 'TU_SUPABASE_KEY');
+        const supabase = supabase.createClient('TU_URL', 'TU_KEY');
         async function login() { await supabase.auth.signInWithOAuth({ provider: 'google' }); }
         async function logout() { await supabase.auth.signOut(); location.reload(); }
-        async function checkUser() {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (user) {
+        // Inicialización básica para verificar login
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (session) {
                 document.getElementById('btn-login').style.display = 'none';
                 document.getElementById('btn-logout').style.display = 'block';
-                // Aquí filtrarías por los permisos asociados al usuario en tu tabla HABITAT
-                // const permisos = await obtenerPermisos(user.id);
-                // aplicarFiltros(permisos);
             }
-        }
-        checkUser();
+        });
     </script>
 </body>
 </html>
