@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Proceso de Aplicación - Irina Hire Selection</title>
+    <title>Gimnasio de Habilidades - Irina Hire Selection</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(to bottom left, #8EE4D5, #B588C0); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
@@ -10,17 +10,16 @@
         .left-column { flex: 1; padding: 1.5rem 3rem 2rem 1.5rem; display: flex; flex-direction: column; overflow: hidden; }
         .header-container { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 2rem; }
         .logo { max-width: 140px; }
-        .stepper-container { display: flex; align-items: center; margin-left: 3rem; }
-        .step { display: flex; flex-direction: column; align-items: center; width: 90px; }
-        .step-circle { width: 40px; height: 40px; border-radius: 50%; background: #e0e0e0; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #777; font-size: 16px; }
-        .step.completed .step-circle { background: #8EE4D5; color: #fff; }
-        .step.active .step-circle { background: #B588C0; color: #fff; transform: scale(1.1); box-shadow: 0 0 10px rgba(181, 136, 192, 0.5); }
-        .step-label { font-size: 12px; text-align: center; margin-top: 8px; color: #555; font-weight: 600; }
-        .step-line { flex: 1; height: 4px; background: #e0e0e0; margin-bottom: 20px; }
-        .step-line.completed { background: #8EE4D5; }
+        
+        /* Contenedor del Título del Gimnasio */
+        .gym-header { margin-bottom: 2rem; }
+        .gym-header h1 { color: #B588C0; font-size: 2rem; }
+        .gym-header p { color: #555; margin-top: 5px; }
+
         .right-column { width: 30%; background: url('https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg') 75% center/cover no-repeat; }
         .content-area { flex: 1; overflow-y: auto; padding-right: 15px; }
-        .test-tarjeta { display: flex; flex-direction: column; gap: 20px; }
+        
+        .area-ejercicio { display: flex; flex-direction: column; gap: 20px; }
         button { padding: 1rem 2rem; background: #B588C0; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; width: fit-content; transition: opacity 0.3s; }
         button:hover { opacity: 0.9; }
     </style>
@@ -31,23 +30,18 @@
     <div class="left-column">
         <div class="header-container">
             <img src="https://i.ibb.co/JFMJBm0S/logo-ihs.jpg" class="logo">
-            <div class="stepper-container">
-                <div class="step completed"><div class="step-circle">✓</div><div class="step-label">Postulación</div></div>
-                <div class="step-line completed"></div>
-                <div class="step completed"><div class="step-circle">✓</div><div class="step-label">Análisis</div></div>
-                <div class="step-line completed"></div>
-                <div class="step active"><div class="step-circle">3</div><div class="step-label">Psicométrico</div></div>
-                <div class="step-line"></div>
-                <div class="step"><div class="step-circle">4</div><div class="step-label">Entrevista</div></div>
-            </div>
         </div>
 
-        <div id="gimnasio-container" class="content-area">
-            <div id="pantalla-gimnasio" class="test-tarjeta">
-                <h3>Gimnasio de Habilidades</h3>
-                <p>Bienvenido. Irina ha seleccionado los siguientes desafíos para medir tu capacidad de respuesta ante situaciones reales.</p>
-                <div id="desafios-pro"></div>
-                <button onclick="finalizarGimnasio()">Completar Entrenamiento</button>
+        <div class="gym-header">
+            <h1>Gimnasio de Habilidades</h1>
+            <p>Bienvenido al espacio de entrenamiento. Aquí Irina evaluará tu ejecución técnica.</p>
+        </div>
+
+        <div id="gimnasio-content" class="content-area">
+            <div class="area-ejercicio">
+                <h3>Desafío Actual: Optimización de Estructura</h3>
+                <textarea rows="6" style="width:100%; padding: 10px;" placeholder="Describe tu enfoque para resolver este problema..."></textarea>
+                <button onclick="finalizarEjecucion()">Completar Serie</button>
             </div>
         </div>
     </div>
@@ -55,8 +49,8 @@
 </div>
 
 <script>
-    function finalizarGimnasio() {
-        alert("Entrenamiento finalizado. Irina está analizando tus resultados.");
+    function finalizarEjecucion() {
+        alert("Serie completada. Datos enviados a la base de datos.");
     }
 </script>
 </body>
