@@ -27,7 +27,6 @@
         }
         .logo { max-width: 120px; }
         
-        /* Título invertido: De Turquesa a Fucsia */
         .gym-title { 
             font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.6rem; 
             letter-spacing: 2px; text-transform: uppercase;
@@ -61,15 +60,19 @@
         .ejercicio-desc { font-size: 0.85rem; color: #444; margin-top: 10px; flex: 1; line-height: 1.4; }
         .sets-reps { font-size: 0.75rem; color: #666; font-weight: bold; border-top: 1px solid #eee; padding-top: 10px; }
 
-        /* Botón con luz solo al pasar el mouse */
+        /* Botón 3D con degradado + Luz perimetral en Hover */
         .btn-container { position: absolute; bottom: 30px; left: 30px; }
         .btn-luz { 
             position: relative; padding: 1.2rem 2.5rem; font-family: 'Montserrat'; font-weight: 900; 
-            font-size: 0.9rem; text-transform: uppercase; color: white; background: #333; 
-            border: none; border-radius: 8px; cursor: pointer; overflow: hidden;
+            font-size: 0.9rem; text-transform: uppercase; color: white;
+            background: linear-gradient(135deg, #B588C0, #8EE4D5); 
+            border: none; border-radius: 8px; cursor: pointer; 
+            box-shadow: 0 8px 15px rgba(181, 136, 192, 0.4);
+            border-bottom: 5px solid rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
         }
         .btn-luz::before {
-            content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
+            content: ''; position: absolute; top: -3px; left: -3px; right: -3px; bottom: -3px;
             background: linear-gradient(45deg, #B588C0, #8EE4D5, #B588C0, #8EE4D5);
             background-size: 400%; border-radius: 10px; z-index: -1; 
             opacity: 0; transition: opacity 0.3s ease;
