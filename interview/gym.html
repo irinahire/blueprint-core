@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Irina Hire Selection - Gimnasio de Habilidades</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: #1a1a1a; 
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 2rem; 
+        }
+        .main-container { 
+            background: #f4f4f4; 
+            width: 100%; 
+            max-width: 1000px; 
+            height: 80vh; 
+            display: flex; 
+            border-radius: 8px; 
+            overflow: hidden; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            border-left: 5px solid #B588C0;
+        }
+        .left-column { flex: 1; padding: 2rem; display: flex; flex-direction: column; overflow: hidden; }
+        .header-container { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; border-bottom: 2px solid #ddd; padding-bottom: 1rem; }
+        .logo-text { font-weight: bold; color: #333; font-size: 1.2rem; letter-spacing: 1px; }
+        
+        .content-area { flex: 1; overflow-y: auto; }
+        .test-tarjeta { display: flex; flex-direction: column; gap: 15px; }
+        
+        h3 { color: #B588C0; margin-bottom: 10px; }
+        p { color: #444; margin-bottom: 5px; }
+        
+        select, textarea { padding: 10px; border: 1px solid #ccc; border-radius: 4px; width: 100%; }
+        button { 
+            padding: 1rem 2rem; 
+            background: #B588C0; 
+            color: white; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            margin-top: 20px; 
+            transition: 0.3s;
+        }
+        button:hover { background: #9a6ea5; }
+
+        /* Estilo Gimnasio Industrial en el lateral */
+        .right-column { 
+            width: 30%; 
+            background: #2a2a2a; 
+            color: #8EE4D5; 
+            padding: 2rem; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center;
+        }
+        .monitor-text { font-family: 'Courier New', monospace; font-size: 0.9rem; line-height: 1.6; }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <div class="left-column">
+        <div class="header-container">
+            <div class="logo-text">IRINA HIRE SELECTION</div>
+            <div id="status-display">Fase: Entrenamiento</div>
+        </div>
+
+        <div id="psychometric-tests-container" class="content-area">
+            <div id="pantalla-logica" class="test-tarjeta">
+                <h3>1. Razonamiento Lógico</h3>
+                <p>¿Qué número sigue en: 3, 6, 12, 24...?</p>
+                <select id="l1"><option value="48">48</option><option value="36">36</option></select>
+                <p>Si "GATO" es a "OCAG", entonces "PERRO" es a:</p>
+                <select id="l2"><option value="ORREP">ORREP</option><option value="OPREP">OPREP</option></select>
+                <button onclick="next('logica', 'situacional')">Siguiente Ejercicio</button>
+            </div>
+            
+            <div id="pantalla-situacional" class="test-tarjeta" style="display:none;">
+                <h3>2. Juicio Situacional</h3>
+                <p>Cliente furioso por error ajeno: ¿Qué hacés?</p>
+                <textarea id="s1" rows="3"></textarea>
+                <button onclick="next('situacional', 'bigfive')">Siguiente Ejercicio</button>
+            </div>
+
+            <div id="pantalla-bigfive" class="test-tarjeta" style="display:none;">
+                <h3>3. Perfil de Personalidad</h3>
+                <div id="preguntas-bigfive"></div>
+                <button id="btn-finalizar" onclick="enviarDatos()">Finalizar Entrenamiento</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="right-column">
+        <div class="monitor-text">
+            >> SISTEMA ONLINE<br>
+            >> ENTRENADOR: IRINA<br>
+            >> ESTADO: ANALIZANDO...<br>
+            >> MODO: FUNCIONAL<br><br>
+            "El esfuerzo constante es la única forma de medir el verdadero potencial."
+        </div>
+    </div>
+</div>
+
+<script>
+    const preguntas = [
+        "Soy alguien conversador y extrovertido.", 
+        "Tiendo a ser callado o reservado.", 
+        "Genero entusiasmo en los equipos."
+    ];
+
+    const container = document.getElementById('preguntas-bigfive');
+    preguntas.forEach((p, index) => {
+        container.innerHTML += `<div class="q-group"><p>${index+1}. ${p}</p>
+            <div class="radio-row">1 <input type="radio" name="p${index}" value="1"> 2 <input type="radio" name="p${index}" value="2"> 3 <input type="radio" name="p${index}" value="3"> 4 <input type="radio" name="p${index}" value="4"> 5</div></div>`;
+    });
+
+    function next(actual, proxima) {
+        document.getElementById('pantalla-' + actual).style.display = 'none';
+        document.getElementById('pantalla-' + proxima).style.display = 'flex';
+        document.getElementById('status-display').innerText = "Fase: " + proxima.toUpperCase();
+    }
+
+    async function enviarDatos() {
+        alert("Datos procesados correctamente. Irina está preparando tu entrevista.");
+        // Aquí iría el fetch a tu Supabase
+    }
+</script>
+</body>
+</html>
