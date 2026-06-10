@@ -84,7 +84,6 @@
     <script>
         console.log("Iniciando script...");
         
-        // Verificamos si window.supabase ya existe para no redeclarar
         if (!window.sbClient) {
             window.sbClient = supabase.createClient(
                 'https://zuzvozgjsppkxvdlptmk.supabase.co', 
@@ -94,10 +93,15 @@
         }
 
         window.ingresarConGoogle = async function() {
-            console.log("Ejecutando login con Google...");
+            console.log("Cerrando modal e iniciando login...");
+            document.getElementById('loginModal').style.display = 'none';
+            
             const { error } = await window.sbClient.auth.signInWithOAuth({ 
                 provider: 'google',
-                options: { redirectTo: 'https://bluelab.online' }
+                options: { 
+                    redirectTo: 'https://bluelab.online',
+                    queryParams: { access_type: 'offline', prompt: 'consent' }
+                }
             });
             if (error) {
                 console.error("Error en login:", error.message);
@@ -117,8 +121,6 @@
                 console.log("Sesión activa detectada.");
                 document.getElementById('loginBtn').style.display = 'none'; 
                 document.getElementById('logoutBtn').style.display = 'block'; 
-            } else {
-                console.log("No hay sesión.");
             }
         });
         
