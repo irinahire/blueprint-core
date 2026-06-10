@@ -4,53 +4,62 @@
     <meta charset="UTF-8">
     <title>Registro de Empresa | BlueLab</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Alkatra:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --fucsia: #bc8abf; --bg-dark: #05070a; --mint-irina: #96e8da; }
-        body { margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; color: #333; }
+        :root { --fucsia: #bc8abf; --mint-irina: #96e8da; --bg-dark: #05070a; --blue-next: #85c1e9; }
+        body { margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; min-height: 100vh; color: white; }
         
-        .outer-frame { padding: 4px; background: linear-gradient(to right, var(--fucsia), var(--mint-irina)); border-radius: 50px; width: 90%; max-width: 600px; }
-        .app-container { background: white; width: 100%; border-radius: 46px; padding: 40px; }
+        /* Vincha Superior (Idéntica al Index) */
+        header { padding: 30px 60px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .brand h1 { font-family: 'Alkatra', cursive; font-size: 2.5rem; margin: 0; background: linear-gradient(to right, #fff, var(--mint-irina)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        /* Zona de Login (el "Botón de Google") */
-        #auth-zone { text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #f3f4f6; }
-        .google-btn { background: #f8f9fa; border: 1px solid #ddd; padding: 12px 25px; border-radius: 12px; cursor: pointer; font-weight: 700; display: inline-flex; align-items: center; gap: 10px; transition: 0.3s; }
-        .google-btn:hover { background: #eee; }
+        .auth-btn { background: linear-gradient(135deg, #4e52a7, var(--blue-next)); color: white; border: none; padding: 12px 25px; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
         
-        .top-banner { background: linear-gradient(to right, var(--fucsia), var(--mint-irina)); color: white; padding: 20px; border-radius: 25px; text-align: center; font-weight: 900; font-size: 20px; text-transform: uppercase; margin-bottom: 30px; }
+        /* Contenedor Formulario */
+        .main-container { max-width: 600px; margin: 50px auto; padding: 40px; background: white; border-radius: 30px; color: #333; }
+        .input-group { margin-top: 20px; }
+        .input-group input { width: 100%; padding: 15px; border: 2px solid #eee; border-radius: 12px; box-sizing: border-box; }
+        #submit-btn { width: 100%; padding: 15px; margin-top: 25px; background: linear-gradient(to right, var(--fucsia), var(--mint-irina)); border: none; border-radius: 12px; color: white; font-weight: 900; cursor: pointer; }
         
-        .input-group { position: relative; margin-top: 25px; }
-        .input-group input { width: 100%; padding: 15px; border: 2px solid #eee; border-radius: 12px; outline: none; font-size: 16px; }
-        .input-group label { position: absolute; left: 15px; top: 15px; color: var(--fucsia); font-weight: 700; pointer-events: none; transition: 0.2s; background: white; padding: 0 5px; }
-        .input-group input:focus + label, .input-group input:not(:placeholder-shown) + label { top: -10px; font-size: 12px; }
-        
-        #submit-btn { width: 100%; padding: 15px; margin-top: 30px; background: linear-gradient(to right, var(--fucsia), var(--mint-irina)); border: none; border-radius: 12px; color: white; font-weight: 900; cursor: pointer; text-transform: uppercase; }
-        #submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        /* Modal (Idéntico al Index) */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: #111; padding: 40px; border-radius: 20px; width: 320px; text-align: center; border: 1px solid var(--mint-irina); }
+        .google-btn { background: white; color: #555; padding: 12px; width: 100%; border-radius: 8px; border: none; cursor: pointer; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-<div class="outer-frame">
-    <div class="app-container">
-        <div id="auth-zone">
-            <p>Para registrar tu empresa, primero identificate:</p>
-            <button class="google-btn" onclick="ingresarConGoogle()">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="20">
-                INGRESAR CON GOOGLE
-            </button>
+    <header>
+        <div class="brand"><h1>BlueLab</h1></div>
+        <div class="auth-zone">
+            <button class="auth-btn" id="loginBtn" onclick="document.getElementById('loginModal').style.display='flex'">ACCEDER</button>
+            <div id="userZone" style="display:none; align-items: center; gap: 10px;">
+                <img id="userAvatar" style="width:40px; border-radius:50%; border:2px solid var(--mint-irina);">
+                <span id="userName"></span>
+                <button class="auth-btn" style="background:#333; padding:5px 10px;" onclick="cerrarSesion()">SALIR</button>
+            </div>
         </div>
+    </header>
 
-        <div class="top-banner" id="banner-registro" style="display:none;">Registro de Empresa</div>
-        
-        <form id="empresa-form" style="display:none;">
-            <div class="input-group"><input type="text" id="nombre" placeholder=" " required><label>Nombre Fantasía</label></div>
-            <div class="input-group"><input type="text" id="razon" placeholder=" " required><label>Razón Social</label></div>
-            <div class="input-group"><input type="text" id="cuit" placeholder=" " required><label>CUIT</label></div>
-            <div class="input-group"><input type="text" id="condicion" placeholder=" " required><label>Condición Fiscal</label></div>
-            <div class="input-group"><input type="email" id="email" placeholder=" " required><label>Email Corporativo</label></div>
+    <div class="main-container">
+        <h2 style="text-align: center;">REGISTRO DE EMPRESA</h2>
+        <form id="empresa-form">
+            <div class="input-group"><input type="text" id="nombre" placeholder="Nombre Fantasía" required></div>
+            <div class="input-group"><input type="text" id="razon" placeholder="Razón Social" required></div>
+            <div class="input-group"><input type="text" id="cuit" placeholder="CUIT" required></div>
+            <div class="input-group"><input type="text" id="condicion" placeholder="Condición Fiscal" required></div>
+            <div class="input-group"><input type="email" id="email" placeholder="Email Corporativo" required></div>
             <button type="submit" id="submit-btn">REGISTRAR EMPRESA</button>
         </form>
     </div>
-</div>
+
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span onclick="document.getElementById('loginModal').style.display='none'" style="float:right; cursor:pointer;">×</span>
+            <h2>Acceso BlueLab</h2>
+            <button class="google-btn" onclick="ingresarConGoogle()">INGRESAR CON GOOGLE</button>
+        </div>
+    </div>
 
 <script>
     const sb = supabase.createClient(
@@ -58,12 +67,13 @@
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0'
     );
 
-    // Detectar si ya está logueado al cargar
+    // Lógica de UI (Idéntica al Index)
     sb.auth.onAuthStateChange((event, session) => {
         if (session) {
-            document.getElementById('auth-zone').style.display = 'none';
-            document.getElementById('banner-registro').style.display = 'block';
-            document.getElementById('empresa-form').style.display = 'block';
+            document.getElementById('loginBtn').style.display = 'none';
+            document.getElementById('userZone').style.display = 'flex';
+            document.getElementById('userName').innerText = session.user.user_metadata.full_name;
+            document.getElementById('userAvatar').src = session.user.user_metadata.avatar_url;
         }
     });
 
@@ -71,34 +81,28 @@
         await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
     }
 
+    async function cerrarSesion() {
+        await sb.auth.signOut();
+        location.reload();
+    }
+
     document.getElementById('empresa-form').onsubmit = async (e) => {
         e.preventDefault();
         const { data: { user } } = await sb.auth.getUser();
-        if (!user) return;
+        if (!user) return alert("Inicia sesión primero");
 
-        const btn = document.getElementById('submit-btn');
-        btn.disabled = true;
-        btn.innerText = "REGISTRANDO...";
-
-        try {
-            const { error } = await sb.functions.invoke('hbt_registro_empresa', {
-                body: {
-                    p_owner_id: user.id,
-                    p_nombre_fantasia: document.getElementById('nombre').value,
-                    p_razon_social: document.getElementById('razon').value,
-                    p_cuit: document.getElementById('cuit').value,
-                    p_condicion_fiscal: document.getElementById('condicion').value,
-                    p_email_corporativo: document.getElementById('email').value
-                }
-            });
-            if (error) throw error;
-            alert("¡Empresa registrada!");
-            window.location.href = "https://bluelab.online";
-        } catch (err) {
-            alert("Error: " + err.message);
-            btn.disabled = false;
-            btn.innerText = "REGISTRAR EMPRESA";
-        }
+        const { error } = await sb.functions.invoke('hbt_registro_empresa', {
+            body: {
+                p_owner_id: user.id,
+                p_nombre_fantasia: document.getElementById('nombre').value,
+                p_razon_social: document.getElementById('razon').value,
+                p_cuit: document.getElementById('cuit').value,
+                p_condicion_fiscal: document.getElementById('condicion').value,
+                p_email_corporativo: document.getElementById('email').value
+            }
+        });
+        if (error) alert("Error: " + error.message);
+        else alert("Registrado exitosamente");
     };
 </script>
 </body>
