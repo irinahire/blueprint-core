@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Irina Hire | Registro de Empresa</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --fucsia: #bc8abf; 
+            --irina-gradient: linear-gradient(to right, #bc8abf 0%, #96e8da 100%); 
+            --btn-gradient: linear-gradient(to right, #96e8da 0%, #bc8abf 100%);
+            --bg-dark: #05070a; 
+        }
+        body { margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 92%; max-width: 800px; }
+        .app-container { background: white; width: 100%; border-radius: 40px; padding: 40px; display: flex; flex-direction: column; }
+        .top-vincha { width: 100%; height: 90px; background: var(--irina-gradient); border-radius: 30px; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; color: white; font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 24px; text-transform: uppercase; }
+        .input-group { position: relative; margin-top: 25px; }
+        .input-group label { position: absolute; left: 12px; top: 14px; color: var(--fucsia); font-weight: 700; transition: 0.2s; pointer-events: none; background: white; padding: 0 4px; }
+        .input-group input { width: 100%; padding: 14px; border: 2px solid #f3f4f6; border-radius: 12px; outline: none; box-sizing: border-box; }
+        .input-group input:focus { border-color: var(--fucsia); }
+        .input-group input:focus + label, .input-group input:not(:placeholder-shown) + label { top: -10px; font-size: 11px; color: var(--fucsia); }
+        .btn-wrapper { padding: 3px; border-radius: 12px; margin-top: 25px; background: var(--btn-gradient); cursor: pointer; }
+        #submit-btn { width: 100%; height: 50px; background: white; color: var(--fucsia); border: none; border-radius: 9px; font-weight: 800; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="outer-frame">
+        <div class="app-container">
+            <div class="top-vincha">Registro de Empresa</div>
+            <form id="empresa-form">
+                <div class="input-group"><input type="text" id="nombre" placeholder=" " required><label>Nombre Fantasía</label></div>
+                <div class="input-group"><input type="text" id="razon" placeholder=" " required><label>Razón Social</label></div>
+                <div class="input-group"><input type="text" id="cuit" placeholder=" " required><label>CUIT</label></div>
+                <div class="input-group"><input type="text" id="condicion" placeholder=" " required><label>Condición Fiscal</label></div>
+                <div class="input-group"><input type="email" id="email" placeholder=" " required><label>Email Corporativo</label></div>
+                <div class="btn-wrapper">
+                    <button type="submit" id="submit-btn">REGISTRAR EMPRESA</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+<script>
+    const sb = supabase.createClient(
+        'https://zuzvozgjsppkxvdlptmk.supabase.co', 
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0'
+    );
+
+    document.getElementById('empresa-form').onsubmit = async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('submit-btn');
+        btn.innerText = "PROCESANDO...";
+
+        try {
+            // Obtenemos el usuario autenticado para tener su ID real
+            const { data: { user } } = await sb.auth.getUser();
+            
+            if (!user) {
+                alert("Debes iniciar sesión para registrar la empresa.");
+                btn.innerText = "REGISTRAR EMPRESA";
+                return;
+            }
+
+            const { data, error } = await sb.functions.invoke('hbt_registro_empresa', {
+                body: {
+                    p_owner_id: user.id,
+                    p_nombre_fantasia: document.getElementById('nombre').value,
+                    p_razon_social: document.getElementById('razon').value,
+                    p_cuit: document.getElementById('cuit').value,
+                    p_condicion_fiscal: document.getElementById('condicion').value,
+                    p_email_corporativo: document.getElementById('email').value
+                }
+            });
+
+            if (error) throw error;
+            alert("Empresa registrada correctamente con ID: " + data);
+            btn.innerText = "REGISTRO EXITOSO";
+        } catch (err) {
+            console.error(err);
+            alert("Error: " + err.message);
+            btn.innerText = "REGISTRAR EMPRESA";
+        }
+    };
+</script>
+</body>
+</html>
