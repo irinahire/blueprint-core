@@ -6,11 +6,15 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { --fucsia: #bc8abf; --bg-dark: #05070a; --mint-irina: #96e8da; }
-        body { margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; color: white; }
+        body { margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; color: #333; }
         
-        /* Contenedor principal con tu estilo */
         .outer-frame { padding: 4px; background: linear-gradient(to right, var(--fucsia), var(--mint-irina)); border-radius: 50px; width: 90%; max-width: 600px; }
-        .app-container { background: white; width: 100%; border-radius: 46px; padding: 40px; color: #333; }
+        .app-container { background: white; width: 100%; border-radius: 46px; padding: 40px; }
+        
+        /* Zona de Login (el "Botón de Google") */
+        #auth-zone { text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #f3f4f6; }
+        .google-btn { background: #f8f9fa; border: 1px solid #ddd; padding: 12px 25px; border-radius: 12px; cursor: pointer; font-weight: 700; display: inline-flex; align-items: center; gap: 10px; transition: 0.3s; }
+        .google-btn:hover { background: #eee; }
         
         .top-banner { background: linear-gradient(to right, var(--fucsia), var(--mint-irina)); color: white; padding: 20px; border-radius: 25px; text-align: center; font-weight: 900; font-size: 20px; text-transform: uppercase; margin-bottom: 30px; }
         
@@ -20,14 +24,24 @@
         .input-group input:focus + label, .input-group input:not(:placeholder-shown) + label { top: -10px; font-size: 12px; }
         
         #submit-btn { width: 100%; padding: 15px; margin-top: 30px; background: linear-gradient(to right, var(--fucsia), var(--mint-irina)); border: none; border-radius: 12px; color: white; font-weight: 900; cursor: pointer; text-transform: uppercase; }
+        #submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     </style>
 </head>
 <body>
 
 <div class="outer-frame">
     <div class="app-container">
-        <div class="top-banner">Registro de Empresa</div>
-        <form id="empresa-form">
+        <div id="auth-zone">
+            <p>Para registrar tu empresa, primero identificate:</p>
+            <button class="google-btn" onclick="ingresarConGoogle()">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="20">
+                INGRESAR CON GOOGLE
+            </button>
+        </div>
+
+        <div class="top-banner" id="banner-registro" style="display:none;">Registro de Empresa</div>
+        
+        <form id="empresa-form" style="display:none;">
             <div class="input-group"><input type="text" id="nombre" placeholder=" " required><label>Nombre Fantasía</label></div>
             <div class="input-group"><input type="text" id="razon" placeholder=" " required><label>Razón Social</label></div>
             <div class="input-group"><input type="text" id="cuit" placeholder=" " required><label>CUIT</label></div>
@@ -44,24 +58,32 @@
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0'
     );
 
+    // Detectar si ya está logueado al cargar
+    sb.auth.onAuthStateChange((event, session) => {
+        if (session) {
+            document.getElementById('auth-zone').style.display = 'none';
+            document.getElementById('banner-registro').style.display = 'block';
+            document.getElementById('empresa-form').style.display = 'block';
+        }
+    });
+
+    async function ingresarConGoogle() {
+        await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
+    }
+
     document.getElementById('empresa-form').onsubmit = async (e) => {
         e.preventDefault();
-        
-        // Obtenemos el usuario actual de la sesión (el mismo método de tu index)
         const { data: { user } } = await sb.auth.getUser();
-        
-        if (!user) {
-            alert("Por favor, inicia sesión primero en el Home de BlueLab.");
-            return;
-        }
+        if (!user) return;
 
         const btn = document.getElementById('submit-btn');
+        btn.disabled = true;
         btn.innerText = "REGISTRANDO...";
 
         try {
-            const { data, error } = await sb.functions.invoke('hbt_registro_empresa', {
+            const { error } = await sb.functions.invoke('hbt_registro_empresa', {
                 body: {
-                    p_owner_id: user.id, // ID real del logueado
+                    p_owner_id: user.id,
                     p_nombre_fantasia: document.getElementById('nombre').value,
                     p_razon_social: document.getElementById('razon').value,
                     p_cuit: document.getElementById('cuit').value,
@@ -69,12 +91,12 @@
                     p_email_corporativo: document.getElementById('email').value
                 }
             });
-
             if (error) throw error;
-            alert("¡Empresa registrada con éxito!");
-            window.location.href = "https://bluelab.online"; // Volvemos al dashboard
+            alert("¡Empresa registrada!");
+            window.location.href = "https://bluelab.online";
         } catch (err) {
             alert("Error: " + err.message);
+            btn.disabled = false;
             btn.innerText = "REGISTRAR EMPRESA";
         }
     };
