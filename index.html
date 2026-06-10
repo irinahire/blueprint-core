@@ -93,14 +93,15 @@
         }
 
         window.ingresarConGoogle = async function() {
-            console.log("Cerrando modal e iniciando login...");
+            console.log("Cerrando modal e iniciando login pop-up...");
             document.getElementById('loginModal').style.display = 'none';
             
             const { error } = await window.sbClient.auth.signInWithOAuth({ 
                 provider: 'google',
                 options: { 
                     redirectTo: 'https://bluelab.online',
-                    queryParams: { access_type: 'offline', prompt: 'consent' }
+                    queryParams: { access_type: 'offline', prompt: 'consent' },
+                    skipBrowserRedirect: false // Importante
                 }
             });
             if (error) {
