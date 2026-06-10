@@ -2,45 +2,41 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Irina Hire | Registro de Empresa</title>
+    <title>Registro de Empresa | BlueLab</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
     <style>
-        :root { 
-            --fucsia: #bc8abf; 
-            --irina-gradient: linear-gradient(to right, #bc8abf 0%, #96e8da 100%); 
-            --btn-gradient: linear-gradient(to right, #96e8da 0%, #bc8abf 100%);
-            --bg-dark: #05070a; 
-        }
-        body { margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 92%; max-width: 800px; }
-        .app-container { background: white; width: 100%; border-radius: 40px; padding: 40px; display: flex; flex-direction: column; }
-        .top-vincha { width: 100%; height: 90px; background: var(--irina-gradient); border-radius: 30px; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; color: white; font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 24px; text-transform: uppercase; }
+        :root { --fucsia: #bc8abf; --bg-dark: #05070a; --mint-irina: #96e8da; }
+        body { margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; color: white; }
+        
+        /* Contenedor principal con tu estilo */
+        .outer-frame { padding: 4px; background: linear-gradient(to right, var(--fucsia), var(--mint-irina)); border-radius: 50px; width: 90%; max-width: 600px; }
+        .app-container { background: white; width: 100%; border-radius: 46px; padding: 40px; color: #333; }
+        
+        .top-banner { background: linear-gradient(to right, var(--fucsia), var(--mint-irina)); color: white; padding: 20px; border-radius: 25px; text-align: center; font-weight: 900; font-size: 20px; text-transform: uppercase; margin-bottom: 30px; }
+        
         .input-group { position: relative; margin-top: 25px; }
-        .input-group label { position: absolute; left: 12px; top: 14px; color: var(--fucsia); font-weight: 700; transition: 0.2s; pointer-events: none; background: white; padding: 0 4px; }
-        .input-group input { width: 100%; padding: 14px; border: 2px solid #f3f4f6; border-radius: 12px; outline: none; box-sizing: border-box; }
-        .input-group input:focus { border-color: var(--fucsia); }
-        .input-group input:focus + label, .input-group input:not(:placeholder-shown) + label { top: -10px; font-size: 11px; color: var(--fucsia); }
-        .btn-wrapper { padding: 3px; border-radius: 12px; margin-top: 25px; background: var(--btn-gradient); cursor: pointer; }
-        #submit-btn { width: 100%; height: 50px; background: white; color: var(--fucsia); border: none; border-radius: 9px; font-weight: 800; cursor: pointer; }
+        .input-group input { width: 100%; padding: 15px; border: 2px solid #eee; border-radius: 12px; outline: none; font-size: 16px; }
+        .input-group label { position: absolute; left: 15px; top: 15px; color: var(--fucsia); font-weight: 700; pointer-events: none; transition: 0.2s; background: white; padding: 0 5px; }
+        .input-group input:focus + label, .input-group input:not(:placeholder-shown) + label { top: -10px; font-size: 12px; }
+        
+        #submit-btn { width: 100%; padding: 15px; margin-top: 30px; background: linear-gradient(to right, var(--fucsia), var(--mint-irina)); border: none; border-radius: 12px; color: white; font-weight: 900; cursor: pointer; text-transform: uppercase; }
     </style>
 </head>
 <body>
-    <div class="outer-frame">
-        <div class="app-container">
-            <div class="top-vincha">Registro de Empresa</div>
-            <form id="empresa-form">
-                <div class="input-group"><input type="text" id="nombre" placeholder=" " required><label>Nombre Fantasía</label></div>
-                <div class="input-group"><input type="text" id="razon" placeholder=" " required><label>Razón Social</label></div>
-                <div class="input-group"><input type="text" id="cuit" placeholder=" " required><label>CUIT</label></div>
-                <div class="input-group"><input type="text" id="condicion" placeholder=" " required><label>Condición Fiscal</label></div>
-                <div class="input-group"><input type="email" id="email" placeholder=" " required><label>Email Corporativo</label></div>
-                <div class="btn-wrapper">
-                    <button type="submit" id="submit-btn">REGISTRAR EMPRESA</button>
-                </div>
-            </form>
-        </div>
+
+<div class="outer-frame">
+    <div class="app-container">
+        <div class="top-banner">Registro de Empresa</div>
+        <form id="empresa-form">
+            <div class="input-group"><input type="text" id="nombre" placeholder=" " required><label>Nombre Fantasía</label></div>
+            <div class="input-group"><input type="text" id="razon" placeholder=" " required><label>Razón Social</label></div>
+            <div class="input-group"><input type="text" id="cuit" placeholder=" " required><label>CUIT</label></div>
+            <div class="input-group"><input type="text" id="condicion" placeholder=" " required><label>Condición Fiscal</label></div>
+            <div class="input-group"><input type="email" id="email" placeholder=" " required><label>Email Corporativo</label></div>
+            <button type="submit" id="submit-btn">REGISTRAR EMPRESA</button>
+        </form>
     </div>
+</div>
 
 <script>
     const sb = supabase.createClient(
@@ -50,22 +46,22 @@
 
     document.getElementById('empresa-form').onsubmit = async (e) => {
         e.preventDefault();
+        
+        // Obtenemos el usuario actual de la sesión (el mismo método de tu index)
+        const { data: { user } } = await sb.auth.getUser();
+        
+        if (!user) {
+            alert("Por favor, inicia sesión primero en el Home de BlueLab.");
+            return;
+        }
+
         const btn = document.getElementById('submit-btn');
-        btn.innerText = "PROCESANDO...";
+        btn.innerText = "REGISTRANDO...";
 
         try {
-            // Obtenemos el usuario autenticado para tener su ID real
-            const { data: { user } } = await sb.auth.getUser();
-            
-            if (!user) {
-                alert("Debes iniciar sesión para registrar la empresa.");
-                btn.innerText = "REGISTRAR EMPRESA";
-                return;
-            }
-
             const { data, error } = await sb.functions.invoke('hbt_registro_empresa', {
                 body: {
-                    p_owner_id: user.id,
+                    p_owner_id: user.id, // ID real del logueado
                     p_nombre_fantasia: document.getElementById('nombre').value,
                     p_razon_social: document.getElementById('razon').value,
                     p_cuit: document.getElementById('cuit').value,
@@ -75,10 +71,9 @@
             });
 
             if (error) throw error;
-            alert("Empresa registrada correctamente con ID: " + data);
-            btn.innerText = "REGISTRO EXITOSO";
+            alert("¡Empresa registrada con éxito!");
+            window.location.href = "https://bluelab.online"; // Volvemos al dashboard
         } catch (err) {
-            console.error(err);
             alert("Error: " + err.message);
             btn.innerText = "REGISTRAR EMPRESA";
         }
