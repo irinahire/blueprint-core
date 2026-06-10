@@ -34,14 +34,12 @@
         .card-btn { background: white; border-radius: 12px; text-decoration: none; font-size: 0.75rem; font-weight: 800; color: #111; display: flex; align-items: center; justify-content: center; flex-grow: 1; text-transform: uppercase; }
         .btn-video { width: 48px; flex-grow: 0; background: rgba(255,255,255,0.2); color: white; font-size: 1.1rem; border: 1px solid rgba(255,255,255,0.2); }
         @keyframes rotate { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
-        /* Degradados */
         .c-irina .card-inner { background: linear-gradient(135deg, #bc8abf 0%, #96e8da 100%); }
         .c-donny .card-inner { background: linear-gradient(135deg, #96e8da 0%, #ffb347 100%); }
         .c-qore .card-inner { background: linear-gradient(135deg, #ffb347 0%, #4e52a7 100%); }
         .c-companion .card-inner { background: linear-gradient(135deg, #4e52a7 0%, #9b59b6 100%); }
         .c-pulse .card-inner { background: linear-gradient(135deg, #9b59b6 0%, #2ecc71 100%); }
         .c-next .card-inner { background: linear-gradient(135deg, #2ecc71 0%, #85c1e9 100%); }
-        /* Modal Google */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; }
         .modal-content { background: #111; padding: 40px; border-radius: 20px; width: 320px; text-align: center; border: 1px solid var(--mint-irina); position: relative; }
         .close-btn { position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; }
@@ -84,16 +82,28 @@
         </div>
     </div>
     <script>
+        // Inicialización única
         const supabase = supabase.createClient('https://zuzvozgjsppkxvdlptmk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0');
         
-        async function ingresarConGoogle() {
-            const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' });
+        // Función global accesible por el botón
+        window.ingresarConGoogle = async function() {
+            const { error } = await supabase.auth.signInWithOAuth({ 
+                provider: 'google',
+                options: { redirectTo: 'https://bluelab.online' }
+            });
             if (error) alert("Error: " + error.message);
-        }
-        async function cerrarSesion() { await supabase.auth.signOut(); location.reload(); }
+        };
+
+        window.cerrarSesion = async function() { 
+            await supabase.auth.signOut(); 
+            location.reload(); 
+        };
         
         supabase.auth.onAuthStateChange((event, session) => {
-            if (session) { document.getElementById('loginBtn').style.display = 'none'; document.getElementById('logoutBtn').style.display = 'block'; }
+            if (session) { 
+                document.getElementById('loginBtn').style.display = 'none'; 
+                document.getElementById('logoutBtn').style.display = 'block'; 
+            }
         });
     </script>
 </body>
