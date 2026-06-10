@@ -82,29 +82,47 @@
         </div>
     </div>
     <script>
-        // Inicialización única
-        const supabase = supabase.createClient('https://zuzvozgjsppkxvdlptmk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0');
+        console.log("Iniciando script...");
         
-        // Función global accesible por el botón
+        // Verificamos si window.supabase ya existe para no redeclarar
+        if (!window.sbClient) {
+            window.sbClient = supabase.createClient(
+                'https://zuzvozgjsppkxvdlptmk.supabase.co', 
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0'
+            );
+            console.log("Supabase cliente creado.");
+        }
+
         window.ingresarConGoogle = async function() {
-            const { error } = await supabase.auth.signInWithOAuth({ 
+            console.log("Ejecutando login con Google...");
+            const { error } = await window.sbClient.auth.signInWithOAuth({ 
                 provider: 'google',
                 options: { redirectTo: 'https://bluelab.online' }
             });
-            if (error) alert("Error: " + error.message);
+            if (error) {
+                console.error("Error en login:", error.message);
+                alert("Error: " + error.message);
+            }
         };
 
         window.cerrarSesion = async function() { 
-            await supabase.auth.signOut(); 
+            console.log("Cerrando sesión...");
+            await window.sbClient.auth.signOut(); 
             location.reload(); 
         };
         
-        supabase.auth.onAuthStateChange((event, session) => {
+        window.sbClient.auth.onAuthStateChange((event, session) => {
+            console.log("Estado de auth:", event);
             if (session) { 
+                console.log("Sesión activa detectada.");
                 document.getElementById('loginBtn').style.display = 'none'; 
                 document.getElementById('logoutBtn').style.display = 'block'; 
+            } else {
+                console.log("No hay sesión.");
             }
         });
+        
+        console.log("Script cargado.");
     </script>
 </body>
 </html>
