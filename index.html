@@ -21,11 +21,13 @@
         .brand span { font-size: 1.1rem; letter-spacing: 8px; text-transform: uppercase; font-weight: 700; color: #85c1e9; display: block; margin-top: 10px; }
         .auth-zone { display: flex; gap: 15px; }
         
-        /* Estilos del perfil de usuario */
+        /* Botón 3D mejorado */
+        .auth-btn { background: linear-gradient(135deg, var(--blue-qore), var(--blue-next)); color: white; border: none; padding: 18px 35px; border-radius: 15px; font-weight: 800; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 15px rgba(133, 193, 233, 0.3); transition: transform 0.2s, box-shadow 0.2s; font-size: 0.9rem; letter-spacing: 1px; }
+        .auth-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(133, 193, 233, 0.5); }
+        
         .user-profile { display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.1); padding: 8px 20px 8px 8px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.2); }
         .user-avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--mint-irina); }
         .user-name { font-size: 0.9rem; font-weight: 600; }
-        .auth-btn { background: var(--mint-irina); color: #000; border: none; padding: 15px 25px; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
         
         .project-grid { padding: 60px; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; }
         .card { border-radius: 24px; padding: 2px; position: relative; overflow: hidden; transition: 0.3s ease; display: flex; flex-direction: column; aspect-ratio: 2 / 3.4; }
@@ -70,11 +72,11 @@
             <header>
                 <div class="brand"><h1>BlueLab</h1><span>Blueprint Integrations Lab</span></div>
                 <div class="auth-zone">
-                    <button class="auth-btn" id="loginBtn" onclick="document.getElementById('loginModal').style.display='flex'">INGRESAR</button>
+                    <button class="auth-btn" id="loginBtn" onclick="document.getElementById('loginModal').style.display='flex'">ACCEDER AL PORTAL</button>
                     <div id="userZone" style="display:none;" class="user-profile">
                         <img id="userAvatar" class="user-avatar" src="">
                         <span id="userName" class="user-name"></span>
-                        <button class="auth-btn" style="padding: 8px 15px; font-size: 0.7rem;" onclick="cerrarSesion()">SALIR</button>
+                        <button class="auth-btn" style="padding: 8px 15px; font-size: 0.7rem; background: #333;" onclick="cerrarSesion()">SALIR</button>
                     </div>
                 </div>
             </header>
@@ -92,32 +94,46 @@
         </div>
     </div>
     <script>
-        window.sbClient = supabase.createClient(
-            'https://zuzvozgjsppkxvdlptmk.supabase.co', 
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0'
-        );
+        console.log("--- INICIANDO SCRIPT DE AUTENTICACIÓN ---");
+        
+        if (!window.sbClient) {
+            window.sbClient = supabase.createClient(
+                'https://zuzvozgjsppkxvdlptmk.supabase.co', 
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0'
+            );
+            console.log("Supabase: Cliente inicializado.");
+        }
 
         window.ingresarConGoogle = async function() {
+            console.log("Supabase: Intentando logueo con Google...");
             document.getElementById('loginModal').style.display = 'none';
-            await window.sbClient.auth.signInWithOAuth({ 
+            const { error } = await window.sbClient.auth.signInWithOAuth({ 
                 provider: 'google',
                 options: { redirectTo: 'https://bluelab.online' }
             });
+            if (error) console.error("Supabase: Error al iniciar:", error.message);
         };
 
         window.cerrarSesion = async function() { 
+            console.log("Supabase: Cerrando sesión...");
             await window.sbClient.auth.signOut(); 
             location.reload(); 
         };
         
         window.sbClient.auth.onAuthStateChange((event, session) => {
+            console.log("Supabase: Estado de auth cambiado ->", event);
             if (session) { 
+                console.log("Supabase: Sesión detectada:", session.user.email);
                 document.getElementById('loginBtn').style.display = 'none';
                 document.getElementById('userZone').style.display = 'flex';
                 document.getElementById('userName').innerText = session.user.user_metadata.full_name || 'Usuario';
                 document.getElementById('userAvatar').src = session.user.user_metadata.avatar_url || 'https://via.placeholder.com/40';
+            } else {
+                console.log("Supabase: No hay sesión activa.");
             }
         });
+        
+        console.log("--- SCRIPT CARGADO CORRECTAMENTE ---");
     </script>
 </body>
 </html>
