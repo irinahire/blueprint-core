@@ -1,35 +1,26 @@
 const motorTests = {
-    ejercicioActual: 0,
-    // Definición visual de los elementos de tus imágenes
-    diccionarioFormas: {
-        'linea-diag': '<line x1="10" y1="10" x2="90" y2="90" stroke="black" stroke-width="4"/>',
-        'linea-diag-inv': '<line x1="90" y1="10" x2="10" y2="90" stroke="black" stroke-width="4"/>',
-        'punto-c': '<circle cx="50" cy="50" r="10" fill="black"/>',
-        'cuadrado-der': '<rect x="50" y="20" width="30" height="60" fill="#0182a9"/>'
+    // Definimos cómo se ve cada forma básica
+    formas: {
+        'barra-azul': '<rect x="10" y="30" width="80" height="40" fill="#017a9e"/>',
+        'caja-borde': '<rect x="5" y="5" width="90" height="90" fill="none" stroke="#017a9e" stroke-width="4"/>'
     },
 
-    ejercicios: [
-        {
-            // Matriz 3x3: Los nombres coinciden con el diccionario de arriba
-            patron: ['linea-diag', 'punto-c', 'linea-diag-inv', 'punto-c', 'punto-c', 'linea-diag', 'linea-diag', 'cuadrado-der', '?'],
-            opciones: ['A', 'C', 'D', 'E', 'F']
-        }
-    ],
+    // Aquí irán los datos que te voy a pasar por cada ejercicio
+    ejercicios: [],
 
-    dibujarCelda: function(tipo) {
-        if (tipo === '?') return '<div class="signo-interrogacion">?</div>';
-        const formas = this.diccionarioFormas[tipo] || '';
-        return `<svg viewBox="0 0 100 100" class="svg-forma">${formas}</svg>`;
-    },
-
-    renderizar: function() {
+    renderizar: function(id) {
         const contenedor = document.getElementById('matriz-container');
         contenedor.innerHTML = '';
-        this.ejercicios[this.ejercicioActual].patron.forEach(tipo => {
-            const div = document.createElement('div');
-            div.className = 'celda';
-            div.innerHTML = this.dibujarCelda(tipo);
-            contenedor.appendChild(div);
-        });
+        
+        // Creamos las 9 celdas
+        for (let i = 0; i < 9; i++) {
+            const celda = document.createElement('div');
+            celda.className = 'celda';
+            // Aquí inyectamos el SVG del ejercicio correspondiente
+            celda.innerHTML = `<svg viewBox="0 0 100 100">${this.formas['caja-borde']}${this.formas['barra-azul']}</svg>`;
+            contenedor.appendChild(celda);
+        }
     }
 };
+// Lanzamos
+document.addEventListener('DOMContentLoaded', () => motorTests.renderizar());
