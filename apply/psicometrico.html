@@ -16,13 +16,15 @@
         .step.active .step-circle { background: #B588C0; color: #fff; }
         .step-label { font-size: 10px; margin-top: 5px; color: #555; text-transform: uppercase; font-weight: 700; }
         .content-area { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center; }
-        .matriz-container { margin: 20px 0; min-height: 200px; display: flex; justify-content: center; }
+        .matriz-container { margin: 20px 0; display: flex; justify-content: center; }
+        .opciones-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
+        .opcion-btn { cursor: pointer; border: 2px solid transparent; border-radius: 8px; transition: 0.2s; padding: 5px; }
+        .opcion-btn:hover { border: 2px solid #B588C0; transform: scale(1.05); }
         .right-column { width: 30%; background: url('https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg') center/cover no-repeat; }
         button { padding: 12px 24px; background: #B588C0; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 20px; }
     </style>
 </head>
 <body>
-
 <div class="main-container">
     <div class="left-column">
         <div class="header-container">
@@ -35,18 +37,16 @@
             </div>
             <button id="btn-login">Login Google</button>
         </div>
-
         <div id="psychometric-tests-container" class="content-area">
             <h3 id="titulo-escenario">Cargando...</h3>
             <div id="matriz-container" class="matriz-container"></div>
             <p id="pregunta-texto" style="font-weight: 600; color: #333;"></p>
+            <div id="opciones-container" class="opciones-grid"></div>
             <button onclick="motorTests.siguiente()">Siguiente Escenario</button>
         </div>
     </div>
     <div class="right-column"></div>
 </div>
-
 <script src="motor-tests.js"></script>
-
 </body>
 </html>
