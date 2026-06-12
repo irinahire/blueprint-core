@@ -15,14 +15,15 @@
         .step.completed .step-circle { background: #8EE4D5; color: #fff; }
         .step.active .step-circle { background: #B588C0; color: #fff; }
         .step-label { font-size: 10px; margin-top: 5px; color: #555; text-transform: uppercase; font-weight: 700; }
-        .content-area { flex: 1; display: flex; flex-direction: column; gap: 20px; }
-        .matriz-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 330px; border: 2px solid #333; padding: 5px; margin: 10px 0; }
+        .content-area { flex: 1; display: flex; flex-direction: column; gap: 20px; position: relative; }
+        .test-wrapper { position: relative; width: 400px; margin-top: 20px; }
+        .test-image { width: 100%; display: block; }
+        .clickable-area { position: absolute; cursor: pointer; opacity: 0; }
         .right-column { width: 30%; background: url('https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg') center/cover no-repeat; }
         button { padding: 12px 24px; background: #B588C0; color: white; border: none; border-radius: 8px; cursor: pointer; width: fit-content; font-weight: 600; }
     </style>
 </head>
 <body>
-
 <div class="main-container">
     <div class="left-column">
         <div class="header-container">
@@ -35,18 +36,25 @@
             </div>
             <button id="btn-login">Login Google</button>
         </div>
-
-        <div id="psychometric-tests-container" class="content-area">
-            <h3 id="titulo-escenario">Escenario 1: Razonamiento Abstracto</h3>
-            <div id="matriz-container" class="matriz-container"></div>
-            <p id="pregunta-texto">Selecciona la figura que completa la secuencia:</p>
-            <div class="opciones-container" id="opciones-container"></div>
-            <button onclick="motorTests.siguiente()">Siguiente Escenario</button>
+        <div class="content-area">
+            <h3>Escenario 1: Razonamiento Abstracto</h3>
+            <div id="test-wrapper" class="test-wrapper">
+                <img src="https://www.bluelab.online/apply/test_a1.png" class="test-image">
+                <div id="click-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr);">
+                    <div class="clickable-area" onclick="alert('Opción 1')"></div>
+                    <div class="clickable-area" onclick="alert('Opción 2')"></div>
+                    <div class="clickable-area" onclick="alert('Opción 3')"></div>
+                    <div class="clickable-area" onclick="alert('Opción 4')"></div>
+                    <div class="clickable-area" onclick="alert('Opción 5')"></div>
+                    <div class="clickable-area" onclick="alert('Opción 6')"></div>
+                    <div class="clickable-area" onclick="alert('Opción 7')"></div>
+                    <div class="clickable-area" onclick="alert('Opción 8')"></div>
+                </div>
+            </div>
+            <button>Siguiente Escenario</button>
         </div>
     </div>
     <div class="right-column"></div>
 </div>
-
-<script src="motor-tests.js"></script>
 </body>
 </html>
