@@ -1,26 +1,31 @@
 const motorTests = {
-    // Definimos cómo se ve cada forma básica
-    formas: {
-        'barra-azul': '<rect x="10" y="30" width="80" height="40" fill="#017a9e"/>',
-        'caja-borde': '<rect x="5" y="5" width="90" height="90" fill="none" stroke="#017a9e" stroke-width="4"/>'
+    actual: 0,
+    ejercicios: [
+        {
+            titulo: "Escenario 1: Razonamiento Abstracto",
+            url: "https://www.bluelab.online/apply/test_a1.png",
+            pregunta: "¿Qué figura completa lógicamente el lugar del signo de interrogación?"
+        }
+        // Para agregar los siguientes 7, solo añadí otro objeto igual aquí abajo
+    ],
+
+    renderizar: function() {
+        const ej = this.ejercicios[this.actual];
+        document.getElementById('titulo-escenario').innerText = ej.titulo;
+        document.getElementById('pregunta-texto').innerText = ej.pregunta;
+        
+        const contenedor = document.getElementById('matriz-container');
+        contenedor.innerHTML = `<img src="${ej.url}" style="max-width: 400px; border: 2px solid #333; border-radius: 8px;">`;
     },
 
-    // Aquí irán los datos que te voy a pasar por cada ejercicio
-    ejercicios: [],
-
-    renderizar: function(id) {
-        const contenedor = document.getElementById('matriz-container');
-        contenedor.innerHTML = '';
-        
-        // Creamos las 9 celdas
-        for (let i = 0; i < 9; i++) {
-            const celda = document.createElement('div');
-            celda.className = 'celda';
-            // Aquí inyectamos el SVG del ejercicio correspondiente
-            celda.innerHTML = `<svg viewBox="0 0 100 100">${this.formas['caja-borde']}${this.formas['barra-azul']}</svg>`;
-            contenedor.appendChild(celda);
+    siguiente: function() {
+        if (this.actual < this.ejercicios.length - 1) {
+            this.actual++;
+            this.renderizar();
+        } else {
+            alert("¡Test finalizado!");
         }
     }
 };
-// Lanzamos
-document.addEventListener('DOMContentLoaded', () => motorTests.renderizar());
+
+window.onload = () => motorTests.renderizar();
