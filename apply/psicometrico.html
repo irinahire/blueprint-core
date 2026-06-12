@@ -7,19 +7,11 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(to bottom left, #8EE4D5, #B588C0); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
         .main-container { background: #fff; width: 100%; max-width: 1200px; height: 85vh; display: flex; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
-        .left-column { flex: 1; padding: 2rem; display: flex; flex-direction: column; overflow-y: auto; }
-        .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem; }
-        .stepper-container { display: flex; align-items: center; }
-        .step { display: flex; flex-direction: column; align-items: center; width: 80px; }
-        .step-circle { width: 35px; height: 35px; border-radius: 50%; background: #e0e0e0; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #777; }
-        .step.completed .step-circle { background: #8EE4D5; color: #fff; }
-        .step.active .step-circle { background: #B588C0; color: #fff; }
-        .step-label { font-size: 10px; margin-top: 5px; color: #555; text-transform: uppercase; font-weight: 700; }
-        .content-area { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center; }
-        .matriz-container { margin: 20px 0; display: flex; justify-content: center; }
-        .opciones-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
-        .opcion-btn { cursor: pointer; border: 2px solid transparent; border-radius: 8px; transition: 0.2s; padding: 5px; }
-        .opcion-btn:hover { border: 2px solid #B588C0; transform: scale(1.05); }
+        .left-column { flex: 1; padding: 2rem; display: flex; flex-direction: column; align-items: center; overflow-y: auto; }
+        .matriz-wrapper { position: relative; width: 400px; }
+        .mapa-clics { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr); }
+        .opcion-area { cursor: pointer; border: 2px solid transparent; }
+        .opcion-area:hover { border: 2px solid #B588C0; background: rgba(181, 136, 192, 0.2); }
         .right-column { width: 30%; background: url('https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg') center/cover no-repeat; }
         button { padding: 12px 24px; background: #B588C0; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 20px; }
     </style>
@@ -27,23 +19,13 @@
 <body>
 <div class="main-container">
     <div class="left-column">
-        <div class="header-container">
-            <img src="https://i.ibb.co/JFMJBm0S/logo-ihs.jpg" style="max-width: 120px;">
-            <div class="stepper-container">
-                <div class="step completed"><div class="step-circle">✓</div><div class="step-label">Postulación</div></div>
-                <div class="step completed"><div class="step-circle">✓</div><div class="step-label">Análisis</div></div>
-                <div class="step active"><div class="step-circle">3</div><div class="step-label">Psicométrico</div></div>
-                <div class="step"><div class="step-circle">4</div><div class="step-label">Entrevista</div></div>
-            </div>
-            <button id="btn-login">Login Google</button>
+        <h3 id="titulo-escenario">Escenario 1</h3>
+        <div class="matriz-wrapper">
+            <img id="matriz-img" src="https://www.bluelab.online/apply/test_a1.png" style="width: 100%;">
+            <div id="mapa-opciones" class="mapa-clics"></div>
         </div>
-        <div id="psychometric-tests-container" class="content-area">
-            <h3 id="titulo-escenario">Cargando...</h3>
-            <div id="matriz-container" class="matriz-container"></div>
-            <p id="pregunta-texto" style="font-weight: 600; color: #333;"></p>
-            <div id="opciones-container" class="opciones-grid"></div>
-            <button onclick="motorTests.siguiente()">Siguiente Escenario</button>
-        </div>
+        <p id="pregunta-texto" style="margin-top:20px; font-weight:600;"></p>
+        <button onclick="motorTests.siguiente()">Siguiente Escenario</button>
     </div>
     <div class="right-column"></div>
 </div>
