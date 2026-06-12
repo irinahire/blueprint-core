@@ -1,18 +1,34 @@
 const motorTests = {
     actual: 0,
     ejercicios: [
-        {
-            url: "https://www.bluelab.online/apply/test_a1.png"
-        }
+        { url: "https://www.bluelab.online/apply/test_a1.png" },
+        // Agrega aquí los próximos: { url: "url_ejercicio_2.png" }, etc.
     ],
 
-    renderizar: function() {
-        const contenedor = document.getElementById('matriz-container');
-        if (!contenedor) return; // Si no encuentra el div, no hace nada
+    init: function() {
+        console.log("Motor inicializado");
+        this.renderizar();
+    },
 
+    renderizar: function() {
         const ej = this.ejercicios[this.actual];
-        contenedor.innerHTML = `<img src="${ej.url}" style="width: 100%; grid-column: span 3;">`;
-        console.log("Renderizado correctamente");
+        document.getElementById('num-escenario').innerText = this.actual + 1;
+        document.getElementById('test-image').src = ej.url;
+        
+        const overlay = document.getElementById('click-overlay');
+        overlay.innerHTML = '';
+        
+        for (let i = 1; i <= 8; i++) {
+            const div = document.createElement('div');
+            div.className = 'clickable-area';
+            div.onclick = () => this.seleccionar(i);
+            overlay.appendChild(div);
+        }
+    },
+
+    seleccionar: function(opcion) {
+        console.log("Usuario seleccionó opción:", opcion);
+        alert("Opción " + opcion + " registrada en el sistema.");
     },
 
     siguiente: function() {
@@ -20,9 +36,9 @@ const motorTests = {
             this.actual++;
             this.renderizar();
         } else {
-            alert("Has finalizado todos los ejercicios.");
+            alert("Has finalizado todos los ejercicios del test.");
         }
     }
 };
 
-window.onload = () => motorTests.renderizar();
+window.onload = () => motorTests.init();
