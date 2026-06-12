@@ -9,21 +9,23 @@ const motorTests = {
     ],
 
     renderizar: function() {
+        console.log("Intentando renderizar...");
         const ej = this.ejercicios[this.actual];
-        const titulo = document.getElementById('titulo-escenario');
         const contenedor = document.getElementById('matriz-container');
+        const titulo = document.getElementById('titulo-escenario');
         const pregunta = document.getElementById('pregunta-texto');
 
-        if(titulo) titulo.innerText = ej.titulo;
-        if(pregunta) pregunta.innerText = ej.pregunta;
-        
-        if(contenedor) {
-            contenedor.innerHTML = `<img src="${ej.url}" style="max-width: 400px; border: 2px solid #333; border-radius: 8px;">`;
+        if (!contenedor) {
+            console.error("No se encontró el contenedor 'matriz-container'");
+            return;
         }
+
+        titulo.innerText = ej.titulo;
+        pregunta.innerText = ej.pregunta;
+        contenedor.innerHTML = `<img src="${ej.url}" style="max-width: 400px; border: 2px solid #333; border-radius: 8px;">`;
     },
 
     siguiente: function() {
-        console.log("Avanzando al siguiente ejercicio...");
         if (this.actual < this.ejercicios.length - 1) {
             this.actual++;
             this.renderizar();
@@ -33,6 +35,5 @@ const motorTests = {
     }
 };
 
-// Esto asegura que el motor esté disponible apenas cargue la página
-window.motorTests = motorTests; 
-window.onload = () => motorTests.renderizar();
+// Forzamos la ejecución
+motorTests.renderizar();
