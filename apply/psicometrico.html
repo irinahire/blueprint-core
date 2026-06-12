@@ -7,9 +7,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(to bottom left, #8EE4D5, #B588C0); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
         .main-container { background: #fff; width: 100%; max-width: 1200px; height: 85vh; display: flex; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
-        .left-column { flex: 1; padding: 2rem; display: flex; flex-direction: column; }
-        
-        /* Stepper */
+        .left-column { flex: 1; padding: 2rem; display: flex; flex-direction: column; overflow-y: auto; }
         .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem; }
         .stepper-container { display: flex; align-items: center; }
         .step { display: flex; flex-direction: column; align-items: center; width: 80px; }
@@ -17,23 +15,16 @@
         .step.completed .step-circle { background: #8EE4D5; color: #fff; }
         .step.active .step-circle { background: #B588C0; color: #fff; }
         .step-label { font-size: 10px; margin-top: 5px; color: #555; text-transform: uppercase; font-weight: 700; }
-        
-        /* Contenedor del Test */
         .content-area { flex: 1; display: flex; flex-direction: column; gap: 20px; }
-        .matriz-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 330px; border: 2px solid #333; padding: 5px; margin: 10px 0; }
-        .celda { width: 100px; height: 100px; border: 1px solid #eee; display: flex; align-items: center; justify-content: center; background: #fff; }
-        
-        /* Botones de Opciones */
-        .opciones-container { display: flex; gap: 10px; margin-top: 10px; }
-        .opcion-btn { width: 50px; height: 50px; border: 2px solid #B588C0; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 6px; font-weight: bold; transition: 0.3s; }
-        .opcion-btn:hover { background: #f0e6f3; }
-        
+        .matriz-container { display: grid; grid-template-columns: repeat(3, 110px); gap: 5px; border: 2px solid #333; padding: 5px; width: 345px; }
+        .celda { width: 100px; height: 100px; background: #017a9e; border-radius: 4px; display: flex; align-items: center; justify-content: center; }
+        .opciones-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 450px; }
+        .opcion-btn { width: 100px; height: 100px; border: 2px solid #B588C0; cursor: pointer; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
         .right-column { width: 30%; background: url('https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg') center/cover no-repeat; }
         button { padding: 12px 24px; background: #B588C0; color: white; border: none; border-radius: 8px; cursor: pointer; width: fit-content; font-weight: 600; }
     </style>
 </head>
 <body>
-
 <div class="main-container">
     <div class="left-column">
         <div class="header-container">
@@ -46,22 +37,16 @@
             </div>
             <button id="btn-login">Login Google</button>
         </div>
-
         <div id="psychometric-tests-container" class="content-area">
-            <h3>Escenario 1: Razonamiento Abstracto</h3>
+            <h3 id="titulo-escenario">Escenario 1: Razonamiento Abstracto</h3>
             <div id="matriz-container" class="matriz-container"></div>
             <p>Selecciona la figura que completa la secuencia:</p>
             <div class="opciones-container" id="opciones-container"></div>
-            <button onclick="motorTests.siguienteEjercicio()">Siguiente Escenario</button>
+            <button onclick="motorTests.siguiente()">Siguiente Escenario</button>
         </div>
     </div>
     <div class="right-column"></div>
 </div>
-
 <script src="motor-tests.js"></script>
-<script>
-    // Inicialización al cargar la página
-    window.onload = () => motorTests.renderizar();
-</script>
 </body>
 </html>
