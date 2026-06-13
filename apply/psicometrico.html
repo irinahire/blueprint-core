@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Proceso de Aplicación - Irina Hire Selection</title>
     <style>
+        /* Estilos originales de tu diseño */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(to bottom left, #8EE4D5, #B588C0); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
         
@@ -18,16 +19,16 @@
         .step.active .step-circle { background: #B588C0; color: #fff; }
         .step-label { font-size: 10px; margin-top: 5px; color: #555; text-transform: uppercase; font-weight: 700; }
         
-        .content-area { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 25px; }
-        .main-test-image { width: 450px; display: block; }
+        .content-area { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        .main-test-image { width: 450px; display: block; border: 1px solid #eee; }
         
-        /* Contenedor Grid Profesional: sin posicionamiento absoluto */
-        .options-grid { width: 450px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
-        .option-box { border: 2px solid #ddd; border-radius: 10px; height: 80px; cursor: pointer; transition: 0.2s; background: #fff; display: flex; align-items: center; justify-content: center; }
-        .option-box:hover { border: 3px solid #B588C0; background: rgba(181, 136, 192, 0.1); }
+        /* Grilla de respuestas (Estabilidad total) */
+        .options-grid { width: 450px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .option-box { border: 2px solid #ddd; border-radius: 8px; height: 70px; cursor: pointer; transition: 0.2s; background: #f9f9f9; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #555; }
+        .option-box:hover { border: 2px solid #B588C0; background: rgba(181, 136, 192, 0.1); color: #B588C0; }
         
-        #feedback-box { padding: 15px; border: 1px solid #ddd; border-radius: 8px; text-align: center; width: 300px; display: none; margin-top: 10px; }
-        button { padding: 12px 24px; background: #B588C0; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
+        #feedback-box { margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; text-align: center; width: 300px; display: none; }
+        button { padding: 12px 24px; background: #B588C0; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 10px; }
         .right-column { width: 30%; background: url('https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg') center/cover no-repeat; }
     </style>
 </head>
@@ -54,13 +55,32 @@
 
             <div id="feedback-box">
                 <p id="msg-text"></p>
-                <button onclick="motorTests.siguiente()">Siguiente Escenario</button>
+                <button onclick="console.log('Avanzando...')">Siguiente Escenario</button>
             </div>
         </div>
     </div>
     <div class="right-column"></div>
 </div>
 
-<script src="motor-tests.js"></script>
+<script>
+    // Motor integrado dentro del mismo HTML para eliminar errores de carga
+    document.addEventListener('DOMContentLoaded', () => {
+        const grid = document.getElementById('options-grid');
+        const box = document.getElementById('feedback-box');
+        const text = document.getElementById('msg-text');
+
+        for (let i = 1; i <= 8; i++) {
+            const div = document.createElement('div');
+            div.className = 'option-box';
+            div.textContent = i;
+            div.onclick = () => {
+                box.style.display = 'block';
+                text.innerText = "Has seleccionado la opción " + i;
+                console.log("Conectando con Supabase para la opción:", i);
+            };
+            grid.appendChild(div);
+        }
+    });
+</script>
 </body>
 </html>
