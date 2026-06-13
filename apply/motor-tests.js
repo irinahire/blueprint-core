@@ -1,4 +1,4 @@
-// motor-tests.js - Código completo sin espacios para rellenar
+// motor-tests.js - Versión Final con Corrección de Scroll y Flujo
 
 const testData = {
     "test_a1": {
@@ -39,10 +39,11 @@ let indiceSecuencia = 0;
 let respuestas = {};
 
 function cargarTest(idTest) {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
     const data = testData[idTest];
     const grid = document.getElementById('options-grid');
     const mainImg = document.getElementById('main-test-image');
+    const scrollContainer = document.querySelector('.scroll-area');
+    
     grid.style.display = 'block';
     grid.innerHTML = '';
     
@@ -96,6 +97,11 @@ function cargarTest(idTest) {
             } else { document.getElementById('err').style.display = "block"; }
         };
     }
+    
+    // Ejecutar el scroll al contenedor correcto con un pequeño delay
+    setTimeout(() => {
+        if (scrollContainer) scrollContainer.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 50);
 }
 
 function avanzar() {
