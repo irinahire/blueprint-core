@@ -1,54 +1,53 @@
 // motor-tests.js
 
-// CONFIGURACIÓN CENTRALIZADA
+// CONFIGURACIÓN CENTRALIZADA (Acá agregás todos tus tests)
 const testData = {
     "test_a1": {
+        instrucciones: "Observa la secuencia lógica y selecciona la opción que completa el patrón correctamente.",
         imgPrincipal: "https://www.bluelab.online/apply/img/test_a1.png",
         baseUrl: "https://www.bluelab.online/apply/img/",
         prefijo: "test_a1_r",
         opciones: 8
     }
-    // Aquí podrás agregar "big_five": { ... }, "situacional": { ... } en el futuro.
 };
 
-// MOTOR DE CARGA
 document.addEventListener('DOMContentLoaded', () => {
     const mainImg = document.getElementById('main-test-image');
     const grid = document.getElementById('options-grid');
     
-    // Validar existencia de elementos
-    if (!mainImg || !grid) {
-        console.error("Error: Elementos del DOM no encontrados");
-        return;
+    // Contenedor de instrucciones (lo creamos dinámicamente)
+    let instruccionDiv = document.getElementById('instrucciones-box');
+    if (!instruccionDiv) {
+        instruccionDiv = document.createElement('div');
+        instruccionDiv.id = 'instrucciones-box';
+        instruccionDiv.style.marginBottom = "15px";
+        instruccionDiv.style.textAlign = "center";
+        instruccionDiv.style.color = "#444";
+        instruccionDiv.style.fontWeight = "600";
+        grid.parentNode.insertBefore(instruccionDiv, mainImg);
     }
 
-    // Inicializar test_a1 por defecto
+    // Inicializar el test
     const currentTest = testData["test_a1"];
     
-    // Cargar imagen principal
+    // Cargar texto y imagen
+    instruccionDiv.innerText = currentTest.instrucciones;
     mainImg.src = currentTest.imgPrincipal;
     
-    // Cargar las 8 opciones
-    grid.innerHTML = ''; // Limpiar previo
+    // Cargar opciones
+    grid.innerHTML = '';
     for (let i = 1; i <= currentTest.opciones; i++) {
         const div = document.createElement('div');
         div.className = 'option-box';
-        
         const img = document.createElement('img');
         img.src = `${currentTest.baseUrl}${currentTest.prefijo}${i}.png`;
-        
         div.appendChild(img);
         
         div.onclick = () => {
-            // Estilo de selección
             document.querySelectorAll('.option-box').forEach(el => el.style.boxShadow = 'none');
             div.style.boxShadow = '0 0 0 3px #B588C0';
-            
-            // Aquí llamarías a tu función de guardado a Supabase:
-            // guardarRespuesta('test_a1', i);
-            console.log("Seleccionada opción: " + i);
+            console.log("Respuesta seleccionada: " + i);
         };
-        
         grid.appendChild(div);
     }
 });
