@@ -1,4 +1,4 @@
-// motor-tests.js - Versión actualizada con tests A1 al A8
+// motor-tests.js - Versión Final Unificada y Estilizada
 
 const testData = {
     "test_a1": { tipo: "visual", instrucciones: "Observa la secuencia lógica y selecciona la opción que completa el patrón correctamente.", imgPrincipal: "https://www.bluelab.online/apply/img/test_a1.png", baseUrl: "https://www.bluelab.online/apply/img/", prefijo: "test_a1_r", opciones: 8 },
@@ -23,9 +23,7 @@ const testData = {
     "intro_situacional": { tipo: "texto", instrucciones: "Etapa Final: Evaluación Situacional", cuerpo: "Has llegado a la etapa final. Analizaremos desafíos concretos en entornos profesionales." }
 };
 
-// Hemos añadido los nuevos tests a la secuencia
 const secuencia = ["test_a1", "test_a2", "test_a3", "test_a4", "test_a5", "test_a6", "test_a7", "test_a8", "intro_bigfive", "bloque_1", "bloque_2", "bloque_3", "bloque_4", "bloque_5", "intro_situacional"];
-
 let indiceSecuencia = 0;
 let respuestas = {};
 
@@ -52,9 +50,13 @@ function cargarTest(idTest) {
     const grid = document.getElementById('options-grid');
     const mainImg = document.getElementById('main-test-image');
     const scrollContainer = document.querySelector('.scroll-area');
+    
     grid.style.display = 'block';
     grid.innerHTML = '';
-    if (idTest.startsWith('bloque_')) actualizarBarraProgreso(idTest);
+    
+    if (idTest.startsWith('bloque_')) {
+        actualizarBarraProgreso(idTest);
+    }
     
     if (data.tipo === "visual") {
         mainImg.style.display = "block";
@@ -70,7 +72,15 @@ function cargarTest(idTest) {
         }
     } else if (data.tipo === "texto") {
         mainImg.style.display = "none";
-        grid.innerHTML = `<div style="text-align:center; padding:40px;"><h2 style="margin-bottom:20px;">${data.instrucciones}</h2><p style="margin:20px 0; font-size: 1.1rem;">${data.cuerpo}</p><button onclick="avanzar()" style="padding:10px 30px; cursor:pointer; background:#B588C0; color:white; border:none; border-radius:4px;">INICIAR</button></div>`;
+        grid.innerHTML = `
+            <div style="max-width: 600px; margin: 40px auto; padding: 40px; background: #ffffff; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center;">
+                <h2 style="color: #4A4A4A; margin-bottom: 20px; font-size: 1.8rem;">${data.instrucciones}</h2>
+                <div style="height: 3px; width: 50px; background: #B588C0; margin: 0 auto 20px auto;"></div>
+                <p style="margin: 20px 0 35px 0; font-size: 1.1rem; color: #666; line-height: 1.6;">${data.cuerpo}</p>
+                <button onclick="avanzar()" style="padding: 12px 40px; cursor: pointer; background: linear-gradient(90deg, #8EE4D5, #B588C0); color: white; border: none; border-radius: 30px; font-weight: 600; font-size: 1rem; transition: transform 0.2s;">
+                    COMENZAR EVALUACIÓN
+                </button>
+            </div>`;
     } else if (data.tipo === "big_five") {
         mainImg.style.display = "none";
         grid.innerHTML += `<h2 style="margin-bottom:25px; color:#B588C0;">${data.titulo}</h2>`;
