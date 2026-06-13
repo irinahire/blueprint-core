@@ -1,4 +1,4 @@
-// motor-tests.js - Versión Final Unificada y Estilizada
+// motor-tests.js - Versión Final con Textos Restaurados y Mejorados
 
 const testData = {
     "test_a1": { tipo: "visual", instrucciones: "Observa la secuencia lógica y selecciona la opción que completa el patrón correctamente.", imgPrincipal: "https://www.bluelab.online/apply/img/test_a1.png", baseUrl: "https://www.bluelab.online/apply/img/", prefijo: "test_a1_r", opciones: 8 },
@@ -13,14 +13,15 @@ const testData = {
     "intro_bigfive": {
         tipo: "texto",
         instrucciones: "Evaluación de Perfil y Estilo de Trabajo",
-        cuerpo: "Has completado la primera etapa. Ahora, evaluaremos tu enfoque profesional en 5 bloques. No hay respuestas correctas; sé honesto."
+        cuerpo: "Has completado la primera etapa de razonamiento lógico. Ahora, queremos conocer más sobre tu enfoque profesional y cómo te desenvuelves en distintos entornos.<br><br><b>Ten en cuenta:</b><br>• No hay respuestas correctas. Tu respuesta más honesta es siempre la más útil.<br>• Sé espontáneo/a: no dediques demasiado tiempo a cada pregunta.<br>• Describe cómo actúas generalmente en un entorno profesional.<br>• El test consta de 25 afirmaciones divididas en cinco bloques. No hay límite de tiempo.<br><br>¿Estás listo/a para comenzar?",
+        textoBoton: "INICIAR SEGUNDO TEST"
     },
     "bloque_1": { tipo: "big_five", titulo: "Bloque I: Enfoque y Entorno de Trabajo", preguntas: ["Ante un cambio de prioridades repentino, prefiero terminar lo que empecé antes de ajustar el plan.", "Cuando surge un problema inesperado, mi primera reacción es analizar el origen antes de actuar.", "Suelo desconectar completamente del trabajo al terminar la jornada, sin pensar en temas pendientes.", "En momentos de alta presión, me resulta más fácil tomar decisiones solo que consultar a todo el equipo.", "Prefiero entornos de trabajo predecibles donde sé exactamente qué esperar de cada día."] },
     "bloque_2": { tipo: "big_five", titulo: "Bloque II: Extraversión", preguntas: ["Prefiero resolver problemas complejos trabajando solo que debatiéndolo en reuniones.", "En una presentación, me siento más cómodo exponiendo datos duros que tratando de persuadir con historias.", "Disfruto más del trabajo cuando puedo colaborar activamente con otros que cuando tengo metas independientes.", "Suelo tomar la iniciativa para romper el hielo en grupos de trabajo nuevos.", "Siento que mi energía aumenta después de una jornada intensa de reuniones y trabajo en equipo."] },
     "bloque_3": { tipo: "big_five", titulo: "Bloque III: Apertura", preguntas: ["Prefiero utilizar herramientas o procesos probados antes que experimentar con software nuevo.", "Me resulta más estimulante abordar proyectos que requieren aprender algo nuevo que proyectos donde ya soy experto.", "Suelo cuestionar el 'por qué' de las reglas establecidas en el trabajo si creo que dificultan la eficiencia.", "Me siento cómodo trabajando en proyectos donde no hay un manual de instrucciones claro.", "Busco integrar nuevas tendencias o tecnologías en mi flujo de trabajo habitual."] },
     "bloque_4": { tipo: "big_five", titulo: "Bloque IV: Amabilidad", preguntas: ["Para lograr un objetivo importante, creo que es aceptable ser directo y firme, incluso si alguien se siente un poco molesto.", "Prefiero ceder en una idea propia si veo que el equipo está muy convencido de otra, para mantener el consenso.", "Suelo notar si un colega está desmotivado antes de que él mismo lo exprese.", "Valoro más la honestidad absoluta en el feedback que mantener la cortesía.", "Considero que el éxito personal es irrelevante si no contribuye al éxito del equipo completo."] },
     "bloque_5": { tipo: "big_five", titulo: "Bloque V: Responsabilidad", preguntas: ["Prefiero tener un plan de trabajo detallado semana a semana que tener libertad total para decidir mis tareas diarias.", "Si encuentro un atajo que ahorra tiempo pero ignora un paso del proceso oficial, suelo tomarlo.", "Suelo revisar mi trabajo varias veces antes de entregarlo, aunque eso signifique ir al límite del tiempo.", "Me resulta difícil dejar un proyecto a medias, incluso si sé que es poco rentable a largo plazo.", "Me siento más cómodo entregando resultados rápidos aunque tengan detalles pendientes, que esperando a la perfección."] },
-    "intro_situacional": { tipo: "texto", instrucciones: "Etapa Final: Evaluación Situacional", cuerpo: "Has llegado a la etapa final. Analizaremos desafíos concretos en entornos profesionales." }
+    "intro_situacional": { tipo: "texto", instrucciones: "Etapa Final: Evaluación Situacional", cuerpo: "Has llegado a la etapa final. Aquí analizaremos cómo resuelves desafíos concretos en entornos profesionales. Estás muy cerca de completar tu evaluación.", textoBoton: "INICIAR" }
 };
 
 const secuencia = ["test_a1", "test_a2", "test_a3", "test_a4", "test_a5", "test_a6", "test_a7", "test_a8", "intro_bigfive", "bloque_1", "bloque_2", "bloque_3", "bloque_4", "bloque_5", "intro_situacional"];
@@ -76,9 +77,9 @@ function cargarTest(idTest) {
             <div style="max-width: 600px; margin: 40px auto; padding: 40px; background: #ffffff; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center;">
                 <h2 style="color: #4A4A4A; margin-bottom: 20px; font-size: 1.8rem;">${data.instrucciones}</h2>
                 <div style="height: 3px; width: 50px; background: #B588C0; margin: 0 auto 20px auto;"></div>
-                <p style="margin: 20px 0 35px 0; font-size: 1.1rem; color: #666; line-height: 1.6;">${data.cuerpo}</p>
+                <p style="margin: 20px 0 35px 0; font-size: 1.1rem; color: #666; line-height: 1.6; text-align: left;">${data.cuerpo}</p>
                 <button onclick="avanzar()" style="padding: 12px 40px; cursor: pointer; background: linear-gradient(90deg, #8EE4D5, #B588C0); color: white; border: none; border-radius: 30px; font-weight: 600; font-size: 1rem; transition: transform 0.2s;">
-                    COMENZAR EVALUACIÓN
+                    ${data.textoBoton || 'INICIAR'}
                 </button>
             </div>`;
     } else if (data.tipo === "big_five") {
