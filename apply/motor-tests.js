@@ -1,4 +1,4 @@
-// motor-tests.js - Versión Final Completa y Unificada
+// motor-tests.js - Versión Final con Barra de Progreso Mejorada
 
 const testData = {
     "test_a1": {
@@ -20,18 +20,14 @@ const testData = {
     "intro_bigfive": {
         tipo: "texto",
         instrucciones: "Evaluación de Perfil y Estilo de Trabajo",
-        cuerpo: "Has completado la primera etapa de razonamiento lógico. Ahora, queremos conocer más sobre tu enfoque profesional y cómo te desenvuelves en distintos entornos. No hay respuestas correctas. Tu respuesta más honesta es siempre la más útil."
+        cuerpo: "Has completado la primera etapa. Ahora, evaluaremos tu enfoque profesional en 5 bloques. No hay respuestas correctas; sé honesto."
     },
     "bloque_1": { tipo: "big_five", titulo: "Bloque I: Enfoque y Entorno de Trabajo", preguntas: ["Ante un cambio de prioridades repentino, prefiero terminar lo que empecé antes de ajustar el plan.", "Cuando surge un problema inesperado, mi primera reacción es analizar el origen antes de actuar.", "Suelo desconectar completamente del trabajo al terminar la jornada, sin pensar en temas pendientes.", "En momentos de alta presión, me resulta más fácil tomar decisiones solo que consultar a todo el equipo.", "Prefiero entornos de trabajo predecibles donde sé exactamente qué esperar de cada día."] },
     "bloque_2": { tipo: "big_five", titulo: "Bloque II: Extraversión", preguntas: ["Prefiero resolver problemas complejos trabajando solo que debatiéndolo en reuniones.", "En una presentación, me siento más cómodo exponiendo datos duros que tratando de persuadir con historias.", "Disfruto más del trabajo cuando puedo colaborar activamente con otros que cuando tengo metas independientes.", "Suelo tomar la iniciativa para romper el hielo en grupos de trabajo nuevos.", "Siento que mi energía aumenta después de una jornada intensa de reuniones y trabajo en equipo."] },
     "bloque_3": { tipo: "big_five", titulo: "Bloque III: Apertura", preguntas: ["Prefiero utilizar herramientas o procesos probados antes que experimentar con software nuevo.", "Me resulta más estimulante abordar proyectos que requieren aprender algo nuevo que proyectos donde ya soy experto.", "Suelo cuestionar el 'por qué' de las reglas establecidas en el trabajo si creo que dificultan la eficiencia.", "Me siento cómodo trabajando en proyectos donde no hay un manual de instrucciones claro.", "Busco integrar nuevas tendencias o tecnologías en mi flujo de trabajo habitual."] },
     "bloque_4": { tipo: "big_five", titulo: "Bloque IV: Amabilidad", preguntas: ["Para lograr un objetivo importante, creo que es aceptable ser directo y firme, incluso si alguien se siente un poco molesto.", "Prefiero ceder en una idea propia si veo que el equipo está muy convencido de otra, para mantener el consenso.", "Suelo notar si un colega está desmotivado antes de que él mismo lo exprese.", "Valoro más la honestidad absoluta en el feedback que mantener la cortesía.", "Considero que el éxito personal es irrelevante si no contribuye al éxito del equipo completo."] },
     "bloque_5": { tipo: "big_five", titulo: "Bloque V: Responsabilidad", preguntas: ["Prefiero tener un plan de trabajo detallado semana a semana que tener libertad total para decidir mis tareas diarias.", "Si encuentro un atajo que ahorra tiempo pero ignora un paso del proceso oficial, suelo tomarlo.", "Suelo revisar mi trabajo varias veces antes de entregarlo, aunque eso signifique ir al límite del tiempo.", "Me resulta difícil dejar un proyecto a medias, incluso si sé que es poco rentable a largo plazo.", "Me siento más cómodo entregando resultados rápidos aunque tengan detalles pendientes, que esperando a la perfección."] },
-    "intro_situacional": {
-        tipo: "texto",
-        instrucciones: "Etapa Final: Evaluación Situacional",
-        cuerpo: "Has llegado a la etapa final. Aquí analizaremos cómo resuelves desafíos concretos en entornos profesionales. Estás muy cerca de completar tu evaluación."
-    }
+    "intro_situacional": { tipo: "texto", instrucciones: "Etapa Final: Evaluación Situacional", cuerpo: "Has llegado a la etapa final. Analizaremos desafíos concretos en entornos profesionales." }
 };
 
 const secuencia = ["test_a1", "test_a2", "intro_bigfive", "bloque_1", "bloque_2", "bloque_3", "bloque_4", "bloque_5", "intro_situacional"];
@@ -39,23 +35,26 @@ let indiceSecuencia = 0;
 let respuestas = {};
 
 function actualizarBarraProgreso(idTest) {
-    let barraContainer = document.getElementById('barra-progreso');
-    if (!barraContainer) {
-        barraContainer = document.createElement('div');
-        barraContainer.id = 'barra-progreso';
-        barraContainer.style = "display: flex; gap: 5px; margin: 10px 0; width: 100%; height: 5px;";
-        document.querySelector('.header-wrapper').appendChild(barraContainer);
+    // Buscamos un contenedor específico para la barra. Si no existe, lo creamos.
+    let contenedor = document.getElementById('contenedor-progreso');
+    if (!contenedor) {
+        contenedor = document.createElement('div');
+        contenedor.id = 'contenedor-progreso';
+        contenedor.style = "width: 100%; display: flex; gap: 8px; margin-bottom: 25px; padding: 0 10px;";
+        // Insertamos la barra al principio del área de preguntas
+        document.getElementById('options-grid').prepend(contenedor);
     }
+    
     const match = idTest.match(/bloque_(\d)/);
     const numBloque = match ? parseInt(match[1]) : 0;
-    barraContainer.innerHTML = '';
+    
+    contenedor.innerHTML = '';
     for (let i = 1; i <= 5; i++) {
-        const bar = document.createElement('div');
-        bar.style = "flex: 1; height: 100%; border-radius: 2px;";
-        if (i < numBloque) bar.style.backgroundColor = "#8EE4D5";
-        else if (i === numBloque) bar.style.backgroundColor = "#B588C0";
-        else bar.style.backgroundColor = "#e0e0e0";
-        barraContainer.appendChild(bar);
+        const item = document.createElement('div');
+        item.style = `flex: 1; height: 10px; border-radius: 5px; background-color: ${
+            i < numBloque ? '#8EE4D5' : (i === numBloque ? '#B588C0' : '#e0e0e0')
+        };`;
+        contenedor.appendChild(item);
     }
 }
 
@@ -64,13 +63,15 @@ function cargarTest(idTest) {
     const grid = document.getElementById('options-grid');
     const mainImg = document.getElementById('main-test-image');
     const scrollContainer = document.querySelector('.scroll-area');
-
-    if (idTest.includes('bloque_')) actualizarBarraProgreso(idTest);
-    else { const b = document.getElementById('barra-progreso'); if(b) b.remove(); }
-
+    
     grid.style.display = 'block';
     grid.innerHTML = '';
-
+    
+    // Si estamos en bloques de personalidad, mostramos la barra
+    if (idTest.startsWith('bloque_')) {
+        actualizarBarraProgreso(idTest);
+    }
+    
     if (data.tipo === "visual") {
         mainImg.style.display = "block";
         mainImg.src = data.imgPrincipal;
@@ -93,7 +94,7 @@ function cargarTest(idTest) {
             </div>`;
     } else if (data.tipo === "big_five") {
         mainImg.style.display = "none";
-        grid.innerHTML = `<h2 style="margin-bottom:25px; color:#B588C0;">${data.titulo}</h2>`;
+        grid.innerHTML += `<h2 style="margin-bottom:25px; color:#B588C0;">${data.titulo}</h2>`;
         data.preguntas.forEach((pregunta, idx) => {
             const pDiv = document.createElement('div');
             pDiv.style.marginBottom = "25px";
