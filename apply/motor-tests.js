@@ -17,31 +17,39 @@ const testData = {
     }
 };
 
-// Variable para controlar el flujo
 let testActual = 1;
 
 function cargarTest(idTest) {
     const mainImg = document.getElementById('main-test-image');
     const grid = document.getElementById('options-grid');
-    let instruccionDiv = document.getElementById('instrucciones-box');
+    const instruccionDiv = document.getElementById('instrucciones-box');
 
     const data = testData[idTest];
+
     if (!data) {
-        alert("¡Test finalizado! Gracias por participar.");
+        console.log("Fin de los tests.");
         return;
     }
 
-    // Actualizar texto y la imagen principal
+    // 1. Actualizar instrucciones e imagen principal
     instruccionDiv.innerText = data.instrucciones;
-    mainImg.src = data.imgPrincipal;
     
-    // Limpiar grid y cargar nuevas opciones
+    // FORZAR la carga de la imagen principal eliminando el src previo
+    mainImg.src = ""; 
+    mainImg.src = data.imgPrincipal;
+
+    // 2. Limpiar grid
     grid.innerHTML = '';
+
+    // 3. Cargar nuevas opciones
     for (let i = 1; i <= data.opciones; i++) {
         const div = document.createElement('div');
         div.className = 'option-box';
+        
         const img = document.createElement('img');
+        // Construcción explícita de la ruta
         img.src = `${data.baseUrl}${data.prefijo}${i}.png`;
+        
         div.appendChild(img);
         
         div.onclick = () => {
@@ -51,27 +59,28 @@ function cargarTest(idTest) {
             
             console.log(`Respuesta guardada: ${idTest} - Opción ${i}`);
             
-            // Lógica de transición automática
+            // Transición automática al siguiente
             testActual++;
             setTimeout(() => {
                 cargarTest('test_a' + testActual);
-            }, 500); // Pequeña pausa para que se vea la selección antes de cambiar
+            }, 500);
         };
         grid.appendChild(div);
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Crear el contenedor de instrucciones si no existe
+    // Asegurar que el contenedor de instrucciones exista
     const grid = document.getElementById('options-grid');
-    const instruccionDiv = document.createElement('div');
-    instruccionDiv.id = 'instrucciones-box';
-    instruccionDiv.style.marginBottom = "15px";
-    instruccionDiv.style.textAlign = "center";
-    instruccionDiv.style.color = "#444";
-    instruccionDiv.style.fontWeight = "600";
-    grid.parentNode.insertBefore(instruccionDiv, document.getElementById('main-test-image'));
+    if (!document.getElementById('instrucciones-box')) {
+        const instruccionDiv = document.createElement('div');
+        instruccionDiv.id = 'instrucciones-box';
+        instruccionDiv.style.marginBottom = "15px";
+        instruccionDiv.style.textAlign = "center";
+        instruccionDiv.style.color = "#444";
+        instruccionDiv.style.fontWeight = "600";
+        grid.parentNode.insertBefore(instruccionDiv, document.getElementById('main-test-image'));
+    }
 
-    // Iniciar con el primer test
     cargarTest('test_a1');
 });
