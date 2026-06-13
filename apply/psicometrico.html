@@ -6,27 +6,37 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(to bottom left, #8EE4D5, #B588C0); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+        
+        /* Contenedor principal */
         .main-container { background: #fff; width: 100%; max-width: 1200px; height: 85vh; display: flex; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
         .left-column { flex: 1; padding: 2rem; display: flex; flex-direction: column; }
+        
+        /* Header y navegación */
         .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem; }
-        .stepper-container { display: flex; align-items: center; }
+        .stepper-container { display: flex; align-items: center; gap: 20px; }
         .step { display: flex; flex-direction: column; align-items: center; width: 80px; }
         .step-circle { width: 35px; height: 35px; border-radius: 50%; background: #e0e0e0; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #777; }
         .step.completed .step-circle { background: #8EE4D5; color: #fff; }
         .step.active .step-circle { background: #B588C0; color: #fff; }
         .step-label { font-size: 10px; margin-top: 5px; color: #555; text-transform: uppercase; font-weight: 700; }
-        .content-area { flex: 1; display: flex; flex-direction: column; align-items: center; }
-        .test-wrapper { position: relative; width: 450px; }
-        .test-image { width: 100%; display: block; }
-        #click-overlay { position: absolute; top: 68%; left: 4%; width: 92%; height: 28%; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr); gap: 10px; }
-        .clickable-area { cursor: pointer; border: 2px solid transparent; border-radius: 8px; transition: 0.1s; }
-        .clickable-area:hover { border: 2px solid #B588C0; background: rgba(181, 136, 192, 0.15); }
-        #feedback-box { margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; text-align: center; width: 300px; display: none; }
-        button { padding: 12px 24px; background: #B588C0; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 10px; }
+        
+        /* Área de visualización */
+        .content-area { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        .main-test-image { width: 450px; display: block; border: 1px solid #eee; }
+        
+        /* Grid de respuestas (Lo que reemplaza al overlay problemático) */
+        .options-grid { width: 450px; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr); gap: 10px; }
+        .option-item { border: 2px solid #ddd; border-radius: 10px; height: 80px; cursor: pointer; transition: 0.2s; background: #f9f9f9; }
+        .option-item:hover { border: 3px solid #B588C0; background: rgba(181, 136, 192, 0.1); }
+        
+        /* Feedback y botones */
+        #feedback-box { padding: 15px; border: 1px solid #ddd; border-radius: 8px; text-align: center; width: 300px; display: none; margin-top: 10px; }
+        button { padding: 12px 24px; background: #B588C0; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
         .right-column { width: 30%; background: url('https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg') center/cover no-repeat; }
     </style>
 </head>
 <body>
+
 <div class="main-container">
     <div class="left-column">
         <div class="header-container">
@@ -39,12 +49,13 @@
             </div>
             <button id="btn-login">Login Google</button>
         </div>
+
         <div class="content-area">
             <h3>Escenario 1: Razonamiento Abstracto</h3>
-            <div id="test-wrapper" class="test-wrapper">
-                <img id="test-image" src="https://www.bluelab.online/apply/test_a1.png" class="test-image">
-                <div id="click-overlay"></div>
-            </div>
+            <img src="https://www.bluelab.online/apply/test_a1.png" class="main-test-image">
+            
+            <div id="options-grid" class="options-grid"></div>
+
             <div id="feedback-box">
                 <p id="msg-text"></p>
                 <button onclick="motorTests.siguiente()">Siguiente Escenario</button>
@@ -53,6 +64,7 @@
     </div>
     <div class="right-column"></div>
 </div>
+
 <script src="motor-tests.js"></script>
 </body>
 </html>
