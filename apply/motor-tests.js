@@ -1,6 +1,5 @@
 // motor-tests.js
 
-// Definición fija de los datos, sin lógica compleja
 const testData = {
     "test_a1": {
         instrucciones: "Observa la secuencia lógica y selecciona la opción que completa el patrón correctamente.",
@@ -25,12 +24,15 @@ function cargarTest(idTest) {
     const grid = document.getElementById('options-grid');
     const instruccionDiv = document.getElementById('instrucciones-box');
 
+    // PROTECCIÓN EXTRA: Si no encuentra el elemento en el HTML, no hace nada y avisa
+    if (!instruccionDiv || !mainImg || !grid) {
+        console.error("Error: No se encuentran los elementos necesarios en el HTML (instrucciones-box, main-test-image o options-grid).");
+        return;
+    }
+
     const data = testData[idTest];
-    
-    // Si no encuentra el test, corta el flujo aquí
     if (!data) return;
 
-    // Lógica básica que ya te funcionaba
     instruccionDiv.innerText = data.instrucciones;
     mainImg.src = data.imgPrincipal + "?t=" + new Date().getTime();
 
@@ -44,18 +46,19 @@ function cargarTest(idTest) {
         div.appendChild(img);
         
         div.onclick = () => {
-            // Esto es lo que hacía avanzar el test
             testActual++;
             const siguiente = 'test_a' + testActual;
-            
             if (testData[siguiente]) {
                 cargarTest(siguiente);
             } else {
-                alert("Fin de los tests visuales");
+                instruccionDiv.innerText = "Fin de los tests visuales.";
             }
         };
         grid.appendChild(div);
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => cargarTest('test_a1'));
+document.addEventListener('DOMContentLoaded', () => {
+    // Le damos un pequeño retraso por si el DOM tarda en cargar
+    setTimeout(() => cargarTest('test_a1'), 100);
+});
