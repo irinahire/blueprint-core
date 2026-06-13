@@ -1,22 +1,15 @@
-// motor-tests.js - Versión Final con Barra de Progreso Mejorada
+// motor-tests.js - Versión actualizada con tests A1 al A8
 
 const testData = {
-    "test_a1": {
-        tipo: "visual",
-        instrucciones: "Observa la secuencia lógica y selecciona la opción que completa el patrón correctamente.",
-        imgPrincipal: "https://www.bluelab.online/apply/img/test_a1.png",
-        baseUrl: "https://www.bluelab.online/apply/img/",
-        prefijo: "test_a1_r",
-        opciones: 8
-    },
-    "test_a2": {
-        tipo: "visual",
-        instrucciones: "Analiza el siguiente patrón y selecciona la pieza faltante.",
-        imgPrincipal: "https://www.bluelab.online/apply/img/test_a2.png",
-        baseUrl: "https://www.bluelab.online/apply/img/",
-        prefijo: "test_a2_r",
-        opciones: 8
-    },
+    "test_a1": { tipo: "visual", instrucciones: "Observa la secuencia lógica y selecciona la opción que completa el patrón correctamente.", imgPrincipal: "https://www.bluelab.online/apply/img/test_a1.png", baseUrl: "https://www.bluelab.online/apply/img/", prefijo: "test_a1_r", opciones: 8 },
+    "test_a2": { tipo: "visual", instrucciones: "Analiza el siguiente patrón y selecciona la pieza faltante.", imgPrincipal: "https://www.bluelab.online/apply/img/test_a2.png", baseUrl: "https://www.bluelab.online/apply/img/", prefijo: "test_a2_r", opciones: 8 },
+    "test_a3": { tipo: "visual", instrucciones: "Analiza el siguiente patrón y selecciona la pieza faltante.", imgPrincipal: "https://www.bluelab.online/apply/img/test_a3.png", baseUrl: "https://www.bluelab.online/apply/img/", prefijo: "test_a3_r", opciones: 8 },
+    "test_a4": { tipo: "visual", instrucciones: "Analiza el siguiente patrón y selecciona la pieza faltante.", imgPrincipal: "https://www.bluelab.online/apply/img/test_a4.png", baseUrl: "https://www.bluelab.online/apply/img/", prefijo: "test_a4_r", opciones: 8 },
+    "test_a5": { tipo: "visual", instrucciones: "Analiza el siguiente patrón y selecciona la pieza faltante.", imgPrincipal: "https://www.bluelab.online/apply/img/test_a5.png", baseUrl: "https://www.bluelab.online/apply/img/", prefijo: "test_a5_r", opciones: 8 },
+    "test_a6": { tipo: "visual", instrucciones: "Analiza el siguiente patrón y selecciona la pieza faltante.", imgPrincipal: "https://www.bluelab.online/apply/img/test_a6.png", baseUrl: "https://www.bluelab.online/apply/img/", prefijo: "test_a6_r", opciones: 8 },
+    "test_a7": { tipo: "visual", instrucciones: "Analiza el siguiente patrón y selecciona la pieza faltante.", imgPrincipal: "https://www.bluelab.online/apply/img/test_a7.png", baseUrl: "https://www.bluelab.online/apply/img/", prefijo: "test_a7_r", opciones: 8 },
+    "test_a8": { tipo: "visual", instrucciones: "Analiza el siguiente patrón y selecciona la pieza faltante.", imgPrincipal: "https://www.bluelab.online/apply/img/test_a8.png", baseUrl: "https://www.bluelab.online/apply/img/", prefijo: "test_a8_r", opciones: 8 },
+    
     "intro_bigfive": {
         tipo: "texto",
         instrucciones: "Evaluación de Perfil y Estilo de Trabajo",
@@ -30,30 +23,26 @@ const testData = {
     "intro_situacional": { tipo: "texto", instrucciones: "Etapa Final: Evaluación Situacional", cuerpo: "Has llegado a la etapa final. Analizaremos desafíos concretos en entornos profesionales." }
 };
 
-const secuencia = ["test_a1", "test_a2", "intro_bigfive", "bloque_1", "bloque_2", "bloque_3", "bloque_4", "bloque_5", "intro_situacional"];
+// Hemos añadido los nuevos tests a la secuencia
+const secuencia = ["test_a1", "test_a2", "test_a3", "test_a4", "test_a5", "test_a6", "test_a7", "test_a8", "intro_bigfive", "bloque_1", "bloque_2", "bloque_3", "bloque_4", "bloque_5", "intro_situacional"];
+
 let indiceSecuencia = 0;
 let respuestas = {};
 
 function actualizarBarraProgreso(idTest) {
-    // Buscamos un contenedor específico para la barra. Si no existe, lo creamos.
     let contenedor = document.getElementById('contenedor-progreso');
     if (!contenedor) {
         contenedor = document.createElement('div');
         contenedor.id = 'contenedor-progreso';
         contenedor.style = "width: 100%; display: flex; gap: 8px; margin-bottom: 25px; padding: 0 10px;";
-        // Insertamos la barra al principio del área de preguntas
         document.getElementById('options-grid').prepend(contenedor);
     }
-    
     const match = idTest.match(/bloque_(\d)/);
     const numBloque = match ? parseInt(match[1]) : 0;
-    
     contenedor.innerHTML = '';
     for (let i = 1; i <= 5; i++) {
         const item = document.createElement('div');
-        item.style = `flex: 1; height: 10px; border-radius: 5px; background-color: ${
-            i < numBloque ? '#8EE4D5' : (i === numBloque ? '#B588C0' : '#e0e0e0')
-        };`;
+        item.style = `flex: 1; height: 10px; border-radius: 5px; background-color: ${i < numBloque ? '#8EE4D5' : (i === numBloque ? '#B588C0' : '#e0e0e0')};`;
         contenedor.appendChild(item);
     }
 }
@@ -63,14 +52,9 @@ function cargarTest(idTest) {
     const grid = document.getElementById('options-grid');
     const mainImg = document.getElementById('main-test-image');
     const scrollContainer = document.querySelector('.scroll-area');
-    
     grid.style.display = 'block';
     grid.innerHTML = '';
-    
-    // Si estamos en bloques de personalidad, mostramos la barra
-    if (idTest.startsWith('bloque_')) {
-        actualizarBarraProgreso(idTest);
-    }
+    if (idTest.startsWith('bloque_')) actualizarBarraProgreso(idTest);
     
     if (data.tipo === "visual") {
         mainImg.style.display = "block";
@@ -86,12 +70,7 @@ function cargarTest(idTest) {
         }
     } else if (data.tipo === "texto") {
         mainImg.style.display = "none";
-        grid.innerHTML = `
-            <div style="text-align:center; padding:40px;">
-                <h2 style="margin-bottom:20px;">${data.instrucciones}</h2>
-                <p style="margin:20px 0; font-size: 1.1rem;">${data.cuerpo}</p>
-                <button onclick="avanzar()" style="padding:10px 30px; cursor:pointer; background:#B588C0; color:white; border:none; border-radius:4px;">INICIAR</button>
-            </div>`;
+        grid.innerHTML = `<div style="text-align:center; padding:40px;"><h2 style="margin-bottom:20px;">${data.instrucciones}</h2><p style="margin:20px 0; font-size: 1.1rem;">${data.cuerpo}</p><button onclick="avanzar()" style="padding:10px 30px; cursor:pointer; background:#B588C0; color:white; border:none; border-radius:4px;">INICIAR</button></div>`;
     } else if (data.tipo === "big_five") {
         mainImg.style.display = "none";
         grid.innerHTML += `<h2 style="margin-bottom:25px; color:#B588C0;">${data.titulo}</h2>`;
@@ -102,17 +81,11 @@ function cargarTest(idTest) {
             pDiv.style.paddingBottom = "15px";
             pDiv.innerHTML = `<p style="margin-bottom:10px; font-weight:600;">${idx + 1}. ${pregunta}</p>`;
             const optDiv = document.createElement('div');
-            for(let i=1; i<=5; i++) {
-                optDiv.innerHTML += `<label style="margin-right:20px; cursor:pointer;"><input type="radio" name="p${idx}" value="${i}"> ${i}</label>`;
-            }
+            for(let i=1; i<=5; i++) { optDiv.innerHTML += `<label style="margin-right:20px; cursor:pointer;"><input type="radio" name="p${idx}" value="${i}"> ${i}</label>`; }
             pDiv.appendChild(optDiv);
             grid.appendChild(pDiv);
         });
-        grid.innerHTML += `
-            <div style="margin-top:20px;">
-                <button id="btn-avanzar" style="padding:10px 25px; cursor:pointer; background:#B588C0; color:white; border:none; border-radius:4px;">${idTest === 'bloque_5' ? 'FINALIZAR' : 'AVANZAR'}</button>
-                <p id="err" style="color:red; display:none; margin-top:10px;">Por favor, completa todas las preguntas del bloque.</p>
-            </div>`;
+        grid.innerHTML += `<div style="margin-top:20px;"><button id="btn-avanzar" style="padding:10px 25px; cursor:pointer; background:#B588C0; color:white; border:none; border-radius:4px;">${idTest === 'bloque_5' ? 'FINALIZAR' : 'AVANZAR'}</button><p id="err" style="color:red; display:none; margin-top:10px;">Por favor, completa todas las preguntas del bloque.</p></div>`;
         document.getElementById('btn-avanzar').onclick = () => {
             let todas = true;
             for(let i=0; i<5; i++) { if(!document.querySelector(`input[name="p${i}"]:checked`)) todas = false; }
