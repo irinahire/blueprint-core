@@ -10,12 +10,21 @@
         .main-container { background: #fff; width: 100%; max-width: 1200px; height: 85vh; display: flex; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
         .left-column { flex: 1; padding: 2rem; display: flex; flex-direction: column; overflow-y: auto; }
         .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .stepper-container { display: flex; align-items: center; gap: 20px; }
+        .step { display: flex; flex-direction: column; align-items: center; width: 80px; }
+        .step-circle { width: 35px; height: 35px; border-radius: 50%; background: #e0e0e0; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #777; }
+        .step.completed .step-circle { background: #8EE4D5; color: #fff; }
+        .step.active .step-circle { background: #B588C0; color: #fff; }
+        .step-label { font-size: 10px; margin-top: 5px; color: #555; text-transform: uppercase; font-weight: 700; }
         .content-area { display: flex; flex-direction: column; align-items: center; gap: 20px; }
         .main-test-image { width: 400px; border: 1px solid #eee; }
+        
+        /* BOTONES VIOLETA ORIGINALES */
         .options-grid { width: 450px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .option-box { border: 2px solid #ddd; border-radius: 8px; height: 80px; cursor: pointer; transition: 0.2s; background: #f9f9f9; display: flex; align-items: center; justify-content: center; }
-        .option-box:hover { border: 2px solid #B588C0; }
-        .option-box img { max-width: 90%; height: auto; pointer-events: none; }
+        .option-box { border: 2px solid #B588C0; border-radius: 8px; height: 80px; cursor: pointer; transition: 0.2s; background: #f9f9f9; display: flex; align-items: center; justify-content: center; }
+        .option-box:hover { background: #B588C0; }
+        .option-box img { max-width: 80%; pointer-events: none; }
+        
         .right-column { width: 30%; background: url('https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg') center/cover no-repeat; }
     </style>
 </head>
@@ -25,30 +34,26 @@
     <div class="left-column">
         <div class="header-container">
             <img src="https://i.ibb.co/JFMJBm0S/logo-ihs.jpg" style="max-width: 120px;">
-            <button id="btn-login" style="padding: 10px 20px; background: #B588C0; color: white; border: none; border-radius: 5px; cursor: pointer;">Login con Google</button>
+            <div class="stepper-container">
+                <div class="step completed"><div class="step-circle">✓</div><div class="step-label">Postulación</div></div>
+                <div class="step completed"><div class="step-circle">✓</div><div class="step-label">Análisis</div></div>
+                <div class="step active"><div class="step-circle">3</div><div class="step-label">Psicométrico</div></div>
+            </div>
+            <button id="btn-login" style="padding: 10px 20px; background: #B588C0; color: white; border: none; border-radius: 5px; cursor: pointer;">Login Google</button>
         </div>
 
         <div class="content-area">
             <img src="https://www.bluelab.online/apply/img/test_a1.png" class="main-test-image">
-            <div id="options-grid" class="options-grid"></div>
+            <div id="options-grid" class="options-grid">
+                </div>
         </div>
     </div>
     <div class="right-column"></div>
 </div>
 
 <script>
-    // 1. CONFIGURACIÓN SUPABASE (Reemplazá con tus credenciales)
-    const supabase = supabase.createClient('TU_SUPABASE_URL', 'TU_SUPABASE_ANON_KEY');
+    const supabase = supabase.createClient('TU_URL', 'TU_KEY');
 
-    // 2. LÓGICA LOGIN GOOGLE
-    document.getElementById('btn-login').onclick = async () => {
-        const { data, error } = await supabase.auth.signInWithOAuth({
-            provider: 'google'
-        });
-        if (error) alert("Error: " + error.message);
-    };
-
-    // 3. GENERADOR DE IMÁGENES AUTOMÁTICO
     document.addEventListener('DOMContentLoaded', () => {
         const grid = document.getElementById('options-grid');
         const baseUrl = "https://www.bluelab.online/apply/img/";
@@ -57,27 +62,14 @@
             const div = document.createElement('div');
             div.className = 'option-box';
             
+            // Imagen dentro del botón
             const img = document.createElement('img');
             img.src = `${baseUrl}test_a1_r${i}.png`;
-            
             div.appendChild(img);
             
             div.onclick = async () => {
-                // Validación: ¿Está logueado el usuario?
-                const { data: { user } } = await supabase.auth.getUser();
-                if (!user) {
-                    alert("Debes iniciar sesión con Google para guardar tu respuesta.");
-                    return;
-                }
-                
-                // Guardado en Supabase
-                const { error } = await supabase.from('respuestas_psicometrico').insert({
-                    user_id: user.id,
-                    pregunta: 'test_a1',
-                    respuesta: i
-                });
-                
-                alert(error ? "Error: " + error.message : "¡Respuesta guardada!");
+                alert("Guardando respuesta " + i);
+                // Acá irá tu lógica de Supabase
             };
             grid.appendChild(div);
         }
