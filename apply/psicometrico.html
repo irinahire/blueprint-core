@@ -8,7 +8,6 @@
         body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(to bottom left, #8EE4D5, #B588C0); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
         .main-container { background: #fff; width: 100%; max-width: 1200px; height: 85vh; display: flex; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
         .left-column { flex: 1; padding: 2rem; display: flex; flex-direction: column; }
-        
         .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem; }
         .stepper-container { display: flex; align-items: center; }
         .step { display: flex; flex-direction: column; align-items: center; width: 80px; }
@@ -16,16 +15,12 @@
         .step.completed .step-circle { background: #8EE4D5; color: #fff; }
         .step.active .step-circle { background: #B588C0; color: #fff; }
         .step-label { font-size: 10px; margin-top: 5px; color: #555; text-transform: uppercase; font-weight: 700; }
-        
         .content-area { flex: 1; display: flex; flex-direction: column; align-items: center; }
         .test-wrapper { position: relative; width: 450px; }
         .test-image { width: 100%; display: block; }
-        
-        /* Capa de clics: esta es la que ajustaremos */
-        #click-overlay { position: absolute; top: 73%; left: 4%; width: 92%; height: 25%; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr); gap: 15px; }
-        .clickable-area { cursor: pointer; border-radius: 10px; transition: 0.2s; }
-        .clickable-area:hover { border: 2px solid #B588C0; background: rgba(181, 136, 192, 0.2); }
-        
+        #click-overlay { position: absolute; top: 68%; left: 2%; width: 96%; height: 28%; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr); gap: 8px; }
+        .clickable-area { cursor: pointer; border-radius: 10px; transition: 0.1s; }
+        .clickable-area:hover { border: 3px solid #B588C0; background: rgba(181, 136, 192, 0.15); }
         #feedback-box { margin-top: 50px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; text-align: center; width: 300px; display: none; }
         button { padding: 12px 24px; background: #B588C0; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 10px; }
         .right-column { width: 30%; background: url('https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg') center/cover no-repeat; }
