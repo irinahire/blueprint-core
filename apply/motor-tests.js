@@ -1,4 +1,4 @@
-// motor-tests.js - Versión Final con Corrección de Scroll y Flujo
+// motor-tests.js - Versión Final Completa y Unificada
 
 const testData = {
     "test_a1": {
@@ -38,15 +38,39 @@ const secuencia = ["test_a1", "test_a2", "intro_bigfive", "bloque_1", "bloque_2"
 let indiceSecuencia = 0;
 let respuestas = {};
 
+function actualizarBarraProgreso(idTest) {
+    let barraContainer = document.getElementById('barra-progreso');
+    if (!barraContainer) {
+        barraContainer = document.createElement('div');
+        barraContainer.id = 'barra-progreso';
+        barraContainer.style = "display: flex; gap: 5px; margin: 10px 0; width: 100%; height: 5px;";
+        document.querySelector('.header-wrapper').appendChild(barraContainer);
+    }
+    const match = idTest.match(/bloque_(\d)/);
+    const numBloque = match ? parseInt(match[1]) : 0;
+    barraContainer.innerHTML = '';
+    for (let i = 1; i <= 5; i++) {
+        const bar = document.createElement('div');
+        bar.style = "flex: 1; height: 100%; border-radius: 2px;";
+        if (i < numBloque) bar.style.backgroundColor = "#8EE4D5";
+        else if (i === numBloque) bar.style.backgroundColor = "#B588C0";
+        else bar.style.backgroundColor = "#e0e0e0";
+        barraContainer.appendChild(bar);
+    }
+}
+
 function cargarTest(idTest) {
     const data = testData[idTest];
     const grid = document.getElementById('options-grid');
     const mainImg = document.getElementById('main-test-image');
     const scrollContainer = document.querySelector('.scroll-area');
-    
+
+    if (idTest.includes('bloque_')) actualizarBarraProgreso(idTest);
+    else { const b = document.getElementById('barra-progreso'); if(b) b.remove(); }
+
     grid.style.display = 'block';
     grid.innerHTML = '';
-    
+
     if (data.tipo === "visual") {
         mainImg.style.display = "block";
         mainImg.src = data.imgPrincipal;
@@ -97,11 +121,7 @@ function cargarTest(idTest) {
             } else { document.getElementById('err').style.display = "block"; }
         };
     }
-    
-    // Ejecutar el scroll al contenedor correcto con un pequeño delay
-    setTimeout(() => {
-        if (scrollContainer) scrollContainer.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 50);
+    setTimeout(() => { if (scrollContainer) scrollContainer.scrollTo({ top: 0, behavior: 'smooth' }); }, 50);
 }
 
 function avanzar() {
