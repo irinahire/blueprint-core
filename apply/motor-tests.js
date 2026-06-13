@@ -1,5 +1,3 @@
-// motor-tests.js - Versión Completa y Funcional
-
 const testData = {
     "test_a1": {
         tipo: "visual",
@@ -87,8 +85,6 @@ function cargarTest(idTest) {
     const data = testData[idTest];
     const grid = document.getElementById('options-grid');
     const mainImg = document.getElementById('main-test-image');
-    
-    // Limpiar contenido
     grid.innerHTML = '';
     
     if (data.tipo === "visual") {
@@ -103,47 +99,42 @@ function cargarTest(idTest) {
         }
     } else if (data.tipo === "texto") {
         mainImg.style.display = "none";
-        grid.innerHTML = `<h2>${data.instrucciones}</h2><p>${data.cuerpo}</p><button onclick="avanzar()">INICIAR SEGUNDO TEST</button>`;
+        grid.innerHTML = `
+            <div style="text-align: center; padding: 40px;">
+                <h2 style="margin-bottom:20px;">${data.instrucciones}</h2>
+                <p style="margin-bottom:30px;">${data.cuerpo}</p>
+                <button onclick="avanzar()" style="padding: 10px 30px; cursor:pointer;">INICIAR SEGUNDO TEST</button>
+            </div>`;
     } else if (data.tipo === "big_five") {
         mainImg.style.display = "none";
-        grid.innerHTML = `<h3>${data.titulo}</h3>`;
-        
+        grid.innerHTML = `<h2 style="margin-bottom:30px;">${data.titulo}</h2>`;
         data.preguntas.forEach((pregunta, idx) => {
             const pDiv = document.createElement('div');
+            pDiv.style.marginBottom = "20px";
             pDiv.innerHTML = `<p>${idx + 1}. ${pregunta}</p>`;
-            // Radio buttons 1 al 5
             for(let i=1; i<=5; i++) {
-                pDiv.innerHTML += `<input type="radio" name="p${idx}" value="${i}"> ${i} `;
+                pDiv.innerHTML += `<label style="margin-right:15px;"><input type="radio" name="p${idx}" value="${i}"> ${i}</label>`;
             }
             grid.appendChild(pDiv);
         });
-        
-        const btn = document.createElement('button');
-        btn.innerText = "AVANZAR";
-        btn.onclick = () => {
-            // Validar que todas las preguntas (5) tengan respuesta
-            let todasRespondidas = true;
-            for(let i=0; i<5; i++) {
-                const seleccion = document.querySelector(`input[name="p${i}"]:checked`);
-                if(!seleccion) todasRespondidas = false;
-                else respuestas[`${idTest}_${i}`] = seleccion.value;
-            }
-            
-            if(todasRespondidas) avanzar();
-            else alert("Por favor, responde todas las preguntas del bloque.");
+        const footer = document.createElement('div');
+        footer.innerHTML = `<button id="btn-avanzar" style="padding:10px 20px;">AVANZAR</button><p id="error" style="color:red; display:none;">Por favor, completa las 5 preguntas.</p>`;
+        grid.appendChild(footer);
+        document.getElementById('btn-avanzar').onclick = () => {
+            let todas = true;
+            for(let i=0; i<5; i++) { if(!document.querySelector(`input[name="p${i}"]:checked`)) todas = false; }
+            if(todas) {
+                for(let i=0; i<5; i++) respuestas[`${idTest}_${i}`] = document.querySelector(`input[name="p${i}"]:checked`).value;
+                avanzar();
+            } else { document.getElementById('error').style.display = "block"; }
         };
-        grid.appendChild(btn);
     }
 }
 
 function avanzar() {
     indiceSecuencia++;
-    if (indiceSecuencia < secuencia.length) {
-        cargarTest(secuencia[indiceSecuencia]);
-    } else {
-        console.log("Respuestas finales:", respuestas);
-        alert("Evaluación completada. Gracias.");
-    }
+    if (indiceSecuencia < secuencia.length) cargarTest(secuencia[indiceSecuencia]);
+    else alert("Evaluación completa. Datos guardados en consola.");
 }
 
 document.addEventListener('DOMContentLoaded', () => cargarTest(secuencia[0]));
