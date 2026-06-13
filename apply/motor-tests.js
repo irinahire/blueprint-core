@@ -17,14 +17,15 @@ const testData = {
         prefijo: "test_a2_r",
         opciones: 8
     },
-    // Preguntas Big Five (declaradas una por una para que no falle el bucle)
-    "big_five_1": { type: "pregunta", instrucciones: "Big Five: Indica qué tan de acuerdo estás (1 al 5).", pregunta: "¿Te gusta probar cosas nuevas?", opciones: [1, 2, 3, 4, 5] },
-    "big_five_2": { type: "pregunta", instrucciones: "Big Five: Indica qué tan de acuerdo estás (1 al 5).", pregunta: "¿Tienes una imaginación activa?", opciones: [1, 2, 3, 4, 5] }
-    // ... podés seguir agregando "big_five_3", etc. aquí abajo siguiendo el mismo formato
+    "big_five_1": { 
+        type: "pregunta", 
+        instrucciones: "Big Five: Indica qué tan de acuerdo estás (1 al 5).", 
+        pregunta: "¿Te gusta probar cosas nuevas?", 
+        opciones: [1, 2, 3, 4, 5] 
+    }
 };
 
-// La lista de todos los pasos que debe seguir el usuario
-const secuenciaDeTests = ["test_a1", "test_a2", "big_five_1", "big_five_2"];
+const secuenciaDeTests = ["test_a1", "test_a2", "big_five_1"];
 let indiceActual = 0;
 
 function cargarTest(idTest) {
@@ -35,15 +36,11 @@ function cargarTest(idTest) {
 
     if (!data) return;
 
-    // Actualizar instrucciones (se mantienen igual para ambos tipos)
     instruccionDiv.innerText = data.instrucciones;
     grid.innerHTML = '';
 
     if (data.type === "visual") {
-        // --- LOGICA QUE YA FUNCIONABA BIEN ---
-        mainImg.style.display = "block";
         mainImg.src = data.imgPrincipal + "?t=" + new Date().getTime();
-
         for (let i = 1; i <= data.opciones; i++) {
             const div = document.createElement('div');
             div.className = 'option-box';
@@ -54,18 +51,14 @@ function cargarTest(idTest) {
             grid.appendChild(div);
         }
     } else {
-        // --- LOGICA PARA PREGUNTAS ---
-        mainImg.style.display = "none";
+        // En lugar de borrar la imagen, ponemos un espacio vacío o un texto
+        mainImg.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
         const p = document.createElement('p');
         p.innerText = data.pregunta;
-        p.style.marginBottom = "20px";
         grid.appendChild(p);
-
         data.opciones.forEach(val => {
             const btn = document.createElement('button');
             btn.innerText = val;
-            btn.style.margin = "10px";
-            btn.style.padding = "10px 20px";
             btn.onclick = () => avanzar();
             grid.appendChild(btn);
         });
