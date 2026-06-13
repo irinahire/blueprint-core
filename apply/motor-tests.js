@@ -1,4 +1,5 @@
 // motor-tests.js
+
 const testData = {
     "test_a1": {
         instrucciones: "Observa la secuencia lógica y selecciona la opción que completa el patrón correctamente.",
@@ -21,15 +22,22 @@ let testActual = 1;
 function cargarTest(idTest) {
     const mainImg = document.getElementById('main-test-image');
     const grid = document.getElementById('options-grid');
-    const instruccionDiv = document.getElementById('instrucciones-box');
+    
+    // Intentar buscar las instrucciones, si no existe, lo creamos solo en memoria para que no tire error
+    let instruccionDiv = document.getElementById('instrucciones-box');
+    if (!instruccionDiv) {
+        instruccionDiv = document.createElement('div');
+        instruccionDiv.id = 'instrucciones-box';
+        grid.parentNode.insertBefore(instruccionDiv, mainImg);
+    }
 
     const data = testData[idTest];
+    
+    // Si no hay más datos, detenemos el proceso
     if (!data) return;
 
+    // Actualizar el DOM de forma segura
     instruccionDiv.innerText = data.instrucciones;
-    
-    // Asignar imagen principal y verificar si carga
-    mainImg.onerror = () => console.error("Error cargando imagen principal: " + data.imgPrincipal);
     mainImg.src = data.imgPrincipal;
 
     grid.innerHTML = '';
@@ -38,14 +46,17 @@ function cargarTest(idTest) {
         div.className = 'option-box';
         const img = document.createElement('img');
         
-        const urlImagen = `${data.baseUrl}${data.prefijo}${i}.png`;
-        img.src = urlImagen;
-        img.onerror = () => console.error("Error cargando opción: " + urlImagen);
-        
+        // Cargamos la imagen
+        img.src = `${data.baseUrl}${data.prefijo}${i}.png`;
         div.appendChild(img);
+        
         div.onclick = () => {
+            document.querySelectorAll('.option-box').forEach(el => el.style.boxShadow = 'none');
+            div.style.boxShadow = '0 0 0 3px #B588C0';
+            
             testActual++;
-            setTimeout(() => cargarTest('test_a' + testActual), 300);
+            // Esperamos un poco antes de cargar el siguiente para que se vea el feedback
+            setTimeout(() => cargarTest('test_a' + testActual), 500);
         };
         grid.appendChild(div);
     }
