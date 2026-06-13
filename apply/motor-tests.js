@@ -22,18 +22,21 @@ let testActual = 1;
 function cargarTest(idTest) {
     const mainImg = document.getElementById('main-test-image');
     const grid = document.getElementById('options-grid');
-    const instruccionDiv = document.getElementById('instrucciones-box');
-
-    // PROTECCIÓN EXTRA: Si no encuentra el elemento en el HTML, no hace nada y avisa
-    if (!instruccionDiv || !mainImg || !grid) {
-        console.error("Error: No se encuentran los elementos necesarios en el HTML (instrucciones-box, main-test-image o options-grid).");
-        return;
+    let instruccionDiv = document.getElementById('instrucciones-box');
+    
+    // Crear contenedor si no existe (robusto)
+    if (!instruccionDiv) {
+        instruccionDiv = document.createElement('div');
+        instruccionDiv.id = 'instrucciones-box';
+        grid.parentNode.insertBefore(instruccionDiv, mainImg);
     }
 
     const data = testData[idTest];
     if (!data) return;
 
     instruccionDiv.innerText = data.instrucciones;
+    
+    // AQUÍ EL TRUCO: Agregamos ?t=Date.now() para romper la caché
     mainImg.src = data.imgPrincipal + "?t=" + new Date().getTime();
 
     grid.innerHTML = '';
@@ -42,23 +45,19 @@ function cargarTest(idTest) {
         div.className = 'option-box';
         const img = document.createElement('img');
         
+        // AQUÍ EL MISMO TRUCO para las opciones
         img.src = `${data.baseUrl}${data.prefijo}${i}.png?t=` + new Date().getTime();
-        div.appendChild(img);
         
+        div.appendChild(img);
         div.onclick = () => {
+            document.querySelectorAll('.option-box').forEach(el => el.style.boxShadow = 'none');
+            div.style.boxShadow = '0 0 0 3px #B588C0';
+            
             testActual++;
-            const siguiente = 'test_a' + testActual;
-            if (testData[siguiente]) {
-                cargarTest(siguiente);
-            } else {
-                instruccionDiv.innerText = "Fin de los tests visuales.";
-            }
+            setTimeout(() => cargarTest('test_a' + testActual), 500);
         };
         grid.appendChild(div);
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Le damos un pequeño retraso por si el DOM tarda en cargar
-    setTimeout(() => cargarTest('test_a1'), 100);
-});
+document.addEventListener('DOMContentLoaded', () => cargarTest('test_a1'));
