@@ -14,17 +14,25 @@ const testData = {
         baseUrl: "https://www.bluelab.online/apply/img/",
         prefijo: "test_a2_r",
         opciones: 8
+    },
+    // Agregamos la primera pregunta del Big Five
+    "big_five_1": {
+        instrucciones: "Big Five: Indica del 1 al 5 qué tan de acuerdo estás.",
+        pregunta: "¿Te gusta probar cosas nuevas y diferentes?",
+        opciones: [1, 2, 3, 4, 5]
     }
 };
 
 let testActual = 1;
+// Lista de flujo: primero los visuales, luego los de preguntas
+const secuencia = ["test_a1", "test_a2", "big_five_1"];
+let indiceSecuencia = 0;
 
 function cargarTest(idTest) {
     const mainImg = document.getElementById('main-test-image');
     const grid = document.getElementById('options-grid');
     let instruccionDiv = document.getElementById('instrucciones-box');
     
-    // Crear contenedor si no existe (robusto)
     if (!instruccionDiv) {
         instruccionDiv = document.createElement('div');
         instruccionDiv.id = 'instrucciones-box';
@@ -36,28 +44,41 @@ function cargarTest(idTest) {
 
     instruccionDiv.innerText = data.instrucciones;
     
-    // AQUÍ EL TRUCO: Agregamos ?t=Date.now() para romper la caché
-    mainImg.src = data.imgPrincipal + "?t=" + new Date().getTime();
-
-    grid.innerHTML = '';
-    for (let i = 1; i <= data.opciones; i++) {
-        const div = document.createElement('div');
-        div.className = 'option-box';
-        const img = document.createElement('img');
-        
-        // AQUÍ EL MISMO TRUCO para las opciones
-        img.src = `${data.baseUrl}${data.prefijo}${i}.png?t=` + new Date().getTime();
-        
-        div.appendChild(img);
-        div.onclick = () => {
-            document.querySelectorAll('.option-box').forEach(el => el.style.boxShadow = 'none');
-            div.style.boxShadow = '0 0 0 3px #B588C0';
-            
-            testActual++;
-            setTimeout(() => cargarTest('test_a' + testActual), 500);
-        };
-        grid.appendChild(div);
+    // Si es un test visual, cargamos imágenes
+    if (data.imgPrincipal) {
+        mainImg.style.display = "block";
+        mainImg.src = data.imgPrincipal + "?t=" + new Date().getTime();
+        grid.innerHTML = '';
+        for (let i = 1; i <= data.opciones; i++) {
+            const div = document.createElement('div');
+            div.className = 'option-box';
+            const img = document.createElement('img');
+            img.src = `${data.baseUrl}${data.prefijo}${i}.png?t=` + new Date().getTime();
+            div.appendChild(img);
+            div.onclick = () => avanzar();
+            grid.appendChild(div);
+        }
+    } else {
+        // Si es una pregunta (Big Five), ocultamos la imagen principal y ponemos botones
+        mainImg.style.display = "none";
+        grid.innerHTML = `<p style="margin-bottom:20px; font-weight:bold;">${data.pregunta}</p>`;
+        data.opciones.forEach(op => {
+            const btn = document.createElement('button');
+            btn.innerText = op;
+            btn.style.margin = "5px";
+            btn.onclick = () => avanzar();
+            grid.appendChild(btn);
+        });
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => cargarTest('test_a1'));
+function avanzar() {
+    indiceSecuencia++;
+    if (indiceSecuencia < secuencia.length) {
+        cargarTest(secuencia[indiceSecuencia]);
+    } else {
+        alert("Evaluación completada.");
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => cargarTest(secuencia[0]));
