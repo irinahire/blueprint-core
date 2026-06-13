@@ -1,7 +1,8 @@
-// motor-tests.js
+// motor-tests.js - Versión Completa y Funcional
 
 const testData = {
     "test_a1": {
+        tipo: "visual",
         instrucciones: "Observa la secuencia lógica y selecciona la opción que completa el patrón correctamente.",
         imgPrincipal: "https://www.bluelab.online/apply/img/test_a1.png",
         baseUrl: "https://www.bluelab.online/apply/img/",
@@ -9,66 +10,129 @@ const testData = {
         opciones: 8
     },
     "test_a2": {
+        tipo: "visual",
         instrucciones: "Analiza el siguiente patrón y selecciona la pieza faltante.",
         imgPrincipal: "https://www.bluelab.online/apply/img/test_a2.png",
         baseUrl: "https://www.bluelab.online/apply/img/",
         prefijo: "test_a2_r",
         opciones: 8
     },
-    // Agregamos la primera pregunta del Big Five
-    "big_five_1": {
-        instrucciones: "Big Five: Indica del 1 al 5 qué tan de acuerdo estás.",
-        pregunta: "¿Te gusta probar cosas nuevas y diferentes?",
-        opciones: [1, 2, 3, 4, 5]
+    "intro_bigfive": {
+        tipo: "texto",
+        instrucciones: "Evaluación de Perfil y Estilo de Trabajo",
+        cuerpo: "Has completado la primera etapa de razonamiento lógico. Ahora, queremos conocer más sobre tu enfoque profesional y cómo te desenvuelves en distintos entornos. No hay respuestas correctas. Tu respuesta más honesta es siempre la más útil."
+    },
+    "bloque_1": {
+        tipo: "big_five",
+        titulo: "Bloque I: Estabilidad Emocional",
+        preguntas: [
+            "Ante un cambio de prioridades repentino, prefiero terminar lo que empecé antes de ajustar el plan.",
+            "Cuando surge un problema inesperado, mi primera reacción es analizar el origen antes de actuar.",
+            "Suelo desconectar completamente del trabajo al terminar la jornada, sin pensar en temas pendientes.",
+            "En momentos de alta presión, me resulta más fácil tomar decisiones solo que consultar a todo el equipo.",
+            "Prefiero entornos de trabajo predecibles donde sé exactamente qué esperar de cada día."
+        ]
+    },
+    "bloque_2": {
+        tipo: "big_five",
+        titulo: "Bloque II: Extraversión",
+        preguntas: [
+            "Prefiero resolver problemas complejos trabajando solo que debatiéndolo en reuniones.",
+            "En una presentación, me siento más cómodo exponiendo datos duros que tratando de persuadir con historias.",
+            "Disfruto más del trabajo cuando puedo colaborar activamente con otros que cuando tengo metas independientes.",
+            "Suelo tomar la iniciativa para romper el hielo en grupos de trabajo nuevos.",
+            "Siento que mi energía aumenta después de una jornada intensa de reuniones y trabajo en equipo."
+        ]
+    },
+    "bloque_3": {
+        tipo: "big_five",
+        titulo: "Bloque III: Apertura",
+        preguntas: [
+            "Prefiero utilizar herramientas o procesos probados antes que experimentar con software nuevo.",
+            "Me resulta más estimulante abordar proyectos que requieren aprender algo nuevo que proyectos donde ya soy experto.",
+            "Suelo cuestionar el 'por qué' de las reglas establecidas en el trabajo si creo que dificultan la eficiencia.",
+            "Me siento cómodo trabajando en proyectos donde no hay un manual de instrucciones claro.",
+            "Busco integrar nuevas tendencias o tecnologías en mi flujo de trabajo habitual."
+        ]
+    },
+    "bloque_4": {
+        tipo: "big_five",
+        titulo: "Bloque IV: Amabilidad",
+        preguntas: [
+            "Para lograr un objetivo importante, creo que es aceptable ser directo y firme, incluso si alguien se siente un poco molesto.",
+            "Prefiero ceder en una idea propia si veo que el equipo está muy convencido de otra, para mantener el consenso.",
+            "Suelo notar si un colega está desmotivado antes de que él mismo lo exprese.",
+            "Valoro más la honestidad absoluta en el feedback que mantener la cortesía.",
+            "Considero que el éxito personal es irrelevante si no contribuye al éxito del equipo completo."
+        ]
+    },
+    "bloque_5": {
+        tipo: "big_five",
+        titulo: "Bloque V: Responsabilidad",
+        preguntas: [
+            "Prefiero tener un plan de trabajo detallado semana a semana que tener libertad total para decidir mis tareas diarias.",
+            "Si encuentro un atajo que ahorra tiempo pero ignora un paso del proceso oficial, suelo tomarlo.",
+            "Suelo revisar mi trabajo varias veces antes de entregarlo, aunque eso signifique ir al límite del tiempo.",
+            "Me resulta difícil dejar un proyecto a medias, incluso si sé que es poco rentable a largo plazo.",
+            "Me siento más cómodo entregando resultados rápidos aunque tengan detalles pendientes, que esperando a la perfección."
+        ]
     }
 };
 
-let testActual = 1;
-// Lista de flujo: primero los visuales, luego los de preguntas
-const secuencia = ["test_a1", "test_a2", "big_five_1"];
+const secuencia = ["test_a1", "test_a2", "intro_bigfive", "bloque_1", "bloque_2", "bloque_3", "bloque_4", "bloque_5"];
 let indiceSecuencia = 0;
+let respuestas = {};
 
 function cargarTest(idTest) {
-    const mainImg = document.getElementById('main-test-image');
-    const grid = document.getElementById('options-grid');
-    let instruccionDiv = document.getElementById('instrucciones-box');
-    
-    if (!instruccionDiv) {
-        instruccionDiv = document.createElement('div');
-        instruccionDiv.id = 'instrucciones-box';
-        grid.parentNode.insertBefore(instruccionDiv, mainImg);
-    }
-
     const data = testData[idTest];
-    if (!data) return;
-
-    instruccionDiv.innerText = data.instrucciones;
+    const grid = document.getElementById('options-grid');
+    const mainImg = document.getElementById('main-test-image');
     
-    // Si es un test visual, cargamos imágenes
-    if (data.imgPrincipal) {
+    // Limpiar contenido
+    grid.innerHTML = '';
+    
+    if (data.tipo === "visual") {
         mainImg.style.display = "block";
-        mainImg.src = data.imgPrincipal + "?t=" + new Date().getTime();
-        grid.innerHTML = '';
+        mainImg.src = data.imgPrincipal;
         for (let i = 1; i <= data.opciones; i++) {
             const div = document.createElement('div');
             div.className = 'option-box';
-            const img = document.createElement('img');
-            img.src = `${data.baseUrl}${data.prefijo}${i}.png?t=` + new Date().getTime();
-            div.appendChild(img);
+            div.innerHTML = `<img src="${data.baseUrl}${data.prefijo}${i}.png">`;
             div.onclick = () => avanzar();
             grid.appendChild(div);
         }
-    } else {
-        // Si es una pregunta (Big Five), ocultamos la imagen principal y ponemos botones
+    } else if (data.tipo === "texto") {
         mainImg.style.display = "none";
-        grid.innerHTML = `<p style="margin-bottom:20px; font-weight:bold;">${data.pregunta}</p>`;
-        data.opciones.forEach(op => {
-            const btn = document.createElement('button');
-            btn.innerText = op;
-            btn.style.margin = "5px";
-            btn.onclick = () => avanzar();
-            grid.appendChild(btn);
+        grid.innerHTML = `<h2>${data.instrucciones}</h2><p>${data.cuerpo}</p><button onclick="avanzar()">INICIAR SEGUNDO TEST</button>`;
+    } else if (data.tipo === "big_five") {
+        mainImg.style.display = "none";
+        grid.innerHTML = `<h3>${data.titulo}</h3>`;
+        
+        data.preguntas.forEach((pregunta, idx) => {
+            const pDiv = document.createElement('div');
+            pDiv.innerHTML = `<p>${idx + 1}. ${pregunta}</p>`;
+            // Radio buttons 1 al 5
+            for(let i=1; i<=5; i++) {
+                pDiv.innerHTML += `<input type="radio" name="p${idx}" value="${i}"> ${i} `;
+            }
+            grid.appendChild(pDiv);
         });
+        
+        const btn = document.createElement('button');
+        btn.innerText = "AVANZAR";
+        btn.onclick = () => {
+            // Validar que todas las preguntas (5) tengan respuesta
+            let todasRespondidas = true;
+            for(let i=0; i<5; i++) {
+                const seleccion = document.querySelector(`input[name="p${i}"]:checked`);
+                if(!seleccion) todasRespondidas = false;
+                else respuestas[`${idTest}_${i}`] = seleccion.value;
+            }
+            
+            if(todasRespondidas) avanzar();
+            else alert("Por favor, responde todas las preguntas del bloque.");
+        };
+        grid.appendChild(btn);
     }
 }
 
@@ -77,7 +141,8 @@ function avanzar() {
     if (indiceSecuencia < secuencia.length) {
         cargarTest(secuencia[indiceSecuencia]);
     } else {
-        alert("Evaluación completada.");
+        console.log("Respuestas finales:", respuestas);
+        alert("Evaluación completada. Gracias.");
     }
 }
 
