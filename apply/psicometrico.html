@@ -37,7 +37,11 @@
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; }
         .modal-content { background: #111; padding: 40px; border-radius: 20px; width: 350px; text-align: center; border: 1px solid #96e8da; position: relative; color: white; }
         .close-btn { position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 1.5rem; color: #fff; }
-        .google-btn { background: white; color: #333; padding: 12px; width: 100%; border-radius: 8px; border: none; cursor: pointer; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 20px; }
+        .google-btn { background: linear-gradient(135deg, #4e52a7, #85c1e9); color: white; padding: 15px; width: 100%; border-radius: 12px; border: none; cursor: pointer; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 20px; box-shadow: 0 4px 15px rgba(133, 193, 233, 0.3); }
+        
+        /* Botón Acceder */
+        .btn-acceder { padding: 12px 25px; background: #B588C0; color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+        .btn-acceder:hover { background: #9b59b6; }
     </style>
 </head>
 <body>
@@ -47,10 +51,7 @@
         <span class="close-btn" onclick="document.getElementById('loginModal').style.display='none'">×</span>
         <h2 style="color: #96e8da; font-family: sans-serif;">Acceso al Proceso</h2>
         <p style="font-size: 0.95rem; color: #ccc; margin-top: 15px;">Para avanzar en tu postulación y conectar con Irina, por favor iniciá sesión con tu cuenta de Google.</p>
-        <button class="google-btn" onclick="ingresarConGoogle()">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" style="width: 20px;">
-            CONTINUAR CON GOOGLE
-        </button>
+        <button class="google-btn" onclick="ingresarConGoogle()">CONTINUAR CON GOOGLE</button>
     </div>
 </div>
 
@@ -64,7 +65,7 @@
                 <div class="step active"><div class="step-circle">3</div><div class="step-label">Psicométrico</div></div>
                 <div class="step"><div class="step-circle">4</div><div class="step-label" style="color:#ccc">Entrevista</div></div>
             </div>
-            <button id="btn-login" onclick="document.getElementById('loginModal').style.display='flex'" style="padding: 10px 20px; background: #B588C0; color: white; border: none; border-radius: 5px; cursor: pointer;">Login Google</button>
+            <button id="btn-login" class="btn-acceder" onclick="document.getElementById('loginModal').style.display='flex'">ACCEDER</button>
         </div>
 
         <div class="scroll-area">
@@ -83,18 +84,27 @@
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0'
     );
 
-    // Se abre solo al cargar si no hay sesión
-    window.onload = () => {
-        const session = sbClient.auth.getSession();
-        if (!session.data.session) {
-            setTimeout(() => { document.getElementById('loginModal').style.display = 'flex'; }, 1000);
+    // Lógica de Redirección y Estado
+    window.onload = async () => {
+        const { data: { session } } = await sbClient.auth.getSession();
+        
+        // Limpiar URL si volvimos de Google
+        if (window.location.hash && window.location.hash.includes('access_token')) {
+            window.history.replaceState(null, null, window.location.pathname);
+        }
+
+        if (!session) {
+            document.getElementById('loginModal').style.display = 'flex';
+        } else {
+            document.getElementById('btn-login').innerText = "CONECTADO";
+            document.getElementById('btn-login').style.background = "#2ecc71";
         }
     };
 
     window.ingresarConGoogle = async () => {
         await sbClient.auth.signInWithOAuth({ 
             provider: 'google',
-            options: { redirectTo: window.location.href }
+            options: { redirectTo: window.location.href } 
         });
     };
 
@@ -102,7 +112,6 @@
         if (session) {
             localStorage.setItem('applicantId', session.user.id);
             document.getElementById('loginModal').style.display = 'none';
-            document.getElementById('btn-login').innerText = "Conectado";
         }
     });
 </script>
