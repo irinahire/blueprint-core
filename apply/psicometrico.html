@@ -2,17 +2,18 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evaluación Psicométrica - Irina Hire Selection</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* MANTENEMOS TUS ESTILOS ORIGINALES DE IRINA */
+        /* CSS COMPLETO SIN RECORTES */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(to bottom left, #8EE4D5, #B588C0); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
         .main-container { background: #fff; width: 100%; max-width: 1200px; height: 85vh; display: flex; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
         .left-column { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         .header-wrapper { position: sticky; top: 0; background: white; padding: 2rem; z-index: 100; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
         
-        /* STEPS Y ESTILOS */
+        /* STEPPER COMPLETO */
         .stepper-container { display: flex; align-items: center; gap: 20px; }
         .step { display: flex; flex-direction: column; align-items: center; width: 80px; }
         .step-circle { width: 35px; height: 35px; border-radius: 50%; background: #e0e0e0; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #777; }
@@ -20,13 +21,20 @@
         .step.active .step-circle { background: #B588C0; color: #fff; }
         .step-label { font-size: 10px; margin-top: 5px; color: #555; text-transform: uppercase; font-weight: 700; }
 
+        /* CONTENIDO */
         .scroll-area { flex: 1; overflow-y: auto; padding: 2rem; display: flex; flex-direction: column; align-items: center; }
         .right-column { width: 30%; background: url('https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg') center/cover no-repeat; }
 
-        /* BOTÓN ACCEDER Y PERFIL (ESTILO SOLICITADO) */
-        .btn-acceder { padding: 12px 25px; background: #B588C0; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 800; text-transform: uppercase; }
-        .user-profile { display: flex; align-items: center; gap: 10px; padding: 5px 15px; border-radius: 50px; background: #f0f0f0; border: 1px solid #ddd; }
-        .user-avatar { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; }
+        /* ESTILO BOTÓN 3D (DE LA PAGINA PRINCIPAL) */
+        .auth-zone { display: flex; gap: 15px; }
+        .auth-btn { background: linear-gradient(135deg, #4e52a7, #85c1e9); color: white; border: none; padding: 15px 30px; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 15px rgba(133, 193, 233, 0.3); transition: transform 0.2s, box-shadow 0.2s; font-size: 0.9rem; letter-spacing: 1px; }
+        .auth-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(133, 193, 233, 0.5); }
+
+        /* ESTILO PERFIL Y SALIR */
+        .user-profile { display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.05); padding: 5px 20px 5px 10px; border-radius: 50px; border: 1px solid #ddd; }
+        .user-avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #8EE4D5; object-fit: cover; }
+        .user-name { font-size: 0.9rem; font-weight: 600; }
+        .btn-salir { padding: 8px 15px; font-size: 0.7rem; background: #333; color: white; border: none; border-radius: 10px; cursor: pointer; }
 
         /* MODAL */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; }
@@ -38,27 +46,33 @@
 
 <div id="loginModal" class="modal">
     <div class="modal-content">
-        <h2 style="color: #96e8da;">Acceso al Proceso</h2>
+        <h2>Acceso al Proceso</h2>
         <button class="google-btn" onclick="ingresarConGoogle()">
             <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="20">
-            CONTINUAR CON GOOGLE
+            INGRESAR CON GOOGLE
         </button>
     </div>
 </div>
 
 <div class="main-container">
     <div class="left-column">
-        <div class="header-wrapper">
+        <header class="header-wrapper">
             <img src="https://i.ibb.co/JFMJBm0S/logo-ihs.jpg" style="max-width: 120px;">
             <div class="stepper-container">
                 <div class="step completed"><div class="step-circle">✓</div><div class="step-label">Postulación</div></div>
                 <div class="step completed"><div class="step-circle">✓</div><div class="step-label">Análisis</div></div>
                 <div class="step active"><div class="step-circle">3</div><div class="step-label">Psicométrico</div></div>
+                <div class="step"><div class="step-circle">4</div><div class="step-label">Entrevista</div></div>
             </div>
-            <div id="auth-area">
-                <button id="btn-login" class="btn-acceder" onclick="document.getElementById('loginModal').style.display='flex'">ACCEDER</button>
+            <div class="auth-zone">
+                <button class="auth-btn" id="loginBtn" onclick="document.getElementById('loginModal').style.display='flex'">ACCEDER</button>
+                <div id="userZone" style="display:none;" class="user-profile">
+                    <img id="userAvatar" class="user-avatar" src="">
+                    <span id="userName" class="user-name"></span>
+                    <button class="btn-salir" onclick="cerrarSesion()">SALIR</button>
+                </div>
             </div>
-        </div>
+        </header>
         <div class="scroll-area">
             <div id="options-grid"></div>
         </div>
@@ -67,48 +81,42 @@
 </div>
 
 <script>
-    // Configuración de Supabase
     const sbClient = supabase.createClient(
         'https://zuzvozgjsppkxvdlptmk.supabase.co', 
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0'
     );
 
-    window.ingresarConGoogle = async () => {
+    async function ingresarConGoogle() {
         await sbClient.auth.signInWithOAuth({ 
             provider: 'google', 
             options: { redirectTo: window.location.href } 
         });
-    };
-
-    window.cerrarSesion = async () => {
-        await sbClient.auth.signOut();
-        window.location.reload();
-    };
-
-    // Función para actualizar la UI sin romper el resto de la página
-    function actualizarUI(user) {
-        const area = document.getElementById('auth-area');
-        area.innerHTML = `
-            <div class="user-profile">
-                <img src="${user.user_metadata.avatar_url}" class="user-avatar">
-                <span>${user.user_metadata.full_name}</span>
-                <button onclick="cerrarSesion()" style="border:none; background:transparent; color:red; cursor:pointer; font-size:0.7rem;">SALIR</button>
-            </div>
-        `;
-        document.getElementById('loginModal').style.display = 'none';
     }
 
-    // Escuchar estado de auth
-    sbClient.auth.onAuthStateChange((event, session) => {
-        if (session) actualizarUI(session.user);
-    });
+    async function cerrarSesion() { 
+        await sbClient.auth.signOut(); 
+        location.reload(); 
+    }
+
+    function actualizarUI(session) {
+        if (session) {
+            document.getElementById('loginBtn').style.display = 'none';
+            document.getElementById('userZone').style.display = 'flex';
+            document.getElementById('userName').innerText = session.user.user_metadata.full_name || 'Usuario';
+            document.getElementById('userAvatar').src = session.user.user_metadata.avatar_url || '';
+            document.getElementById('loginModal').style.display = 'none';
+        }
+    }
 
     window.onload = async () => {
         const { data: { session } } = await sbClient.auth.getSession();
-        if (session) actualizarUI(session.user);
+        actualizarUI(session);
     };
-</script>
 
+    sbClient.auth.onAuthStateChange((event, session) => {
+        actualizarUI(session);
+    });
+</script>
 <script src="motor-tests.js"></script>
 </body>
 </html>
