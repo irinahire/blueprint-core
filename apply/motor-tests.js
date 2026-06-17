@@ -1,6 +1,14 @@
-// motor-tests.js - Versión Final Robusta (Texto Completo y Redirección Integrada)
+// motor-tests.js - Versión Final con Pantalla de Bienvenida Integrada
 
 const testData = {
+    // --- NUEVA PANTALLA DE BIENVENIDA ---
+    "bienvenida": { 
+        tipo: "texto", 
+        instrucciones: "¡Felicitaciones por llegar a esta instancia!", 
+        cuerpo: "Has demostrado un gran potencial en las etapas previas y nos complace invitarte a la evaluación psicométrica.<br><br><b>¿Qué esperar de esta etapa?</b><br>• Consta de tres bloques: Razonamiento Lógico, Personalidad y Resolución Situacional.<br>• Tómate tu tiempo y responde con total honestidad.", 
+        textoBoton: "INICIAR EVALUACIÓN" 
+    },
+
     // --- ETAPA 1: LÓGICA VISUAL ---
     "test_a1": { tipo: "visual", instrucciones: "Observa la secuencia lógica y selecciona la opción que completa el patrón correctamente.", imgPrincipal: "https://www.bluelab.online/apply/img/test_a1.png", baseUrl: "https://www.bluelab.online/apply/img/", prefijo: "test_a1_r", opciones: 8 },
     "test_a2": { tipo: "visual", instrucciones: "Analiza el siguiente patrón y selecciona la pieza faltante.", imgPrincipal: "https://www.bluelab.online/apply/img/test_a2.png", baseUrl: "https://www.bluelab.online/apply/img/", prefijo: "test_a2_r", opciones: 8 },
@@ -19,7 +27,7 @@ const testData = {
     "bloque_4": { tipo: "big_five", titulo: "Bloque IV: Amabilidad", preguntas: ["Para lograr un objetivo importante, creo que es aceptable ser directo y firme, incluso si alguien se siente un poco molesto.", "Prefiero ceder en una idea propia si veo que el equipo está muy convencido de otra, para mantener el consenso.", "Suelo notar si un colega está desmotivado antes de que él mismo lo exprese.", "Valoro más la honestidad absoluta en el feedback que mantener la cortesía.", "Considero que el éxito personal es irrelevante si no contribuye al éxito del equipo completo."] },
     "bloque_5": { tipo: "big_five", titulo: "Bloque V: Responsabilidad", preguntas: ["Prefiero tener un plan de trabajo detallado semana a semana que tener libertad total para decidir mis tareas diarias.", "Si encuentro un atajo que ahorra tiempo pero ignora un paso del proceso oficial, suelo tomarlo.", "Suelo revisar mi trabajo varias veces antes de entregarlo, aunque eso signifique ir al límite del tiempo.", "Me resulta difícil dejar un proyecto a medias, incluso si sé que es poco rentable a largo plazo.", "Me siento más cómodo entregando resultados rápidos aunque tengan detalles pendientes, que esperando a la perfección."] },
     
-    // --- ETAPA 3: SITUACIONAL (TEXTOS COMPLETOS) ---
+    // --- ETAPA 3: SITUACIONAL ---
     "intro_situacional": { tipo: "texto", instrucciones: "Etapa Final: Evaluación Situacional", cuerpo: "Has llegado a la etapa final. Analizaremos cómo resuelves desafíos concretos en entornos profesionales. Debes seleccionar la opción que mejor represente tu criterio profesional.", textoBoton: "INICIAR EVALUACIÓN" },
     "sit_1": { tipo: "situacional", titulo: "Situación 1: El límite del cliente", pregunta: "Un cliente te pide algo fuera de las normas, pero es muy fiel.", opciones: [{id:"A", texto:"Accedes a regañadientes para no perder la lealtad."}, {id:"B", texto:"Explicas las normas con mucha firmeza, priorizando la equidad."}, {id:"C", texto:"Buscas una solución creativa que cumpla la norma pero satisfaga su necesidad."}, {id:"D", texto:"Escalás el problema a tu jefe para no tomar la decisión tú."}] },
     "sit_2": { tipo: "situacional", titulo: "Situación 2: El error del equipo", pregunta: "Tu equipo entregó un proyecto con errores y tu jefe te pide cuentas.", opciones: [{id:"A", texto:"Asumes la responsabilidad total como líder."}, {id:"B", texto:"Señalas específicamente quién cometió el error."}, {id:"C", texto:"Dices que hubo un malentendido general."}, {id:"D", texto:"Te enfocas en cómo solucionar el error antes de explicar qué pasó."}] },
@@ -33,7 +41,7 @@ const testData = {
     "sit_10": { tipo: "situacional", titulo: "Situación 10: La decisión ética", pregunta: "Te piden ocultar una pequeña falla para no alarmar al cliente.", opciones: [{id:"A", texto:"Lo ocultas para proteger la imagen de la empresa."}, {id:"B", texto:"Dices la verdad a medias."}, {id:"C", texto:"Informas del error y propones la solución."}, {id:"D", texto:"Te niegas rotundamente y pides que lo diga otro."}] }
 };
 
-const secuencia = ["test_a1", "test_a2", "test_a3", "test_a4", "test_a5", "test_a6", "test_a7", "test_a8", "intro_bigfive", "bloque_1", "bloque_2", "bloque_3", "bloque_4", "bloque_5", "intro_situacional", "sit_1", "sit_2", "sit_3", "sit_4", "sit_5", "sit_6", "sit_7", "sit_8", "sit_9", "sit_10"];
+const secuencia = ["bienvenida", "test_a1", "test_a2", "test_a3", "test_a4", "test_a5", "test_a6", "test_a7", "test_a8", "intro_bigfive", "bloque_1", "bloque_2", "bloque_3", "bloque_4", "bloque_5", "intro_situacional", "sit_1", "sit_2", "sit_3", "sit_4", "sit_5", "sit_6", "sit_7", "sit_8", "sit_9", "sit_10"];
 let indiceSecuencia = 0;
 let respuestas = {};
 
@@ -49,8 +57,9 @@ function actualizarBarraProgreso(idTest) {
     let total = 0, actual = 0;
     if (idTest.startsWith('bloque_')) { total = 5; actual = parseInt(idTest.split('_')[1]); }
     else if (idTest.startsWith('sit_')) { total = 10; actual = parseInt(idTest.split('_')[1]); }
-    else return;
-
+    else { contenedor.style.display = 'none'; return; }
+    
+    contenedor.style.display = 'flex';
     contenedor.innerHTML = '';
     for (let i = 1; i <= total; i++) {
         const item = document.createElement('div');
@@ -67,6 +76,7 @@ function cargarTest(idTest) {
     grid.innerHTML = '';
     
     if (idTest.startsWith('bloque_') || idTest.startsWith('sit_')) actualizarBarraProgreso(idTest);
+    else if (document.getElementById('contenedor-progreso')) document.getElementById('contenedor-progreso').style.display = 'none';
     
     if (data.tipo === "visual") {
         mainImg.style.display = "block";
@@ -126,8 +136,7 @@ function avanzar() {
     indiceSecuencia++;
     if (indiceSecuencia < secuencia.length) cargarTest(secuencia[indiceSecuencia]);
     else {
-        const urlParams = new URLSearchParams(window.location.search);
-        const applicantId = urlParams.get('applicantId') || 'unknown';
+        const applicantId = localStorage.getItem('applicantId') || 'unknown';
         document.getElementById('options-grid').innerHTML = `<div style="text-align:center; padding:50px;">
             <h2 style="color:#B588C0;">Evaluación Finalizada</h2>
             <p>Has completado todas las etapas. Serás redirigido a tu entrevista con Irina.</p>
