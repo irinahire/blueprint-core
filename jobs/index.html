@@ -158,18 +158,37 @@
         const btn = document.getElementById('main-btn');
         btn.innerText = "Publicando...";
         const jobId = crypto.randomUUID();
+        
+        // Objeto con todos los datos del formulario
+        const datosOferta = {
+            titulo: document.getElementById('titulo').value,
+            detalles: {
+                desc: document.getElementById('desc').value,
+                req: document.getElementById('req').value,
+                m1: document.getElementById('m1').value,
+                m2: document.getElementById('m2').value,
+                m3: document.getElementById('m3').value,
+                m4: document.getElementById('m4').value,
+                m5: document.getElementById('m5').value,
+                m6: document.getElementById('m6').value
+            },
+            jobIdUuid: jobId
+        };
+
         try {
             const { error } = await sb.functions.invoke('hbt_crear_oferta', {
-                // Se envía job_id (coherente con Edge Function)
-                body: { titulo: document.getElementById('titulo').value, jobIdUuid: jobId },
+                body: datosOferta,
                 headers: { Authorization: `Bearer ${(await sb.auth.getSession()).data.session.access_token}` }
             });
             if (error) throw error;
-            // Se genera con ?oferta= (coherente con Portal de Postulación)
             document.getElementById('full-url').value = 'https://www.bluelab.online/apply?oferta=' + jobId;
             document.getElementById('form-wrapper').style.display = 'none';
             document.getElementById('success-screen').style.display = 'flex';
-        } catch (e) { document.getElementById('copy-feedback').innerText = "Error al publicar"; btn.innerText = "PUBLICAR"; }
+        } catch (e) { 
+            console.error(e);
+            document.getElementById('copy-feedback').innerText = "Error al publicar"; 
+            btn.innerText = "PUBLICAR"; 
+        }
     }
 </script>
 </body>
