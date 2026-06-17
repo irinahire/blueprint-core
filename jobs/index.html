@@ -140,7 +140,10 @@
         document.getElementById('main-btn').innerText = "PUBLICAR";
         document.getElementById('form-wrapper').style.display = 'flex';
         document.getElementById('success-screen').style.display = 'none';
+        // Limpiar inputs
         document.querySelectorAll('input').forEach(el => { if(el.id !== 'full-url') el.value = ''; });
+        // Volver al tope del scroll
+        document.getElementById('form-wrapper').scrollTop = 0;
     }
 
     function copiarUrl() {
@@ -159,7 +162,6 @@
         btn.innerText = "Publicando...";
         const jobId = crypto.randomUUID();
         
-        // Objeto con todos los datos del formulario
         const datosOferta = {
             titulo: document.getElementById('titulo').value,
             detalles: {
