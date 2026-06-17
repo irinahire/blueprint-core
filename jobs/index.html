@@ -164,7 +164,8 @@
                 headers: { Authorization: `Bearer ${(await sb.auth.getSession()).data.session.access_token}` }
             });
             if (error) throw error;
-            document.getElementById('full-url').value = 'https://www.bluelab.online/apply?oferta=' + jobId;
+            // Corregido: se utiliza job_id para la URL
+            document.getElementById('full-url').value = 'https://www.bluelab.online/apply?job_id=' + jobId;
             document.getElementById('form-wrapper').style.display = 'none';
             document.getElementById('success-screen').style.display = 'flex';
         } catch (e) { document.getElementById('copy-feedback').innerText = "Error al publicar"; btn.innerText = "PUBLICAR"; }
