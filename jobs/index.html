@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Irina Hire Selection | Nueva Oferta</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { 
             --fucsia: #bc8abf; 
@@ -48,6 +48,9 @@
         .sidebar { width: 300px; position: relative; flex-shrink: 0; }
         .irina-bg { width: 100%; height: 100%; object-fit: cover; mask-image: linear-gradient(to right, transparent 0%, black 10%); }
         #success-screen { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; }
+        
+        /* Estilo botón auth */
+        #auth-btn { background: #333; color: white; padding: 10px 20px; border-radius: 9px; cursor: pointer; font-size: 12px; border: none; }
     </style>
 </head>
 <body>
@@ -56,26 +59,29 @@
     <div class="app-shell">
         <div class="header">
             <div>BLUE LAB</div>
-            <div>Irina Hire Selection</div>
+            <div id="user-display">Invitado</div>
         </div>
         
         <div class="content-area">
             <div id="form-wrapper" class="form-container">
                 <div class="sticky-controls">
                     <h2 style="color:var(--fucsia); margin:0;">Nueva Oferta Laboral</h2>
-                    <div class="btn-wrapper"><button class="btn-pub" onclick="publicarOferta()">PUBLICAR</button></div>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <button id="auth-btn" onclick="toggleAuth()">Login Google</button>
+                        <div class="btn-wrapper"><button class="btn-pub" onclick="publicarOferta()">PUBLICAR</button></div>
+                    </div>
                 </div>
                 
                 <div class="form-fields">
-                    <div class="input-group"><input type="text" id="titulo" placeholder="                                   (Ej: Productor Asesor de Seguros Senior)"><label>Título del Puesto</label></div>
-                    <div class="input-group"><input type="text" id="desc" placeholder="                                   (Ej: Gestión integral de cartera, asesoramiento personalizado)"><label>Descripción</label></div>
-                    <div class="input-group"><input type="text" id="req" placeholder="                                   (Ej: Matrícula SSN, experiencia en patrimoniales y vida, negociación)"><label>Requisitos</label></div>
-                    <div class="input-group"><input type="text" id="m1" placeholder="                                   (Ej: Híbrido 3x2 CABA, Presencial Microcentro)"><label>Modalidad</label></div>
-                    <div class="input-group"><input type="text" id="m2" placeholder="                                   (Ej: A convenir, sueldo base + comisiones por producción)"><label>Salario</label></div>
-                    <div class="input-group"><input type="text" id="m3" placeholder="                                   (Ej: +5 años en corretaje de seguros)"><label>Experiencia</label></div>
-                    <div class="input-group"><input type="text" id="m4" placeholder="                                   (Ej: Orientada a resultados, excelencia en atención al cliente, crecimiento)"><label>Cultura</label></div>
-                    <div class="input-group"><input type="text" id="m5" placeholder="                                   (Ej: Prepaga, capacitación profesional, bono anual objetivos)"><label>Beneficios</label></div>
-                    <div class="input-group"><input type="text" id="m6" placeholder="                                   (Ej: Oficina comercial Microcentro, CABA)"><label>Ubicación</label></div>
+                    <div class="input-group"><input type="text" id="titulo" placeholder=" "><label>Título del Puesto</label></div>
+                    <div class="input-group"><input type="text" id="desc" placeholder=" "><label>Descripción</label></div>
+                    <div class="input-group"><input type="text" id="req" placeholder=" "><label>Requisitos</label></div>
+                    <div class="input-group"><input type="text" id="m1" placeholder=" "><label>Modalidad</label></div>
+                    <div class="input-group"><input type="text" id="m2" placeholder=" "><label>Salario</label></div>
+                    <div class="input-group"><input type="text" id="m3" placeholder=" "><label>Experiencia</label></div>
+                    <div class="input-group"><input type="text" id="m4" placeholder=" "><label>Cultura</label></div>
+                    <div class="input-group"><input type="text" id="m5" placeholder=" "><label>Beneficios</label></div>
+                    <div class="input-group"><input type="text" id="m6" placeholder=" "><label>Ubicación</label></div>
                 </div>
             </div>
 
@@ -86,9 +92,7 @@
                     <input type="text" id="full-url" style="padding:10px; border:1px solid #ccc; border-radius:5px; width: 350px; font-family:monospace;" readonly>
                     <button class="btn-copy" onclick="copiarUrl()">Copiar</button>
                 </div>
-                
                 <div id="copy-feedback" style="color:var(--fucsia); font-weight:600; height: 20px; margin-bottom: 20px;"></div>
-
                 <div class="btn-wrapper"><button class="btn-pub" onclick="resetForm()">Crear otra oferta</button></div>
             </div>
             
@@ -97,20 +101,39 @@
     </div>
 </div>
 
-
-
 <script>
-    // Inicialización del cliente Supabase
     const sb = supabase.createClient('https://zuzvozgjsppkxvdlptmk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0');
 
-    // Función para limpiar el formulario tras un envío exitoso
+    // Estado de sesión
+    let currentUser = null;
+
+    sb.auth.onAuthStateChange((event, session) => {
+        currentUser = session?.user || null;
+        const btn = document.getElementById('auth-btn');
+        const display = document.getElementById('user-display');
+        if (currentUser) {
+            btn.innerText = "Cerrar Sesión";
+            display.innerText = currentUser.email;
+        } else {
+            btn.innerText = "Login Google";
+            display.innerText = "Invitado";
+        }
+    });
+
+    async function toggleAuth() {
+        if (currentUser) {
+            await sb.auth.signOut();
+        } else {
+            await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin } });
+        }
+    }
+
     function resetForm() {
         document.getElementById('form-wrapper').style.display = 'flex';
         document.getElementById('success-screen').style.display = 'none';
-        document.querySelectorAll('input').forEach(el => el.value = '');
+        document.querySelectorAll('input').forEach(el => { if(el.id !== 'full-url') el.value = ''; });
     }
 
-    // Función para copiar la URL generada al portapapeles
     function copiarUrl() {
         const input = document.getElementById('full-url');
         const feedback = document.getElementById('copy-feedback');
@@ -120,21 +143,21 @@
         setTimeout(() => { feedback.innerText = ""; }, 2000);
     }
 
-    // Lógica principal: Invocación de la Edge Function hbt_crear_oferta
     async function publicarOferta() {
+        if (!currentUser) return alert("Por favor, inicia sesión con Google primero.");
+        
         const btn = document.querySelector('.btn-pub');
         btn.innerText = "Publicando...";
         
-        // Generamos un UUID real para la oferta
         const jobId = crypto.randomUUID();
         const fullUrl = 'https://www.bluelab.online/apply?oferta=' + jobId;
+        const session = (await sb.auth.getSession()).data.session;
         
         try {
-            // Invocamos a la nueva Edge Function 'hbt_crear_oferta'
             const { data, error } = await sb.functions.invoke('hbt_crear_oferta', {
                 body: {
                     titulo: document.getElementById('titulo').value,
-                    jobIdUuid: jobId, // Usamos el nombre correcto que espera la función
+                    jobIdUuid: jobId,
                     detalles: {
                         desc: document.getElementById('desc').value,
                         req: document.getElementById('req').value,
@@ -145,25 +168,24 @@
                         ben: document.getElementById('m5').value,
                         ubi: document.getElementById('m6').value
                     }
-                }
+                },
+                headers: { Authorization: `Bearer ${session.access_token}` }
             });
 
             if (error) throw error;
             
-            // Si la función responde exitosamente, mostramos la pantalla de éxito
             document.getElementById('full-url').value = fullUrl;
             document.getElementById('form-wrapper').style.display = 'none';
             document.getElementById('success-screen').style.display = 'flex';
 
         } catch (e) { 
-            console.error("Error detallado:", e);
+            console.error(e);
             alert("Error al crear oferta: " + e.message); 
         } finally { 
             btn.innerText = "PUBLICAR"; 
         }
     }
 </script>
-
 
 </body>
 </html>
