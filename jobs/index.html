@@ -160,12 +160,13 @@
         const jobId = crypto.randomUUID();
         try {
             const { error } = await sb.functions.invoke('hbt_crear_oferta', {
+                // Se envía job_id (coherente con Edge Function)
                 body: { titulo: document.getElementById('titulo').value, jobIdUuid: jobId },
                 headers: { Authorization: `Bearer ${(await sb.auth.getSession()).data.session.access_token}` }
             });
             if (error) throw error;
-            // Corregido: se utiliza job_id para la URL
-            document.getElementById('full-url').value = 'https://www.bluelab.online/apply?job_id=' + jobId;
+            // Se genera con ?oferta= (coherente con Portal de Postulación)
+            document.getElementById('full-url').value = 'https://www.bluelab.online/apply?oferta=' + jobId;
             document.getElementById('form-wrapper').style.display = 'none';
             document.getElementById('success-screen').style.display = 'flex';
         } catch (e) { document.getElementById('copy-feedback').innerText = "Error al publicar"; btn.innerText = "PUBLICAR"; }
