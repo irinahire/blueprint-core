@@ -60,18 +60,18 @@
             <div id="form-wrapper" class="form-container">
                 <div class="sticky-controls">
                     <h2 style="color:var(--fucsia); margin:0;">Nueva Oferta Laboral</h2>
-                    <div class="btn-wrapper"><button class="btn-pub" onclick="publicarOferta()">PUBLICAR</button></div>
+                    <div class="btn-wrapper"><button class="btn-pub" id="main-btn" onclick="publicarOferta()">PUBLICAR</button></div>
                 </div>
                 <div class="form-fields">
-                    <div class="input-group"><input type="text" id="titulo" placeholder="(Ej: Productor Asesor de Seguros Senior)"><label>Título del Puesto</label></div>
-                    <div class="input-group"><input type="text" id="desc" placeholder="(Ej: Gestión integral de cartera)"><label>Descripción</label></div>
-                    <div class="input-group"><input type="text" id="req" placeholder="(Ej: Matrícula SSN)"><label>Requisitos</label></div>
-                    <div class="input-group"><input type="text" id="m1" placeholder="(Ej: Híbrido)"><label>Modalidad</label></div>
-                    <div class="input-group"><input type="text" id="m2" placeholder="(Ej: A convenir)"><label>Salario</label></div>
-                    <div class="input-group"><input type="text" id="m3" placeholder="(Ej: +5 años)"><label>Experiencia</label></div>
-                    <div class="input-group"><input type="text" id="m4" placeholder="(Ej: Orientada a resultados)"><label>Cultura</label></div>
-                    <div class="input-group"><input type="text" id="m5" placeholder="(Ej: Prepaga)"><label>Beneficios</label></div>
-                    <div class="input-group"><input type="text" id="m6" placeholder="(Ej: Microcentro)"><label>Ubicación</label></div>
+                    <div class="input-group"><input type="text" id="titulo" placeholder="Ej: Especialista Senior en Ciberseguridad y Arquitectura Cloud"><label>Título del Puesto</label></div>
+                    <div class="input-group"><input type="text" id="desc" placeholder="Ej: Gestión de infraestructura crítica, implementación de protocolos de seguridad y auditorías"><label>Descripción</label></div>
+                    <div class="input-group"><input type="text" id="req" placeholder="Ej: Certificaciones AWS/Azure, experiencia comprobable en entornos de producción, dominio de Python/Go"><label>Requisitos</label></div>
+                    <div class="input-group"><input type="text" id="m1" placeholder="Ej: Híbrido 3x2 en oficinas de CABA con horario flexible"><label>Modalidad</label></div>
+                    <div class="input-group"><input type="text" id="m2" placeholder="Ej: Rango competitivo de mercado + bono anual por cumplimiento de objetivos"><label>Salario</label></div>
+                    <div class="input-group"><input type="text" id="m3" placeholder="Ej: Mínimo 5 años en roles similares de alta responsabilidad técnica"><label>Experiencia</label></div>
+                    <div class="input-group"><input type="text" id="m4" placeholder="Ej: Orientación a la innovación constante, trabajo colaborativo y pensamiento analítico"><label>Cultura</label></div>
+                    <div class="input-group"><input type="text" id="m5" placeholder="Ej: Prepaga de primer nivel, presupuesto anual para capacitaciones y certificaciones"><label>Beneficios</label></div>
+                    <div class="input-group"><input type="text" id="m6" placeholder="Ej: Sede corporativa en el Distrito Tecnológico de Parque Patricios"><label>Ubicación</label></div>
                 </div>
             </div>
 
@@ -137,6 +137,7 @@
     }
 
     function resetForm() {
+        document.getElementById('main-btn').innerText = "PUBLICAR";
         document.getElementById('form-wrapper').style.display = 'flex';
         document.getElementById('success-screen').style.display = 'none';
         document.querySelectorAll('input').forEach(el => { if(el.id !== 'full-url') el.value = ''; });
@@ -154,7 +155,7 @@
             document.getElementById('login-modal').style.display = 'flex';
             return;
         }
-        const btn = document.querySelector('.btn-pub');
+        const btn = document.getElementById('main-btn');
         btn.innerText = "Publicando...";
         const jobId = crypto.randomUUID();
         try {
