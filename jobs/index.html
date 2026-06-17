@@ -6,59 +6,39 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { 
-            --fucsia: #bc8abf; 
-            --gris-claro: #e0e0e0;
-            --irina-gradient: linear-gradient(to right, #bc8abf 0%, #96e8da 100%); 
-            --btn-gradient: linear-gradient(to right, #96e8da 0%, #bc8abf 100%);
-            --bg-dark: #05070a; 
-        }
+        :root { --fucsia: #bc8abf; --gris-claro: #e0e0e0; --irina-gradient: linear-gradient(to right, #bc8abf 0%, #96e8da 100%); --btn-gradient: linear-gradient(to right, #96e8da 0%, #bc8abf 100%); --bg-dark: #05070a; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: var(--bg-dark); display: flex; align-items: center; justify-content: center; font-family: 'Inter', sans-serif; }
-        
         .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 95%; max-width: 1050px; height: 92vh; display: flex; align-items: center; justify-content: center; }
         .app-shell { width: 100%; height: 100%; background: white; border-radius: 40px; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* HEADER */
         .header { height: 80px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; font-family: 'Montserrat', sans-serif; flex-shrink: 0; }
         .header-left { font-weight: 900; font-size: 1.2rem; }
-        
         .user-zone { display: flex; align-items: center; gap: 15px; font-size: 0.9rem; font-weight: 600; }
         .user-avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid white; display: none; }
         .auth-btn { background: #333; color: white; border: none; padding: 10px 20px; border-radius: 9px; cursor: pointer; font-family: 'Inter'; font-weight: 600; }
         
-        /* MODAL DE LOGIN */
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center; }
         .modal-content { background:white; padding:40px; border-radius:20px; text-align:center; color:#333; }
 
-        /* AREA DE CONTENIDO Y FORMULARIO */
         .content-area { flex: 1; display: flex; overflow: hidden; position: relative; }
         .form-container { flex: 1; padding: 0; overflow-y: auto; display: flex; flex-direction: column; }
-        
-        /* CONTROLES STICKY Y BOTÓN CON ANIMACIÓN RECUPERADA */
         .sticky-controls { background: white; padding: 20px 60px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100; flex-shrink: 0; }
         
         .btn-wrapper { position: relative; padding: 3px; border-radius: 12px; overflow: hidden; cursor: pointer; }
         .btn-wrapper::before { content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, var(--fucsia), #96e8da, transparent); animation: rotate 3s linear infinite; display: none; }
         .btn-wrapper:hover::before { display: block; }
-        
-        .btn-pub { background: var(--btn-gradient); color: white; border: none; padding: 12px 30px; border-radius: 9px; font-weight: 800; cursor: pointer; position: relative; z-index: 1; font-family: 'Inter', sans-serif; min-width: 120px; }
+        .btn-pub { background: var(--btn-gradient); color: white; border: none; padding: 12px 30px; border-radius: 9px; font-weight: 800; cursor: pointer; position: relative; z-index: 1; font-family: 'Inter'; min-width: 120px; }
+        .btn-copy { background: #96e8da; color: var(--fucsia); border: 2px solid var(--fucsia); padding: 10px 20px; border-radius: 9px; font-weight: 800; cursor: pointer; }
         @keyframes rotate { 100% { transform: rotate(360deg); } }
         
-        /* CAMPOS DEL FORMULARIO Y PLACEHOLDERS RECUPERADOS */
         .form-fields { flex: 1; padding: 0 60px 40px 60px; }
         .input-group { position: relative; margin-top: 30px; }
-        .input-group label { position: absolute; left: 12px; top: 14px; color: var(--fucsia); font-weight: 700; transition: 0.2s; pointer-events: none; background: white; padding: 0 4px; z-index: 1; }
-        .input-group input { width: 100%; padding: 14px; border: 2px solid var(--gris-claro); border-radius: 10px; outline: none; font-size: 14px; box-sizing: border-box; color: #333; position: relative; z-index: 0; }
-        
-        /* Estilos para el texto de ejemplo (placeholder) */
-        .input-group input::placeholder { color: var(--fucsia); font-weight: 700; opacity: 0.5; transition: opacity 0.2s; }
-        .input-group input:focus::placeholder { opacity: 0; }
-
-        /* Animación de la label flotante */
-        .input-group input:focus { border-color: var(--fucsia); }
+        .input-group label { position: absolute; left: 12px; top: 14px; color: var(--fucsia); font-weight: 700; transition: 0.2s; pointer-events: none; background: white; padding: 0 4px; }
+        .input-group input { width: 100%; padding: 14px; border: 2px solid var(--gris-claro); border-radius: 10px; outline: none; font-size: 14px; color: #333; }
         .input-group input:focus + label, .input-group input:not(:placeholder-shown) + label { top: -10px; font-size: 11px; color: var(--fucsia); }
+        .input-group input::placeholder { color: var(--fucsia); font-weight: 700; opacity: 0.5; }
         
-        /* SIDEBAR */
+        #success-screen { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; }
         .sidebar { width: 300px; position: relative; flex-shrink: 0; }
         .irina-bg { width: 100%; height: 100%; object-fit: cover; mask-image: linear-gradient(to right, transparent 0%, black 10%); }
     </style>
@@ -84,16 +64,28 @@
                 </div>
                 <div class="form-fields">
                     <div class="input-group"><input type="text" id="titulo" placeholder="(Ej: Productor Asesor de Seguros Senior)"><label>Título del Puesto</label></div>
-                    <div class="input-group"><input type="text" id="desc" placeholder="(Ej: Gestión integral de cartera, asesoramiento personalizado)"><label>Descripción</label></div>
-                    <div class="input-group"><input type="text" id="req" placeholder="(Ej: Matrícula SSN, experiencia en patrimoniales y vida, negociación)"><label>Requisitos</label></div>
-                    <div class="input-group"><input type="text" id="m1" placeholder="(Ej: Híbrido 3x2 CABA, Presencial Microcentro)"><label>Modalidad</label></div>
-                    <div class="input-group"><input type="text" id="m2" placeholder="(Ej: A convenir, sueldo base + comisiones por producción)"><label>Salario</label></div>
-                    <div class="input-group"><input type="text" id="m3" placeholder="(Ej: +5 años en corretaje de seguros)"><label>Experiencia</label></div>
-                    <div class="input-group"><input type="text" id="m4" placeholder="(Ej: Orientada a resultados, excelencia en atención al cliente, crecimiento)"><label>Cultura</label></div>
-                    <div class="input-group"><input type="text" id="m5" placeholder="(Ej: Prepaga, capacitación profesional, bono anual objetivos)"><label>Beneficios</label></div>
-                    <div class="input-group"><input type="text" id="m6" placeholder="(Ej: Oficina comercial Microcentro, CABA)"><label>Ubicación</label></div>
+                    <div class="input-group"><input type="text" id="desc" placeholder="(Ej: Gestión integral de cartera)"><label>Descripción</label></div>
+                    <div class="input-group"><input type="text" id="req" placeholder="(Ej: Matrícula SSN)"><label>Requisitos</label></div>
+                    <div class="input-group"><input type="text" id="m1" placeholder="(Ej: Híbrido)"><label>Modalidad</label></div>
+                    <div class="input-group"><input type="text" id="m2" placeholder="(Ej: A convenir)"><label>Salario</label></div>
+                    <div class="input-group"><input type="text" id="m3" placeholder="(Ej: +5 años)"><label>Experiencia</label></div>
+                    <div class="input-group"><input type="text" id="m4" placeholder="(Ej: Orientada a resultados)"><label>Cultura</label></div>
+                    <div class="input-group"><input type="text" id="m5" placeholder="(Ej: Prepaga)"><label>Beneficios</label></div>
+                    <div class="input-group"><input type="text" id="m6" placeholder="(Ej: Microcentro)"><label>Ubicación</label></div>
                 </div>
             </div>
+
+            <div id="success-screen">
+                <h1 style="color:var(--fucsia);">¡Oferta Creada!</h1>
+                <p>Copiá la URL de esta oferta para compartirla:</p>
+                <div style="display: flex; gap: 10px; align-items: center; margin: 20px 0;">
+                    <input type="text" id="full-url" style="padding:10px; border:1px solid #ccc; border-radius:5px; width: 350px; font-family:monospace;" readonly>
+                    <button class="btn-copy" onclick="copiarUrl()">Copiar</button>
+                </div>
+                <div id="copy-feedback" style="color:var(--fucsia); font-weight:600; height: 20px; margin-bottom: 20px;"></div>
+                <div class="btn-wrapper"><button class="btn-pub" onclick="resetForm()">Crear otra oferta</button></div>
+            </div>
+            
             <div class="sidebar"><img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg"></div>
         </div>
     </div>
@@ -141,24 +133,40 @@
     }
 
     async function iniciarSesionGoogle() {
-        await sb.auth.signInWithOAuth({ 
-            provider: 'google', 
-            options: { redirectTo: window.location.href } 
-        });
+        await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
+    }
+
+    function resetForm() {
+        document.getElementById('form-wrapper').style.display = 'flex';
+        document.getElementById('success-screen').style.display = 'none';
+        document.querySelectorAll('input').forEach(el => { if(el.id !== 'full-url') el.value = ''; });
+    }
+
+    function copiarUrl() {
+        const input = document.getElementById('full-url');
+        input.select();
+        document.execCommand('copy');
+        document.getElementById('copy-feedback').innerText = "¡URL copiada!";
     }
 
     async function publicarOferta() {
-        if (!currentUser) return alert("Inicia sesión primero.");
+        if (!currentUser) {
+            document.getElementById('login-modal').style.display = 'flex';
+            return;
+        }
         const btn = document.querySelector('.btn-pub');
         btn.innerText = "Publicando...";
+        const jobId = crypto.randomUUID();
         try {
             const { error } = await sb.functions.invoke('hbt_crear_oferta', {
-                body: { titulo: document.getElementById('titulo').value, jobIdUuid: crypto.randomUUID() },
+                body: { titulo: document.getElementById('titulo').value, jobIdUuid: jobId },
                 headers: { Authorization: `Bearer ${(await sb.auth.getSession()).data.session.access_token}` }
             });
             if (error) throw error;
-            alert("Oferta publicada con éxito.");
-        } catch (e) { alert("Error: " + e.message); } finally { btn.innerText = "PUBLICAR"; }
+            document.getElementById('full-url').value = 'https://www.bluelab.online/apply?oferta=' + jobId;
+            document.getElementById('form-wrapper').style.display = 'none';
+            document.getElementById('success-screen').style.display = 'flex';
+        } catch (e) { document.getElementById('copy-feedback').innerText = "Error al publicar"; btn.innerText = "PUBLICAR"; }
     }
 </script>
 </body>
