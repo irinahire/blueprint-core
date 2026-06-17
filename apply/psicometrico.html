@@ -6,7 +6,7 @@
     <title>Evaluación Psicométrica - Irina Hire Selection</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* CSS ESTRUCTURAL E INTEGRO */
+        /* CSS ESTRUCTURAL COMPLETO */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(to bottom left, #8EE4D5, #B588C0); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
         .main-container { background: #fff; width: 100%; max-width: 1200px; height: 85vh; display: flex; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
@@ -21,26 +21,38 @@
         .step.active .step-circle { background: #B588C0; color: #fff; }
         .step-label { font-size: 10px; margin-top: 5px; color: #555; text-transform: uppercase; font-weight: 700; text-align: center; }
 
-        /* AREA DE CONTENIDO Y ELEMENTOS DEL MOTOR */
+        /* AREA DE CONTENIDO */
         .scroll-area { flex: 1; overflow-y: auto; padding: 2rem; display: flex; flex-direction: column; align-items: center; background-color: #fafafa; }
         .main-test-image { width: 400px; display: none; margin-bottom: 20px; }
-        .option-box { cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
-        .option-box:hover { border: 2px solid #8EE4D5; }
         .right-column { width: 30%; background: url('https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg') center/cover no-repeat; }
 
         /* BOTON ACCEDER ESTILO BLUELAB (3D) */
         .auth-zone { display: flex; gap: 15px; align-items: center; }
-        .auth-btn { background: linear-gradient(135deg, #4e52a7, #85c1e9); color: white; border: none; padding: 15px 30px; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 15px rgba(133, 193, 233, 0.3); transition: transform 0.2s, box-shadow 0.2s; font-size: 0.9rem; letter-spacing: 1px; }
-        .auth-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(133, 193, 233, 0.5); }
+        .auth-btn { background: linear-gradient(135deg, #4e52a7, #85c1e9); color: white; border: none; padding: 15px 30px; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 15px rgba(133, 193, 233, 0.3); font-size: 0.9rem; letter-spacing: 1px; }
         
+        /* MODAL DE LOGIN */
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
+        .modal-content { background: #111; padding: 40px; border-radius: 20px; width: 350px; text-align: center; border: 1px solid #96e8da; color: white; }
+        .google-btn { background: white; color: #333; padding: 12px; width: 100%; border-radius: 8px; border: none; cursor: pointer; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 20px; }
+
         /* PERFIL DE USUARIO */
         .user-profile { display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.05); padding: 5px 20px 5px 10px; border-radius: 50px; border: 1px solid #ddd; }
         .user-avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #8EE4D5; object-fit: cover; }
         .user-name { font-size: 0.9rem; font-weight: 600; color: #333; }
-        .btn-salir { padding: 8px 15px; font-size: 0.7rem; background: #333; color: white; border: none; border-radius: 10px; cursor: pointer; transition: 0.2s; }
+        .btn-salir { padding: 8px 15px; font-size: 0.7rem; background: #333; color: white; border: none; border-radius: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
+
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+        <h2 style="color: #96e8da; margin-bottom: 20px;">Acceso al Proceso</h2>
+        <button class="google-btn" onclick="ingresarConGoogle()">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="20">
+            CONTINUAR CON GOOGLE
+        </button>
+    </div>
+</div>
 
 <div class="main-container">
     <div class="left-column">
@@ -55,7 +67,7 @@
             </div>
 
             <div class="auth-zone" id="auth-zone">
-                <button class="auth-btn" id="loginBtn" onclick="ingresarConGoogle()">ACCEDER</button>
+                <button class="auth-btn" id="loginBtn" onclick="document.getElementById('loginModal').style.display='flex'">ACCEDER</button>
             </div>
         </header>
 
@@ -87,6 +99,7 @@
 
     function renderizarPerfil(session) {
         const authZone = document.getElementById('auth-zone');
+        document.getElementById('loginModal').style.display = 'none';
         if (session) {
             authZone.innerHTML = `
                 <div class="user-profile">
@@ -98,7 +111,6 @@
         }
     }
 
-    // Inicialización de estado
     window.addEventListener('load', async () => {
         const { data: { session } } = await sbClient.auth.getSession();
         if (session) renderizarPerfil(session);
