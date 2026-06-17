@@ -21,29 +21,45 @@
         /* HEADER */
         .header { height: 80px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; font-family: 'Montserrat', sans-serif; flex-shrink: 0; }
         .header-left { font-weight: 900; font-size: 1.2rem; }
+        
         .user-zone { display: flex; align-items: center; gap: 15px; font-size: 0.9rem; font-weight: 600; }
         .user-avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid white; display: none; }
-        .auth-btn { background: #333; color: white; border: none; padding: 10px 20px; border-radius: 9px; cursor: pointer; font-weight: 600; }
+        .auth-btn { background: #333; color: white; border: none; padding: 10px 20px; border-radius: 9px; cursor: pointer; font-family: 'Inter'; font-weight: 600; }
         
-        /* MODAL */
+        /* MODAL DE LOGIN */
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center; }
         .modal-content { background:white; padding:40px; border-radius:20px; text-align:center; color:#333; }
 
-        /* CAMPOS CON ANIMACIÓN */
+        /* AREA DE CONTENIDO Y FORMULARIO */
         .content-area { flex: 1; display: flex; overflow: hidden; position: relative; }
         .form-container { flex: 1; padding: 0; overflow-y: auto; display: flex; flex-direction: column; }
-        .sticky-controls { background: white; padding: 20px 60px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100; flex-shrink: 0; }
-        .form-fields { flex: 1; padding: 0 60px 40px 60px; }
-        .btn-wrapper { position: relative; padding: 3px; border-radius: 12px; overflow: hidden; cursor: pointer; }
-        .btn-pub { background: var(--btn-gradient); color: white; border: none; padding: 12px 30px; border-radius: 9px; font-weight: 800; cursor: pointer; }
         
+        /* CONTROLES STICKY Y BOTÓN CON ANIMACIÓN RECUPERADA */
+        .sticky-controls { background: white; padding: 20px 60px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100; flex-shrink: 0; }
+        
+        .btn-wrapper { position: relative; padding: 3px; border-radius: 12px; overflow: hidden; cursor: pointer; }
+        .btn-wrapper::before { content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, var(--fucsia), #96e8da, transparent); animation: rotate 3s linear infinite; display: none; }
+        .btn-wrapper:hover::before { display: block; }
+        
+        .btn-pub { background: var(--btn-gradient); color: white; border: none; padding: 12px 30px; border-radius: 9px; font-weight: 800; cursor: pointer; position: relative; z-index: 1; font-family: 'Inter', sans-serif; min-width: 120px; }
+        @keyframes rotate { 100% { transform: rotate(360deg); } }
+        
+        /* CAMPOS DEL FORMULARIO Y PLACEHOLDERS RECUPERADOS */
+        .form-fields { flex: 1; padding: 0 60px 40px 60px; }
         .input-group { position: relative; margin-top: 30px; }
-        .input-group label { position: absolute; left: 12px; top: 14px; color: var(--fucsia); font-weight: 700; transition: 0.2s; pointer-events: none; background: white; padding: 0 4px; }
-        .input-group input { width: 100%; padding: 14px; border: 2px solid var(--gris-claro); border-radius: 10px; outline: none; font-size: 14px; box-sizing: border-box; color: #333; }
+        .input-group label { position: absolute; left: 12px; top: 14px; color: var(--fucsia); font-weight: 700; transition: 0.2s; pointer-events: none; background: white; padding: 0 4px; z-index: 1; }
+        .input-group input { width: 100%; padding: 14px; border: 2px solid var(--gris-claro); border-radius: 10px; outline: none; font-size: 14px; box-sizing: border-box; color: #333; position: relative; z-index: 0; }
+        
+        /* Estilos para el texto de ejemplo (placeholder) */
+        .input-group input::placeholder { color: var(--fucsia); font-weight: 700; opacity: 0.5; transition: opacity 0.2s; }
+        .input-group input:focus::placeholder { opacity: 0; }
+
+        /* Animación de la label flotante */
         .input-group input:focus { border-color: var(--fucsia); }
         .input-group input:focus + label, .input-group input:not(:placeholder-shown) + label { top: -10px; font-size: 11px; color: var(--fucsia); }
         
-        .sidebar { width: 300px; }
+        /* SIDEBAR */
+        .sidebar { width: 300px; position: relative; flex-shrink: 0; }
         .irina-bg { width: 100%; height: 100%; object-fit: cover; mask-image: linear-gradient(to right, transparent 0%, black 10%); }
     </style>
 </head>
@@ -67,15 +83,15 @@
                     <div class="btn-wrapper"><button class="btn-pub" onclick="publicarOferta()">PUBLICAR</button></div>
                 </div>
                 <div class="form-fields">
-                    <div class="input-group"><input type="text" id="titulo" placeholder=" "><label>Título del Puesto</label></div>
-                    <div class="input-group"><input type="text" id="desc" placeholder=" "><label>Descripción</label></div>
-                    <div class="input-group"><input type="text" id="req" placeholder=" "><label>Requisitos</label></div>
-                    <div class="input-group"><input type="text" id="m1" placeholder=" "><label>Modalidad</label></div>
-                    <div class="input-group"><input type="text" id="m2" placeholder=" "><label>Salario</label></div>
-                    <div class="input-group"><input type="text" id="m3" placeholder=" "><label>Experiencia</label></div>
-                    <div class="input-group"><input type="text" id="m4" placeholder=" "><label>Cultura</label></div>
-                    <div class="input-group"><input type="text" id="m5" placeholder=" "><label>Beneficios</label></div>
-                    <div class="input-group"><input type="text" id="m6" placeholder=" "><label>Ubicación</label></div>
+                    <div class="input-group"><input type="text" id="titulo" placeholder="(Ej: Productor Asesor de Seguros Senior)"><label>Título del Puesto</label></div>
+                    <div class="input-group"><input type="text" id="desc" placeholder="(Ej: Gestión integral de cartera, asesoramiento personalizado)"><label>Descripción</label></div>
+                    <div class="input-group"><input type="text" id="req" placeholder="(Ej: Matrícula SSN, experiencia en patrimoniales y vida, negociación)"><label>Requisitos</label></div>
+                    <div class="input-group"><input type="text" id="m1" placeholder="(Ej: Híbrido 3x2 CABA, Presencial Microcentro)"><label>Modalidad</label></div>
+                    <div class="input-group"><input type="text" id="m2" placeholder="(Ej: A convenir, sueldo base + comisiones por producción)"><label>Salario</label></div>
+                    <div class="input-group"><input type="text" id="m3" placeholder="(Ej: +5 años en corretaje de seguros)"><label>Experiencia</label></div>
+                    <div class="input-group"><input type="text" id="m4" placeholder="(Ej: Orientada a resultados, excelencia en atención al cliente, crecimiento)"><label>Cultura</label></div>
+                    <div class="input-group"><input type="text" id="m5" placeholder="(Ej: Prepaga, capacitación profesional, bono anual objetivos)"><label>Beneficios</label></div>
+                    <div class="input-group"><input type="text" id="m6" placeholder="(Ej: Oficina comercial Microcentro, CABA)"><label>Ubicación</label></div>
                 </div>
             </div>
             <div class="sidebar"><img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg"></div>
