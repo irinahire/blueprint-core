@@ -6,7 +6,7 @@
     <title>Evaluación Psicométrica - Irina Hire Selection</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* CSS COMPLETO - ESTRUCTURA PROFESIONAL */
+        /* CSS ESTRUCTURAL E INTEGRO */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(to bottom left, #8EE4D5, #B588C0); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
         .main-container { background: #fff; width: 100%; max-width: 1200px; height: 85vh; display: flex; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
@@ -21,21 +21,23 @@
         .step.active .step-circle { background: #B588C0; color: #fff; }
         .step-label { font-size: 10px; margin-top: 5px; color: #555; text-transform: uppercase; font-weight: 700; text-align: center; }
 
-        /* AREA DE CONTENIDO */
+        /* AREA DE CONTENIDO Y ELEMENTOS DEL MOTOR */
         .scroll-area { flex: 1; overflow-y: auto; padding: 2rem; display: flex; flex-direction: column; align-items: center; background-color: #fafafa; }
+        .main-test-image { width: 400px; display: none; margin-bottom: 20px; }
+        .option-box { cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+        .option-box:hover { border: 2px solid #8EE4D5; }
         .right-column { width: 30%; background: url('https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg') center/cover no-repeat; }
 
-        /* ESTILOS DE AUTENTICACION (ESTILO BLUE-LAB) */
-        .auth-zone { display: flex; gap: 15px; }
+        /* BOTON ACCEDER ESTILO BLUELAB (3D) */
+        .auth-zone { display: flex; gap: 15px; align-items: center; }
         .auth-btn { background: linear-gradient(135deg, #4e52a7, #85c1e9); color: white; border: none; padding: 15px 30px; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 15px rgba(133, 193, 233, 0.3); transition: transform 0.2s, box-shadow 0.2s; font-size: 0.9rem; letter-spacing: 1px; }
         .auth-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(133, 193, 233, 0.5); }
         
-        /* ESTILO PERFIL */
+        /* PERFIL DE USUARIO */
         .user-profile { display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.05); padding: 5px 20px 5px 10px; border-radius: 50px; border: 1px solid #ddd; }
         .user-avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #8EE4D5; object-fit: cover; }
         .user-name { font-size: 0.9rem; font-weight: 600; color: #333; }
         .btn-salir { padding: 8px 15px; font-size: 0.7rem; background: #333; color: white; border: none; border-radius: 10px; cursor: pointer; transition: 0.2s; }
-        .btn-salir:hover { background: #555; }
     </style>
 </head>
 <body>
@@ -58,6 +60,7 @@
         </header>
 
         <div class="scroll-area">
+            <img id="main-test-image" class="main-test-image">
             <div id="options-grid"></div>
         </div>
     </div>
@@ -65,12 +68,11 @@
 </div>
 
 <script>
-    // Configuración completa de Supabase
-    const supabaseUrl = 'https://zuzvozgjsppkxvdlptmk.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0';
-    const sbClient = supabase.createClient(supabaseUrl, supabaseKey);
+    const sbClient = supabase.createClient(
+        'https://zuzvozgjsppkxvdlptmk.supabase.co', 
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0'
+    );
 
-    // Función de inicio de sesión
     async function ingresarConGoogle() {
         await sbClient.auth.signInWithOAuth({ 
             provider: 'google', 
@@ -78,14 +80,12 @@
         });
     }
 
-    // Función para cerrar sesión
     async function cerrarSesion() { 
         await sbClient.auth.signOut(); 
         window.location.reload(); 
     }
 
-    // Función de UI que mantiene el botón y perfil
-    function renderizarEstado(session) {
+    function renderizarPerfil(session) {
         const authZone = document.getElementById('auth-zone');
         if (session) {
             authZone.innerHTML = `
@@ -98,14 +98,14 @@
         }
     }
 
-    // Carga inicial y listeners
+    // Inicialización de estado
     window.addEventListener('load', async () => {
         const { data: { session } } = await sbClient.auth.getSession();
-        if (session) renderizarEstado(session);
+        if (session) renderizarPerfil(session);
     });
 
     sbClient.auth.onAuthStateChange((event, session) => {
-        if (session) renderizarEstado(session);
+        if (session) renderizarPerfil(session);
     });
 </script>
 
