@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>Irina Hire Selection | Portal de Postulación</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Incluimos el Módulo de Auth -->
-    <script src="auth-module.js"></script> 
+    <!-- Incluimos el Módulo de Auth con ruta corregida para salir de la carpeta apply -->
+    <script src="../auth-module.js"></script> 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
     <style>
         :root { --fucsia: #bc8abf; --irina-gradient: linear-gradient(to right, #bc8abf 0%, #96e8da 100%); --btn-gradient: linear-gradient(to right, #96e8da 0%, #bc8abf 100%); --bg-dark: #05070a; }
@@ -75,10 +75,8 @@
     </div>
 
 <script>
-    const sb = supabase.createClient(
-        'https://zuzvozgjsppkxvdlptmk.supabase.co', 
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0'
-    );
+    // Usamos la instancia global window.sbClient proporcionada por auth-module.js
+    // para evitar conflictos de múltiples instancias de GoTrueClient.
 
     window.onload = () => {
         const params = new URLSearchParams(window.location.search);
@@ -106,7 +104,8 @@
         
         btn.innerText = "VERIFICANDO...";
         
-        const { data: usuarioExistente } = await sb
+        // Usamos window.sbClient en lugar de una variable local 'sb'
+        const { data: usuarioExistente } = await window.sbClient
             .from('habitat')
             .select('owner_id')
             .eq('metadata->!tipo', '!postulacion')
@@ -135,7 +134,7 @@
             const fotoBase64 = await toBase64(document.getElementById('foto').files[0]);
             const cvBase64 = await toBase64(document.getElementById('cv').files[0]);
 
-            const { data: ingresoData, error: ingresoError } = await sb.functions.invoke('hbt_ingreso_postulante', {
+            const { data: ingresoData, error: ingresoError } = await window.sbClient.functions.invoke('hbt_ingreso_postulante', {
                 body: {
                     job_id: document.getElementById('oferta_vinculada').value,
                     nombre: document.getElementById('nombre').value,
@@ -150,12 +149,12 @@
             if (ingresoError) throw new Error("Error en ingreso: " + ingresoError.message);
 
             btn.innerText = "LEYENDO TU CV...";
-            await sb.functions.invoke('hbt_extraer_cv', {
+            await window.sbClient.functions.invoke('hbt_extraer_cv', {
                 body: { parent_id: ingresoData.id, url: ingresoData.cvUrl }
             });
 
             btn.innerText = "ANALIZANDO PERFIL...";
-            await sb.functions.invoke('hbt_parsear_cv', {
+            await window.sbClient.functions.invoke('hbt_parsear_cv', {
                 body: { parent_id: ingresoData.id } 
             });
             
