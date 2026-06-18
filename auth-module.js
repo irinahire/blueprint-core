@@ -29,7 +29,7 @@ window.BlueAuth = {
             .google-btn { background:#4285f4; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-weight:bold; }
             .auth-btn { background:#fff; color:#bc8abf; border:none; padding:8px 15px; border-radius:9px; cursor:pointer; font-size:12px; font-weight:700; }
             .user-profile { display:flex; align-items:center; gap:10px; color:white; font-size:12px; }
-            .user-avatar { width:30px; height:30px; border-radius:50%; border: 2px solid white; }
+            .user-avatar { width:30px; height:30px; border-radius:50%; border: 2px solid white; object-fit: cover; }
             .user-name-display { color: white; font-weight: 600; margin-right: 5px; }
         `;
         document.head.appendChild(style);
@@ -49,8 +49,8 @@ window.BlueAuth = {
         target.innerHTML = `
             <button id="loginBtn" class="auth-btn" onclick="document.getElementById('loginModal').style.display='flex'">ACCEDER</button>
             <div id="userZone" style="display:none;" class="user-profile">
-                <span id="userNameDisplay" class="user-name-display"></span>
                 <img id="userAvatar" class="user-avatar" src="">
+                <span id="userNameDisplay" class="user-name-display"></span>
                 <button class="auth-btn" onclick="window.sbClient.auth.signOut()">SALIR</button>
             </div>
             <div id="loginModal" class="modal">
@@ -77,10 +77,16 @@ window.BlueAuth = {
             if(loginBtn) loginBtn.style.display = 'none';
             if(userZone) {
                 userZone.style.display = 'flex';
+                
+                // Actualizamos foto (si existe)
+                if(avatarImg) {
+                    avatarImg.src = session.user.user_metadata.avatar_url || '';
+                }
+                
                 // Actualizamos nombre
-                if(nameSpan) nameSpan.innerText = session.user.user_metadata.full_name || '';
-                // Actualizamos foto
-                if(avatarImg) avatarImg.src = session.user.user_metadata.avatar_url || '';
+                if(nameSpan) {
+                    nameSpan.innerText = session.user.user_metadata.full_name || '';
+                }
             }
         } else {
             localStorage.removeItem('applicantId');
