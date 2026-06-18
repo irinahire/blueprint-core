@@ -6,36 +6,25 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
     <style>
-        :root { 
-            --fucsia: #bc8abf; 
-            --irina-gradient: linear-gradient(to right, #bc8abf 0%, #96e8da 100%); 
-            --btn-gradient: linear-gradient(to right, #96e8da 0%, #bc8abf 100%);
-            --bg-dark: #05070a; 
-        }
+        :root { --fucsia: #bc8abf; --irina-gradient: linear-gradient(to right, #bc8abf 0%, #96e8da 100%); --btn-gradient: linear-gradient(to right, #96e8da 0%, #bc8abf 100%); --bg-dark: #05070a; }
         body { margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; }
         .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 92%; max-width: 1150px; height: 85vh; display: flex; position: relative; }
         .app-container { background: white; width: 100%; height: 100%; border-radius: 40px; display: flex; flex-direction: column; overflow: hidden; }
         .top-vincha { width: 100%; height: 90px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 45px; box-sizing: border-box; flex-shrink: 0; }
         .vincha-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 24px; text-transform: uppercase; color: white; }
-        
         .main-body { flex: 1; display: flex; overflow: hidden; position: relative; }
         .form-side { flex: 1; padding: 40px; display: flex; flex-direction: column; overflow-y: auto; z-index: 1; }
-        
         .input-group { position: relative; margin-top: 25px; }
         .input-group label { position: absolute; left: 12px; top: 14px; color: var(--fucsia); font-weight: 700; transition: 0.2s; pointer-events: none; background: white; padding: 0 4px; }
         .input-group input { width: 100%; padding: 14px; border: 2px solid #f3f4f6; border-radius: 12px; outline: none; box-sizing: border-box; }
         .input-group input:focus { border-color: var(--fucsia); }
         .input-group input:focus + label, .input-group input:not(:placeholder-shown) + label { top: -10px; font-size: 11px; color: var(--fucsia); }
-
         .btn-wrapper { position: relative; padding: 3px; border-radius: 12px; margin-top: 25px; overflow: hidden; cursor: pointer; background: var(--btn-gradient); }
         #submit-btn { position: relative; width: 100%; height: 50px; background: white; color: var(--fucsia); border: none; border-radius: 9px; font-weight: 800; cursor: pointer; z-index: 1; }
-
         .photo-side { width: 130px; display: flex; flex-direction: column; align-items: center; padding-top: 40px; padding-right: 20px; }
         .foto-title { font-size: 11px; font-weight: 800; color: var(--fucsia); text-transform: uppercase; margin-bottom: 6px; display: block; }
         .foto-preview-box { width: 120px; height: 120px; border: 2px dashed var(--fucsia); border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #f9f9f9; cursor: pointer; }
-        
         input[type="file"]::file-selector-button { background: var(--fucsia); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
-
         .irina-bg { width: 35%; height: 100%; object-fit: cover; mask-image: linear-gradient(to right, transparent 0%, black 15%); }
         #success-screen { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; }
         #preview-img-form { width: 100%; height: 100%; object-fit: cover; display: none; }
@@ -48,7 +37,6 @@
                 <div style="color:white; font-weight:900;">BLUE LAB</div>
                 <div class="vincha-title">Irina Hire Selection</div>
             </div>
-
             <div id="content-wrapper" class="main-body">
                 <form id="postulacion-form" style="display: flex; width: 100%;">
                     <input type="hidden" id="oferta_vinculada" name="oferta_vinculada">
@@ -65,7 +53,6 @@
                             <button type="submit" id="submit-btn">ENVIAR POSTULACIÓN</button>
                         </div>
                     </div>
-                    
                     <div class="photo-side">
                         <span class="foto-title">SUBIR FOTO</span>
                         <div class="foto-preview-box" onclick="document.getElementById('foto').click()">
@@ -75,13 +62,11 @@
                         <input type="file" id="foto" accept="image/*" style="display:none" required>
                     </div>
                 </form>
-
                 <div id="success-screen">
                     <img id="final-photo" src="" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--fucsia); margin-bottom: 20px;">
                     <h1 style="color:var(--fucsia);">¡Postulación Enviada!</h1>
                     <p>Gracias por registrarte, <span id="display-name"></span>.</p>
                 </div>
-
                 <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" class="irina-bg">
             </div>
         </div>
@@ -122,11 +107,10 @@
                 reader.onload = () => resolve(reader.result);
             });
 
-            // Convertir archivos a Base64 en el cliente
+            console.log("Convirtiendo archivos a Base64...");
             const fotoBase64 = await toBase64(document.getElementById('foto').files[0]);
             const cvBase64 = await toBase64(document.getElementById('cv').files[0]);
 
-            // Llamada única a la función enviando los archivos en Base64
             console.log("Enviando datos a la función...");
             const { data: ingresoData, error: ingresoError } = await sb.functions.invoke('hbt_ingreso_postulante', {
                 body: {
@@ -142,6 +126,7 @@
 
             if (ingresoError) throw new Error("Error en ingreso: " + ingresoError.message);
             console.log("Ingreso exitoso. ID generado:", ingresoData.id);
+            console.log("URL recibida para procesar:", ingresoData.cvUrl);
 
             btn.innerText = "LEYENDO TU CV...";
             const { error: errorExtraccion } = await sb.functions.invoke('hbt_extraer_cv', {
