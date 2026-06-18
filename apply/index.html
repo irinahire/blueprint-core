@@ -120,19 +120,20 @@
             const fotoFile = document.getElementById('foto').files[0];
             const cvFile = document.getElementById('cv').files[0];
 
-            console.log("Iniciando subida para:", uid);
-            console.log("Archivo foto:", fotoFile);
-            console.log("Archivo cv:", cvFile);
+            const nombreFoto = `foto_${uid}.png`;
+            const nombreCv = `cv_${uid}.pdf`;
 
-            // Subir archivos al Storage con diagnóstico mejorado
-            const { error: fotoError } = await sb.storage.from('fotos').upload(`foto_${uid}.png`, fotoFile, { upsert: true });
-            if (fotoError) throw new Error("Error en subida de foto: " + fotoError.message);
+            console.log("Subiendo archivos al bucket 'files'...");
+
+            // Subir archivos al nuevo bucket 'files'
+            const { error: fotoError } = await sb.storage.from('files').upload(nombreFoto, fotoFile, { upsert: true });
+            if (fotoError) throw new Error("Error subiendo foto: " + fotoError.message);
             
-            const { error: cvError } = await sb.storage.from('curriculums').upload(`cv_${uid}.pdf`, cvFile, { upsert: true });
-            if (cvError) throw new Error("Error en subida de cv: " + cvError.message);
+            const { error: cvError } = await sb.storage.from('files').upload(nombreCv, cvFile, { upsert: true });
+            if (cvError) throw new Error("Error subiendo CV: " + cvError.message);
             
-            const { data: fData } = sb.storage.from('fotos').getPublicUrl(`foto_${uid}.png`);
-            const { data: cData } = sb.storage.from('curriculums').getPublicUrl(`cv_${uid}.pdf`);
+            const { data: fData } = sb.storage.from('files').getPublicUrl(nombreFoto);
+            const { data: cData } = sb.storage.from('files').getPublicUrl(nombreCv);
 
             console.log("Iniciando ingreso...");
             const { data: ingresoData, error: ingresoError } = await sb.functions.invoke('hbt_ingreso_postulante', {
