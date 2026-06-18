@@ -11,11 +11,8 @@
         .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 95%; max-width: 1050px; height: 92vh; display: flex; align-items: center; justify-content: center; }
         .app-shell { width: 100%; height: 100%; background: white; border-radius: 40px; display: flex; flex-direction: column; overflow: hidden; }
         
-        .header { height: 80px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; font-family: 'Montserrat', sans-serif; flex-shrink: 0; }
-        .header-left { font-weight: 900; font-size: 1.2rem; }
-        .user-zone { display: flex; align-items: center; gap: 15px; font-size: 0.9rem; font-weight: 600; }
-        .user-avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid white; display: none; }
-        .auth-btn { background: #333; color: white; border: none; padding: 10px 20px; border-radius: 9px; cursor: pointer; font-family: 'Inter'; font-weight: 600; }
+        /* Contenedor dinámico del módulo auth */
+        #blue-header { height: 80px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; color: white; font-family: 'Montserrat', sans-serif; flex-shrink: 0; }
         
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center; }
         .modal-content { background:white; padding:40px; border-radius:20px; text-align:center; color:#333; }
@@ -47,14 +44,8 @@
 
 <div class="outer-frame">
     <div class="app-shell">
-        <div class="header">
-            <div class="header-left">BLUE LAB | Irina Hire Selection</div>
-            <div class="user-zone">
-                <img id="user-avatar" class="user-avatar" src="">
-                <span id="user-name"></span>
-                <button id="auth-btn" class="auth-btn" onclick="toggleAuth()">Iniciar Sesión</button>
-            </div>
-        </div>
+        <!-- Cabecera inyectada por el módulo -->
+        <div id="blue-header"></div>
         
         <div class="content-area">
             <div id="form-wrapper" class="form-container">
@@ -91,58 +82,16 @@
     </div>
 </div>
 
-<div id="login-modal" class="modal">
-    <div class="modal-content">
-        <h2>Acceso a BlueLab</h2>
-        <p>Iniciá sesión con Google para continuar</p>
-        <button class="auth-btn" onclick="iniciarSesionGoogle()">INGRESAR CON GOOGLE</button>
-    </div>
-</div>
+<!-- Incluir tu módulo de auth aquí -->
+<script src="../auth-module.js"></script>
 
 <script>
-    const sb = supabase.createClient('https://zuzvozgjsppkxvdlptmk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0');
-
-    let currentUser = null;
-
-    sb.auth.onAuthStateChange((event, session) => {
-        currentUser = session?.user || null;
-        const btn = document.getElementById('auth-btn');
-        const name = document.getElementById('user-name');
-        const avatar = document.getElementById('user-avatar');
-        const modal = document.getElementById('login-modal');
-
-        if (currentUser) {
-            btn.innerText = "Cerrar Sesión";
-            name.innerText = currentUser.user_metadata.full_name;
-            avatar.src = currentUser.user_metadata.avatar_url;
-            avatar.style.display = 'block';
-            modal.style.display = 'none';
-        } else {
-            btn.innerText = "Iniciar Sesión";
-            name.innerText = "";
-            avatar.style.display = 'none';
-        }
-    });
-
-    function toggleAuth() {
-        if (currentUser) {
-            sb.auth.signOut();
-        } else {
-            document.getElementById('login-modal').style.display = 'flex';
-        }
-    }
-
-    async function iniciarSesionGoogle() {
-        await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
-    }
-
+    // Usamos el cliente global window.sbClient definido en auth-module.js
     function resetForm() {
         document.getElementById('main-btn').innerText = "PUBLICAR";
         document.getElementById('form-wrapper').style.display = 'flex';
         document.getElementById('success-screen').style.display = 'none';
-        // Limpiar inputs
         document.querySelectorAll('input').forEach(el => { if(el.id !== 'full-url') el.value = ''; });
-        // Volver al tope del scroll
         document.getElementById('form-wrapper').scrollTop = 0;
     }
 
@@ -154,10 +103,13 @@
     }
 
     async function publicarOferta() {
-        if (!currentUser) {
-            document.getElementById('login-modal').style.display = 'flex';
+        // Verificamos si existe un usuario usando el storage gestionado por el módulo
+        const applicantId = localStorage.getItem('applicantId');
+        if (!applicantId) {
+            document.getElementById('loginModal').style.display = 'flex';
             return;
         }
+        
         const btn = document.getElementById('main-btn');
         btn.innerText = "Publicando...";
         const jobId = crypto.randomUUID();
@@ -178,9 +130,9 @@
         };
 
         try {
-            const { error } = await sb.functions.invoke('hbt_crear_oferta', {
+            const { error } = await window.sbClient.functions.invoke('hbt_crear_oferta', {
                 body: datosOferta,
-                headers: { Authorization: `Bearer ${(await sb.auth.getSession()).data.session.access_token}` }
+                headers: { Authorization: `Bearer ${(await window.sbClient.auth.getSession()).data.session.access_token}` }
             });
             if (error) throw error;
             document.getElementById('full-url').value = 'https://www.bluelab.online/apply?oferta=' + jobId;
