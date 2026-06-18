@@ -1,19 +1,25 @@
 window.BlueAuth = {
     init: function() {
+        // 1. Asegurar que supabase esté cargado antes de hacer nada
+        if (typeof supabase === 'undefined') {
+            console.error("BlueAuth: Supabase no está cargado.");
+            return;
+        }
+
+        // 2. Inicializar cliente inmediatamente
+        window.sbClient = supabase.createClient(
+            'https://zuzvozgjsppkxvdlptmk.supabase.co', 
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0'
+        );
+
         this.injectStyles();
         
-        // Esperamos a que el DOM esté disponible
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => this.injectHTML());
         } else {
             this.injectHTML();
         }
         
-        window.sbClient = supabase.createClient(
-            'https://zuzvozgjsppkxvdlptmk.supabase.co', 
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0'
-        );
-
         window.sbClient.auth.onAuthStateChange((event, session) => {
             this.updateUI(session);
         });
@@ -44,10 +50,7 @@ window.BlueAuth = {
 
     injectHTML: function() {
         const target = document.getElementById('blue-header');
-        if (!target) {
-            console.warn("BlueAuth: No se encontró el contenedor #blue-header.");
-            return;
-        }
+        if (!target) return;
         
         target.innerHTML = `
             <div class="header-wrapper">
@@ -73,14 +76,20 @@ window.BlueAuth = {
             </div>
         `;
         
-        // Verificamos la sesión actual tras inyectar el HTML
+        // Verificar estado de sesión tras inyectar
         window.sbClient.auth.getSession().then(({ data: { session } }) => {
             this.updateUI(session);
         });
     },
 
     login: async function() {
-        await window.sbClient.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
+        // Validación de seguridad antes de llamar a auth
+        if (window.sbClient && window.sbClient.auth) {
+            await window.sbClient.auth.signInWithOAuth({ 
+                provider: 'google', 
+                options: { redirectTo: window.location.href } 
+            });
+        }
     },
 
     updateUI: function(session) {
