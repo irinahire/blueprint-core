@@ -28,30 +28,21 @@ window.BlueAuth = {
         const style = document.createElement('style');
         style.id = 'blue-auth-styles';
         style.innerHTML = `
-            /* Cabecera extendida al 100% */
-            .header-wrapper { 
-                width: 100%; 
-                height: 90px; 
-                background: var(--irina-gradient); 
-                display: flex; 
-                align-items: center; 
-                justify-content: space-between; 
-                padding: 0 45px; 
-                box-sizing: border-box; /* Importante para que el padding no rompa el ancho */
-                flex-shrink: 0; 
-                color: white; 
-                font-family: 'Montserrat', sans-serif; 
-            }
+            .header-wrapper { width: 100%; height: 90px; background: var(--irina-gradient); display: flex; align-items: center; padding: 0 45px; box-sizing: border-box; flex-shrink: 0; color: white; font-family: 'Montserrat', sans-serif; gap: 30px; }
             .brand-left { display: flex; flex-direction: column; }
             .blue-lab-text { font-weight: 900; font-size: 26px; }
             .blueprint-subtext { font-weight: 700; font-size: 11px; text-transform: uppercase; }
             .vincha-title { font-weight: 900; font-size: 24px; text-transform: uppercase; background: white; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-image: var(--irina-gradient); filter: drop-shadow(2px 0 0 white) drop-shadow(-2px 0 0 white) drop-shadow(0 2px 0 white) drop-shadow(0 -2px 0 white); }
-            .auth-zone { display: flex; align-items: center; gap: 15px; }
+            .auth-zone { display: flex; align-items: center; margin-left: auto; gap: 15px; }
             
             .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center; }
-            .modal-content { background:white; padding:30px; border-radius:20px; text-align:center; max-width:400px; color:#333; }
+            .modal-content { background:white; padding:40px; border-radius:20px; text-align:center; max-width:400px; color:#333; position: relative; }
+            .close-modal { position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 24px; font-weight: bold; color: #ccc; }
+            .close-modal:hover { color: #333; }
+            
             .google-btn { background:#4285f4; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-weight:bold; }
-            .auth-btn { background:#fff; color:#bc8abf; border:none; padding:8px 15px; border-radius:9px; cursor:pointer; font-size:12px; font-weight:700; }
+            .auth-btn { background:#bc8abf; color:#fff; border:none; padding:8px 15px; border-radius:9px; cursor:pointer; font-size:12px; font-weight:700; }
+            
             .user-profile { display:flex; align-items:center; gap:10px; font-size:12px; }
             .user-avatar { width:30px; height:30px; border-radius:50%; border: 2px solid white; object-fit: cover; }
             .user-name-display { font-weight: 600; margin-right: 5px; }
@@ -81,6 +72,7 @@ window.BlueAuth = {
             </div>
             <div id="loginModal" class="modal">
                 <div class="modal-content">
+                    <span class="close-modal" onclick="document.getElementById('loginModal').style.display='none'">&times;</span>
                     <h2>BlueLab Acceso</h2>
                     <button class="google-btn" onclick="window.BlueAuth.login()">INGRESAR CON GOOGLE</button>
                 </div>
