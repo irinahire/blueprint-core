@@ -2,6 +2,7 @@ window.BlueAuth = {
     init: function() {
         this.injectStyles();
         
+        // Esperamos a que el DOM esté disponible
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => this.injectHTML());
         } else {
@@ -71,6 +72,11 @@ window.BlueAuth = {
                 </div>
             </div>
         `;
+        
+        // Verificamos la sesión actual tras inyectar el HTML
+        window.sbClient.auth.getSession().then(({ data: { session } }) => {
+            this.updateUI(session);
+        });
     },
 
     login: async function() {
@@ -98,4 +104,5 @@ window.BlueAuth = {
         }
     }
 };
+
 window.BlueAuth.init();
