@@ -1,7 +1,13 @@
 window.BlueAuth = {
     init: function() {
         this.injectStyles();
-        this.injectHTML();
+        
+        // Esperamos a que el DOM esté completamente cargado antes de inyectar
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => this.injectHTML());
+        } else {
+            this.injectHTML();
+        }
         
         window.sbClient = supabase.createClient(
             'https://zuzvozgjsppkxvdlptmk.supabase.co', 
@@ -14,28 +20,32 @@ window.BlueAuth = {
     },
 
     injectStyles: function() {
+        if (document.getElementById('blue-auth-styles')) return;
         const style = document.createElement('style');
+        style.id = 'blue-auth-styles';
         style.innerHTML = `
             .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center; }
             .modal-content { background:white; padding:30px; border-radius:20px; text-align:center; max-width:400px; color:#333; }
             .google-btn { background:#4285f4; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-weight:bold; }
-            .auth-btn { background:#333; color:white; border:none; padding:8px 15px; border-radius:9px; cursor:pointer; font-size:12px; }
+            .auth-btn { background:#fff; color:#bc8abf; border:none; padding:8px 15px; border-radius:9px; cursor:pointer; font-size:12px; font-weight:700; }
             .user-profile { display:flex; align-items:center; gap:10px; color:white; font-size:12px; }
-            .user-avatar { width:30px; height:30px; border-radius:50%; }
+            .user-avatar { width:30px; height:30px; border-radius:50%; border: 2px solid white; }
         `;
         document.head.appendChild(style);
     },
 
     injectHTML: function() {
-        // Buscamos el header (página de ofertas) o la top-vincha (página de postulación)
-        const header = document.querySelector('.header') || document.querySelector('.top-vincha');
-        if (!header) return;
+        // Prioridad absoluta: busca el ID 'auth-container'
+        const target = document.getElementById('auth-container') || 
+                       document.querySelector('.header') || 
+                       document.querySelector('.top-vincha');
         
-        const container = document.createElement('div');
-        container.style.display = 'flex';
-        container.style.alignItems = 'center';
-        container.style.paddingRight = '10px'; // Un poco de espacio extra
-        container.innerHTML = `
+        if (!target) {
+            console.warn("BlueAuth: No se encontró un contenedor para inyectar.");
+            return;
+        }
+        
+        target.innerHTML = `
             <button id="loginBtn" class="auth-btn" onclick="document.getElementById('loginModal').style.display='flex'">ACCEDER</button>
             <div id="userZone" style="display:none;" class="user-profile">
                 <img id="userAvatar" class="user-avatar" src="">
@@ -48,7 +58,6 @@ window.BlueAuth = {
                 </div>
             </div>
         `;
-        header.appendChild(container);
     },
 
     login: async function() {
