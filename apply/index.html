@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Irina Hire Selection | Portal de Postulación</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Incluimos el Módulo de Auth -->
+    <script src="auth-module.js"></script> 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
     <style>
         :root { --fucsia: #bc8abf; --irina-gradient: linear-gradient(to right, #bc8abf 0%, #96e8da 100%); --btn-gradient: linear-gradient(to right, #96e8da 0%, #bc8abf 100%); --bg-dark: #05070a; }
@@ -97,7 +99,30 @@
 
     document.getElementById('postulacion-form').onsubmit = async (e) => {
         e.preventDefault();
+        
+        // --- VALIDACIÓN DE IDENTIDAD ---
+        const emailInput = document.getElementById('email').value;
         const btn = document.getElementById('submit-btn');
+        
+        btn.innerText = "VERIFICANDO...";
+        
+        const { data: usuarioExistente } = await sb
+            .from('habitat')
+            .select('owner_id')
+            .eq('metadata->!tipo', '!postulacion')
+            .ilike('data->!perfil->!perfil-contacto->>email', emailInput)
+            .maybeSingle();
+
+        if (usuarioExistente) {
+            alert("Ya tienes una cuenta registrada. Iniciá sesión para continuar con tu postulación.");
+            if(window.BlueAuth) {
+                document.getElementById('loginModal').style.display = 'flex';
+            }
+            btn.innerText = "ENVIAR POSTULACIÓN";
+            return;
+        }
+        // --- FIN VALIDACIÓN ---
+
         btn.innerText = "PROCESANDO...";
 
         try {
@@ -107,16 +132,14 @@
                 reader.onload = () => resolve(reader.result);
             });
 
-            console.log("Convirtiendo archivos a Base64...");
             const fotoBase64 = await toBase64(document.getElementById('foto').files[0]);
             const cvBase64 = await toBase64(document.getElementById('cv').files[0]);
 
-            console.log("Enviando datos a la función...");
             const { data: ingresoData, error: ingresoError } = await sb.functions.invoke('hbt_ingreso_postulante', {
                 body: {
                     job_id: document.getElementById('oferta_vinculada').value,
                     nombre: document.getElementById('nombre').value,
-                    email: document.getElementById('email').value,
+                    email: emailInput,
                     telefono: document.getElementById('telefono').value,
                     linkedin: document.getElementById('linkedin').value,
                     fotoBase64,
@@ -125,20 +148,16 @@
             });
 
             if (ingresoError) throw new Error("Error en ingreso: " + ingresoError.message);
-            console.log("Ingreso exitoso. ID generado:", ingresoData.id);
-            console.log("URL recibida para procesar:", ingresoData.cvUrl);
 
             btn.innerText = "LEYENDO TU CV...";
-            const { error: errorExtraccion } = await sb.functions.invoke('hbt_extraer_cv', {
+            await sb.functions.invoke('hbt_extraer_cv', {
                 body: { parent_id: ingresoData.id, url: ingresoData.cvUrl }
             });
-            if (errorExtraccion) throw new Error("Error en extracción: " + errorExtraccion.message);
 
             btn.innerText = "ANALIZANDO PERFIL...";
-            const { error: parseoError } = await sb.functions.invoke('hbt_parsear_cv', {
+            await sb.functions.invoke('hbt_parsear_cv', {
                 body: { parent_id: ingresoData.id } 
             });
-            if (parseoError) throw new Error("Error en parseo: " + parseoError.message);
             
             document.getElementById('display-name').innerText = document.getElementById('nombre').value;
             document.getElementById('final-photo').src = document.getElementById('preview-img-form').src;
@@ -155,6 +174,6 @@
             btn.innerText = "ENVIAR POSTULACIÓN"; 
         }
     };
-</script>   
+</script>    
 </body>
 </html>
