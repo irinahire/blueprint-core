@@ -1,12 +1,10 @@
 window.BlueAuth = {
     init: function() {
-        // 1. Asegurar que supabase esté cargado antes de hacer nada
         if (typeof supabase === 'undefined') {
             console.error("BlueAuth: Supabase no está cargado.");
             return;
         }
 
-        // 2. Inicializar cliente inmediatamente
         window.sbClient = supabase.createClient(
             'https://zuzvozgjsppkxvdlptmk.supabase.co', 
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0'
@@ -30,7 +28,20 @@ window.BlueAuth = {
         const style = document.createElement('style');
         style.id = 'blue-auth-styles';
         style.innerHTML = `
-            .header-wrapper { height: 90px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 45px; flex-shrink: 0; color: white; font-family: 'Montserrat', sans-serif; }
+            /* Cabecera extendida al 100% */
+            .header-wrapper { 
+                width: 100%; 
+                height: 90px; 
+                background: var(--irina-gradient); 
+                display: flex; 
+                align-items: center; 
+                justify-content: space-between; 
+                padding: 0 45px; 
+                box-sizing: border-box; /* Importante para que el padding no rompa el ancho */
+                flex-shrink: 0; 
+                color: white; 
+                font-family: 'Montserrat', sans-serif; 
+            }
             .brand-left { display: flex; flex-direction: column; }
             .blue-lab-text { font-weight: 900; font-size: 26px; }
             .blueprint-subtext { font-weight: 700; font-size: 11px; text-transform: uppercase; }
@@ -76,14 +87,12 @@ window.BlueAuth = {
             </div>
         `;
         
-        // Verificar estado de sesión tras inyectar
         window.sbClient.auth.getSession().then(({ data: { session } }) => {
             this.updateUI(session);
         });
     },
 
     login: async function() {
-        // Validación de seguridad antes de llamar a auth
         if (window.sbClient && window.sbClient.auth) {
             await window.sbClient.auth.signInWithOAuth({ 
                 provider: 'google', 
