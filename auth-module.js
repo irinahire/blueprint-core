@@ -2,7 +2,6 @@ window.BlueAuth = {
     init: function() {
         this.injectStyles();
         
-        // Esperamos a que el DOM esté completamente cargado antes de inyectar
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => this.injectHTML());
         } else {
@@ -24,34 +23,46 @@ window.BlueAuth = {
         const style = document.createElement('style');
         style.id = 'blue-auth-styles';
         style.innerHTML = `
+            .header-wrapper { height: 90px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 45px; flex-shrink: 0; color: white; font-family: 'Montserrat', sans-serif; }
+            .brand-left { display: flex; flex-direction: column; }
+            .blue-lab-text { font-weight: 900; font-size: 26px; }
+            .blueprint-subtext { font-weight: 700; font-size: 11px; text-transform: uppercase; }
+            .vincha-title { font-weight: 900; font-size: 24px; text-transform: uppercase; background: white; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-image: var(--irina-gradient); filter: drop-shadow(2px 0 0 white) drop-shadow(-2px 0 0 white) drop-shadow(0 2px 0 white) drop-shadow(0 -2px 0 white); }
+            .auth-zone { display: flex; align-items: center; gap: 15px; }
+            
             .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center; }
             .modal-content { background:white; padding:30px; border-radius:20px; text-align:center; max-width:400px; color:#333; }
             .google-btn { background:#4285f4; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-weight:bold; }
             .auth-btn { background:#fff; color:#bc8abf; border:none; padding:8px 15px; border-radius:9px; cursor:pointer; font-size:12px; font-weight:700; }
-            .user-profile { display:flex; align-items:center; gap:10px; color:white; font-size:12px; }
+            .user-profile { display:flex; align-items:center; gap:10px; font-size:12px; }
             .user-avatar { width:30px; height:30px; border-radius:50%; border: 2px solid white; object-fit: cover; }
-            .user-name-display { color: white; font-weight: 600; margin-right: 5px; }
+            .user-name-display { font-weight: 600; margin-right: 5px; }
         `;
         document.head.appendChild(style);
     },
 
     injectHTML: function() {
-        // Prioridad absoluta: busca el ID 'auth-container'
-        const target = document.getElementById('auth-container') || 
-                       document.querySelector('.header') || 
-                       document.querySelector('.top-vincha');
-        
+        const target = document.getElementById('blue-header');
         if (!target) {
-            console.warn("BlueAuth: No se encontró un contenedor para inyectar.");
+            console.warn("BlueAuth: No se encontró el contenedor #blue-header.");
             return;
         }
         
         target.innerHTML = `
-            <button id="loginBtn" class="auth-btn" onclick="document.getElementById('loginModal').style.display='flex'">ACCEDER</button>
-            <div id="userZone" style="display:none;" class="user-profile">
-                <img id="userAvatar" class="user-avatar" src="">
-                <span id="userNameDisplay" class="user-name-display"></span>
-                <button class="auth-btn" onclick="window.sbClient.auth.signOut()">SALIR</button>
+            <div class="header-wrapper">
+                <div class="brand-left">
+                    <span class="blue-lab-text">BLUE LAB</span>
+                    <span class="blueprint-subtext">Blueprint Integrations Lab</span>
+                </div>
+                <div class="vincha-title">Irina Hire Selection</div>
+                <div class="auth-zone">
+                    <button id="loginBtn" class="auth-btn" onclick="document.getElementById('loginModal').style.display='flex'">ACCEDER</button>
+                    <div id="userZone" style="display:none;" class="user-profile">
+                        <img id="userAvatar" class="user-avatar" src="">
+                        <span id="userNameDisplay" class="user-name-display"></span>
+                        <button class="auth-btn" onclick="window.sbClient.auth.signOut()">SALIR</button>
+                    </div>
+                </div>
             </div>
             <div id="loginModal" class="modal">
                 <div class="modal-content">
@@ -77,16 +88,8 @@ window.BlueAuth = {
             if(loginBtn) loginBtn.style.display = 'none';
             if(userZone) {
                 userZone.style.display = 'flex';
-                
-                // Actualizamos foto (si existe)
-                if(avatarImg) {
-                    avatarImg.src = session.user.user_metadata.avatar_url || '';
-                }
-                
-                // Actualizamos nombre
-                if(nameSpan) {
-                    nameSpan.innerText = session.user.user_metadata.full_name || '';
-                }
+                if(avatarImg) avatarImg.src = session.user.user_metadata.avatar_url || '';
+                if(nameSpan) nameSpan.innerText = session.user.user_metadata.full_name || '';
             }
         } else {
             localStorage.removeItem('applicantId');
