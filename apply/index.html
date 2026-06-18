@@ -87,23 +87,18 @@
         </div>
     </div>
 
-
-
 <script>
-    // Configuración del cliente de Supabase
     const sb = supabase.createClient(
         'https://zuzvozgjsppkxvdlptmk.supabase.co', 
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0'
     );
 
-    // Capturar el ID de la oferta desde la URL
     window.onload = () => {
         const params = new URLSearchParams(window.location.search);
         const oferta = params.get('oferta') || 'DIRECTA';
         document.getElementById('oferta_vinculada').value = oferta;
     };
 
-    // Previsualización de la foto
     document.getElementById('foto').onchange = (e) => {
         const reader = new FileReader();
         reader.onload = (event) => {
@@ -115,7 +110,6 @@
         reader.readAsDataURL(e.target.files[0]);
     };
 
-    // Lógica de Envío
     document.getElementById('postulacion-form').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('submit-btn');
@@ -126,14 +120,20 @@
             const fotoFile = document.getElementById('foto').files[0];
             const cvFile = document.getElementById('cv').files[0];
 
-            // Subir archivos al Storage
-            await sb.storage.from('fotos').upload(`foto_${uid}.png`, fotoFile);
-            await sb.storage.from('curriculums').upload(`cv_${uid}.pdf`, cvFile);
+            console.log("Iniciando subida para:", uid);
+            console.log("Archivo foto:", fotoFile);
+            console.log("Archivo cv:", cvFile);
+
+            // Subir archivos al Storage con diagnóstico mejorado
+            const { error: fotoError } = await sb.storage.from('fotos').upload(`foto_${uid}.png`, fotoFile, { upsert: true });
+            if (fotoError) throw new Error("Error en subida de foto: " + fotoError.message);
+            
+            const { error: cvError } = await sb.storage.from('curriculums').upload(`cv_${uid}.pdf`, cvFile, { upsert: true });
+            if (cvError) throw new Error("Error en subida de cv: " + cvError.message);
             
             const { data: fData } = sb.storage.from('fotos').getPublicUrl(`foto_${uid}.png`);
             const { data: cData } = sb.storage.from('curriculums').getPublicUrl(`cv_${uid}.pdf`);
 
-            // 1. Ingreso inicial (Crea el registro y devuelve el ID único)
             console.log("Iniciando ingreso...");
             const { data: ingresoData, error: ingresoError } = await sb.functions.invoke('hbt_ingreso_postulante', {
                 body: {
@@ -150,37 +150,25 @@
             if (ingresoError) throw new Error("Error en ingreso: " + ingresoError.message);
             console.log("Ingreso exitoso. ID generado:", ingresoData.id);
 
-            // 2. Extracción de texto (Actualiza la misma fila)
             btn.innerText = "LEYENDO TU CV...";
             const { error: errorExtraccion } = await sb.functions.invoke('hbt_extraer_cv', {
-                body: { 
-                    parent_id: ingresoData.id, 
-                    url: cData.publicUrl 
-                }
+                body: { parent_id: ingresoData.id, url: cData.publicUrl }
             });
             if (errorExtraccion) throw new Error("Error en extracción: " + errorExtraccion.message);
-            console.log("✅ Texto extraído con éxito.");
 
-            // 3. Parseo (Actualiza la misma fila con el JSON)
             btn.innerText = "ANALIZANDO PERFIL...";
             const { error: parseoError } = await sb.functions.invoke('hbt_parsear_cv', {
                 body: { parent_id: ingresoData.id } 
             });
             if (parseoError) throw new Error("Error en parseo: " + parseoError.message);
             
-            console.log("✅ Parseo completado.");
-
-            // Finalización exitosa
             document.getElementById('display-name').innerText = document.getElementById('nombre').value;
             document.getElementById('final-photo').src = document.getElementById('preview-img-form').src;
             document.getElementById('postulacion-form').style.display = 'none';
             document.getElementById('success-screen').style.display = 'flex';
 
-            // Redirección automática a la Waiting Page
             setTimeout(() => {
-                const idPostulante = ingresoData.id;
-                const urlDestino = `https://www.bluelab.online/apply/waitingpage.html?id=${idPostulante}`;
-                window.location.href = urlDestino;
+                window.location.href = `https://www.bluelab.online/apply/waitingpage.html?id=${ingresoData.id}`;
             }, 3000);
 
         } catch (err) { 
@@ -189,8 +177,6 @@
             btn.innerText = "ENVIAR POSTULACIÓN"; 
         }
     };
-</script>    
-
-    
+</script>   
 </body>
 </html>
