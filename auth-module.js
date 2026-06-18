@@ -30,6 +30,7 @@ window.BlueAuth = {
             .auth-btn { background:#fff; color:#bc8abf; border:none; padding:8px 15px; border-radius:9px; cursor:pointer; font-size:12px; font-weight:700; }
             .user-profile { display:flex; align-items:center; gap:10px; color:white; font-size:12px; }
             .user-avatar { width:30px; height:30px; border-radius:50%; border: 2px solid white; }
+            .user-name-display { color: white; font-weight: 600; margin-right: 5px; }
         `;
         document.head.appendChild(style);
     },
@@ -48,6 +49,7 @@ window.BlueAuth = {
         target.innerHTML = `
             <button id="loginBtn" class="auth-btn" onclick="document.getElementById('loginModal').style.display='flex'">ACCEDER</button>
             <div id="userZone" style="display:none;" class="user-profile">
+                <span id="userNameDisplay" class="user-name-display"></span>
                 <img id="userAvatar" class="user-avatar" src="">
                 <button class="auth-btn" onclick="window.sbClient.auth.signOut()">SALIR</button>
             </div>
@@ -67,12 +69,18 @@ window.BlueAuth = {
     updateUI: function(session) {
         const loginBtn = document.getElementById('loginBtn');
         const userZone = document.getElementById('userZone');
+        const nameSpan = document.getElementById('userNameDisplay');
+        const avatarImg = document.getElementById('userAvatar');
+
         if (session) {
             localStorage.setItem('applicantId', session.user.id);
             if(loginBtn) loginBtn.style.display = 'none';
             if(userZone) {
                 userZone.style.display = 'flex';
-                document.getElementById('userAvatar').src = session.user.user_metadata.avatar_url || '';
+                // Actualizamos nombre
+                if(nameSpan) nameSpan.innerText = session.user.user_metadata.full_name || '';
+                // Actualizamos foto
+                if(avatarImg) avatarImg.src = session.user.user_metadata.avatar_url || '';
             }
         } else {
             localStorage.removeItem('applicantId');
