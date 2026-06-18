@@ -27,11 +27,14 @@ window.BlueAuth = {
     },
 
     injectHTML: function() {
-        const header = document.querySelector('.header');
+        // Buscamos el header (página de ofertas) o la top-vincha (página de postulación)
+        const header = document.querySelector('.header') || document.querySelector('.top-vincha');
         if (!header) return;
+        
         const container = document.createElement('div');
         container.style.display = 'flex';
         container.style.alignItems = 'center';
+        container.style.paddingRight = '10px'; // Un poco de espacio extra
         container.innerHTML = `
             <button id="loginBtn" class="auth-btn" onclick="document.getElementById('loginModal').style.display='flex'">ACCEDER</button>
             <div id="userZone" style="display:none;" class="user-profile">
@@ -49,7 +52,7 @@ window.BlueAuth = {
     },
 
     login: async function() {
-        await window.sbClient.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin } });
+        await window.sbClient.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
     },
 
     updateUI: function(session) {
