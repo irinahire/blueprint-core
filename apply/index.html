@@ -116,26 +116,18 @@
         btn.innerText = "PROCESANDO...";
 
         try {
-            const uid = "POST_" + Date.now();
-            const fotoFile = document.getElementById('foto').files[0];
-            const cvFile = document.getElementById('cv').files[0];
+            const toBase64 = file => new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+            });
 
-            const nombreFoto = `foto_${uid}.png`;
-            const nombreCv = `cv_${uid}.pdf`;
+            // Convertir archivos a Base64 en el cliente
+            const fotoBase64 = await toBase64(document.getElementById('foto').files[0]);
+            const cvBase64 = await toBase64(document.getElementById('cv').files[0]);
 
-            console.log("Subiendo archivos al bucket 'files'...");
-
-            // Subir archivos al nuevo bucket 'files'
-            const { error: fotoError } = await sb.storage.from('files').upload(nombreFoto, fotoFile, { upsert: true });
-            if (fotoError) throw new Error("Error subiendo foto: " + fotoError.message);
-            
-            const { error: cvError } = await sb.storage.from('files').upload(nombreCv, cvFile, { upsert: true });
-            if (cvError) throw new Error("Error subiendo CV: " + cvError.message);
-            
-            const { data: fData } = sb.storage.from('files').getPublicUrl(nombreFoto);
-            const { data: cData } = sb.storage.from('files').getPublicUrl(nombreCv);
-
-            console.log("Iniciando ingreso...");
+            // Llamada única a la función enviando los archivos en Base64
+            console.log("Enviando datos a la función...");
             const { data: ingresoData, error: ingresoError } = await sb.functions.invoke('hbt_ingreso_postulante', {
                 body: {
                     job_id: document.getElementById('oferta_vinculada').value,
@@ -143,8 +135,8 @@
                     email: document.getElementById('email').value,
                     telefono: document.getElementById('telefono').value,
                     linkedin: document.getElementById('linkedin').value,
-                    urlFoto: fData.publicUrl,
-                    cvUrl: cData.publicUrl
+                    fotoBase64,
+                    cvBase64
                 }
             });
 
@@ -153,7 +145,7 @@
 
             btn.innerText = "LEYENDO TU CV...";
             const { error: errorExtraccion } = await sb.functions.invoke('hbt_extraer_cv', {
-                body: { parent_id: ingresoData.id, url: cData.publicUrl }
+                body: { parent_id: ingresoData.id, url: ingresoData.cvUrl }
             });
             if (errorExtraccion) throw new Error("Error en extracción: " + errorExtraccion.message);
 
