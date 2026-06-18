@@ -13,7 +13,7 @@
         .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 92%; max-width: 1150px; height: 85vh; display: flex; position: relative; }
         .app-container { background: white; width: 100%; height: 100%; border-radius: 40px; display: flex; flex-direction: column; overflow: hidden; }
         .top-vincha { width: 100%; height: 90px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 45px; box-sizing: border-box; flex-shrink: 0; }
-        .vincha-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 24px; text-transform: uppercase; color: white; }
+        .vincha-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 24px; text-transform: uppercase; color: white; display: flex; align-items: center; gap: 15px; }
         .main-body { flex: 1; display: flex; overflow: hidden; position: relative; }
         .form-side { flex: 1; padding: 40px; display: flex; flex-direction: column; overflow-y: auto; z-index: 1; }
         .input-group { position: relative; margin-top: 25px; }
@@ -36,8 +36,13 @@
     <div class="outer-frame">
         <div class="app-container">
             <div class="top-vincha">
-                <div style="color:white; font-weight:900;">BLUE LAB</div>
-                <div class="vincha-title">Irina Hire Selection</div>
+                <div class="vincha-title">
+                    <div style="color:white; font-weight:900;">BLUE LAB</div>
+                    <span style="font-weight: 300; opacity: 0.7;">|</span>
+                    <div>Irina Hire Selection</div>
+                </div>
+                <!-- Contenedor donde aparecerá el botón del módulo -->
+                <div id="auth-container"></div>
             </div>
             <div id="content-wrapper" class="main-body">
                 <form id="postulacion-form" style="display: flex; width: 100%;">
@@ -75,9 +80,6 @@
     </div>
 
 <script>
-    // Usamos la instancia global window.sbClient proporcionada por auth-module.js
-    // para evitar conflictos de múltiples instancias de GoTrueClient.
-
     window.onload = () => {
         const params = new URLSearchParams(window.location.search);
         const oferta = params.get('oferta') || 'DIRECTA';
@@ -98,13 +100,11 @@
     document.getElementById('postulacion-form').onsubmit = async (e) => {
         e.preventDefault();
         
-        // --- VALIDACIÓN DE IDENTIDAD ---
         const emailInput = document.getElementById('email').value;
         const btn = document.getElementById('submit-btn');
         
         btn.innerText = "VERIFICANDO...";
         
-        // Usamos window.sbClient en lugar de una variable local 'sb'
         const { data: usuarioExistente } = await window.sbClient
             .from('habitat')
             .select('owner_id')
@@ -120,7 +120,6 @@
             btn.innerText = "ENVIAR POSTULACIÓN";
             return;
         }
-        // --- FIN VALIDACIÓN ---
 
         btn.innerText = "PROCESANDO...";
 
