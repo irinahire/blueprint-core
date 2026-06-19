@@ -13,13 +13,13 @@
             min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; 
         }
 
-        /* MARCO CORREGIDO: Más grueso (10px) y gradiente invertido (Fucsia -> Turquesa) */
+        /* MARCO: Exactamente 8px como pediste, gradiente Fucsia a Turquesa */
         .main-container { 
             width: 100%; max-width: 1200px; height: 85vh; 
             display: flex; flex-direction: column; border-radius: 24px; 
             overflow: hidden; 
             background: linear-gradient(to right, #B588C0, #8EE4D5); 
-            padding: 10px; /* Ancho del marco */
+            padding: 8px; 
         }
 
         .inner-wrapper {
@@ -30,15 +30,7 @@
             overflow: hidden;
         }
 
-        /* HEADER CON GRADIENTE INTEGRADO */
-        #blue-header { 
-            width: 100%; flex-shrink: 0; 
-            background: linear-gradient(to right, #B588C0, #8EE4D5); 
-            padding: 2px; /* Pequeño borde para el header si es necesario */
-        }
-        
-        /* Contenedor interno del header para que mantenga el fondo negro */
-        #blue-header > div { background: #000; }
+        #blue-header { width: 100%; flex-shrink: 0; }
 
         .content-area { 
             flex: 1; 
@@ -92,7 +84,6 @@
 <div class="main-container">
     <div class="inner-wrapper">
         <div id="blue-header"></div>
-
         <div class="content-area" id="area-juego">
             <div class="tarjeta-naipe completado">
                 <div><div class="naipe-header">SERIE 01</div><div class="ejercicio-titulo">LÓGICA</div></div>
@@ -104,7 +95,7 @@
                 <p class="ejercicio-desc">Resolución de conflictos en alta presión.</p>
                 <div class="sets-reps">4 SETS | CARGA MÁXIMA</div>
             </div>
-            <div class="tarjeta-naipe pendiente">
+            <div class="tarjeta-naipe">
                 <div><div class="naipe-header">SERIE 03</div><div class="ejercicio-titulo">PSICOMETRÍA</div></div>
                 <p class="ejercicio-desc">Evaluación adaptativa y estrés.</p>
                 <div class="sets-reps">2 SETS | CARGA MEDIA</div>
@@ -113,7 +104,6 @@
                 <button class="btn-luz" onclick="iniciarRutina()">INICIA TU RUTINA</button>
             </div>
         </div>
-        
         <div id="mensaje-entrenamiento"></div>
     </div>
 </div>
