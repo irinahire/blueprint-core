@@ -190,8 +190,8 @@
         let emailMostrado = "correo no detectado";
 
         try {
-            // Consulta directa a Supabase dentro del evento click
-            const { data: record, error } = await _supabase
+            // Consulta directa a Supabase usando la instancia global window.sbClient
+            const { data: record, error } = await window.sbClient
                 .from('habitat')
                 .select('data')
                 .eq('id', applicantId)
