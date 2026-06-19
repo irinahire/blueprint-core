@@ -127,11 +127,15 @@
     const startWrapper = document.getElementById('start-wrapper');
     const msgBox = document.getElementById('msg-box');
     const FUNCTION_URL = "https://zuzvozgjsppkxvdlptmk.supabase.co/functions/v1/hbt_start_interview";
-    const applicantId = new URLSearchParams(window.location.search).get('applicantId');
+    
+    // Captura de ambos parámetros desde la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const applicantId = urlParams.get('applicantId');
+    const jobId = urlParams.get('jobId');
 
     btn.addEventListener('click', async () => {
-        if (!applicantId) {
-            msgBox.innerText = "Error: ID de postulante no encontrado.";
+        if (!applicantId || !jobId) {
+            msgBox.innerText = "Error: Parámetros de entrevista no encontrados en la URL.";
             return;
         }
         btn.innerText = "CONECTANDO...";
@@ -141,10 +145,15 @@
             const response = await fetch(FUNCTION_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ applicantId })
+                body: JSON.stringify({ applicantId, jobId }) // Enviamos ambos correctamente
             });
 
             const config = await response.json();
+            
+            if (!config.publicKey || !config.assistantId) {
+                throw new Error("Configuración de Vapi incompleta.");
+            }
+
             const vapi = window.vapiSDK.run({
                 apiKey: config.publicKey, 
                 assistant: config.assistantId,
@@ -160,10 +169,11 @@
                 }
             }, 100);
 
-            vapi.on('call-start', () => document.querySelector('.vapi-btn').setAttribute('data-text', 'FINALIZAR ENTREVISTA'));
-            vapi.on('call-end', () => document.querySelector('.vapi-btn').setAttribute('data-text', 'INICIAR ENTREVISTA'));
+            vapi.on('call-start', () => document.querySelector('.vapi-btn')?.setAttribute('data-text', 'FINALIZAR ENTREVISTA'));
+            vapi.on('call-end', () => document.querySelector('.vapi-btn')?.setAttribute('data-text', 'INICIAR ENTREVISTA'));
         } catch (e) {
             console.error(e);
+            msgBox.innerText = "Error al iniciar la entrevista. Intente nuevamente.";
             btn.innerText = "ESTOY LISTO PARA LA ENTREVISTA";
             btn.disabled = false;
         }
