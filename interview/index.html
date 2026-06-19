@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Irina Hire Selection | Entrevista</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../auth-module.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js"></script>
     <style>
         :root {
@@ -17,11 +19,7 @@
         .outer-frame { padding: 10px; background: var(--irina-gradient); border-radius: 50px; width: 92%; max-width: 1150px; position: relative; }
         .card { background: white; width: 100%; border-radius: 40px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
         
-        .header { height: 90px; background: var(--irina-gradient); display: flex; align-items: center; justify-content: space-between; padding: 0 45px; flex-shrink: 0; }
-        .brand-left { display: flex; flex-direction: column; color: white; font-family: 'Montserrat', sans-serif; }
-        .blue-lab-text { font-weight: 900; font-size: 26px; }
-        .blueprint-subtext { font-weight: 700; font-size: 11px; text-transform: uppercase; }
-        .vincha-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 24px; text-transform: uppercase; background: white; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-image: var(--irina-gradient); filter: drop-shadow(2px 0 0 white) drop-shadow(-2px 0 0 white) drop-shadow(0 2px 0 white) drop-shadow(0 -2px 0 white); }
+        #blue-header { flex-shrink: 0; }
 
         .content { display: flex; min-height: 500px; position: relative; }
         
@@ -86,13 +84,8 @@
 
 <div class="outer-frame">
     <div class="card">
-        <div class="header">
-            <div class="brand-left">
-                <span class="blue-lab-text">BLUE LAB</span>
-                <span class="blueprint-subtext">Blueprint Integrations Lab</span>
-            </div>
-            <div class="vincha-title">Irina Hire Selection</div>
-        </div>
+        <!-- Cabecera inyectada dinámicamente -->
+        <div id="blue-header"></div>
         
         <div class="content">
             <div id="start-wrapper">
