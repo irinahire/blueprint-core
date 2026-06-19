@@ -23,7 +23,7 @@
 
         .content { display: flex; min-height: 500px; position: relative; }
         
-        .left-col { padding: 40px 60px; flex: 1; display: flex; flex-direction: column; }
+        .left-col { padding: 40px 60px 40px 60px; margin-top: 60px; flex: 1; display: flex; flex-direction: column; }
         .right-col { width: 400px; height: 100%; }
         .right-col img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 0 0 40px 0; }
 
@@ -31,14 +31,26 @@
         ul { padding-left: 20px; }
         li { margin-bottom: 12px; font-size: 14px; line-height: 1.4; }
 
-        /* Contenedor botones */
+        /* Contenedor botones unificado */
         .btn-group { display: flex; gap: 15px; margin-top: 30px; }
-        .btn-wrapper { padding: 2px; border-radius: 8px; border: 2px solid transparent; transition: border 0.3s ease; flex: 1; }
-        .btn-wrapper:hover { border: 2px solid var(--fucsia); }
-        .btn-pub { background: var(--btn-gradient); color: white; border: none; padding: 15px 0; width: 100%; border-radius: 6px; font-weight: 800; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 14px; text-transform: uppercase; }
         
-        .btn-secondary { background: white; border: 2px solid var(--fucsia); color: var(--fucsia); padding: 15px 0; width: 100%; border-radius: 8px; font-weight: 800; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 14px; text-transform: uppercase; transition: all 0.3s ease; flex: 1; }
-        .btn-secondary:hover { background: var(--fucsia); color: white; }
+        /* Estilo base unificado para ambos botones */
+        .btn-action { 
+            background: var(--btn-gradient); 
+            color: white; 
+            border: none; 
+            padding: 15px 20px; 
+            width: 100%; 
+            border-radius: 6px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            font-family: 'Inter', sans-serif; 
+            font-size: 14px; 
+            text-transform: uppercase;
+            transition: opacity 0.3s ease;
+        }
+        .btn-action:hover { opacity: 0.9; }
+        .btn-action:disabled { opacity: 0.5; cursor: not-allowed; }
 
         /* --- ESTILO VAPI-BTN FINAL --- */
         .vapi-btn {
@@ -105,10 +117,8 @@
                 <p style="font-size: 11px; color: #666;">Al validar su identidad e iniciar la llamada, usted acepta nuestras Políticas de Privacidad y consiente la grabación de la sesión para fines exclusivos de evaluación profesional.</p>
                 
                 <div class="btn-group" id="btn-group-wrapper">
-                    <div class="btn-wrapper">
-                        <button class="btn-pub" id="start-btn">INICIAR ENTREVISTA</button>
-                    </div>
-                    <button class="btn-secondary" id="later-btn">REALIZAR EN OTRO MOMENTO</button>
+                    <button class="btn-action" id="start-btn">INICIAR ENTREVISTA</button>
+                    <button class="btn-action" id="later-btn">REALIZAR EN OTRO MOMENTO</button>
                 </div>
                 <div id="msg-box" style="margin-top:15px; color:#ef4444; font-size:12px; font-weight:600;"></div>
             </div>
@@ -132,7 +142,7 @@
 
     btn.addEventListener('click', async () => {
         if (!applicantId || !jobId) {
-            msgBox.innerText = "Error: Parámetros no encontrados.";
+            msgBox.innerText = "Error: Parámetros de entrevista no encontrados en la URL.";
             return;
         }
         btn.innerText = "CONECTANDO...";
@@ -147,7 +157,10 @@
             });
 
             const config = await response.json();
-            if (!config.publicKey || !config.assistantId) throw new Error("Configuración incompleta.");
+            
+            if (!config.publicKey || !config.assistantId) {
+                throw new Error("Configuración de Vapi incompleta.");
+            }
 
             const vapi = window.vapiSDK.run({
                 apiKey: config.publicKey, 
@@ -155,7 +168,6 @@
                 assistantOverrides: config.assistantOverrides
             });
 
-            // Lógica original de ocultar botones al aparecer Vapi
             const check = setInterval(() => {
                 const b = document.querySelector('.vapi-btn');
                 if (b) {
@@ -168,14 +180,11 @@
             vapi.on('call-start', () => document.querySelector('.vapi-btn')?.setAttribute('data-text', 'FINALIZAR ENTREVISTA'));
             vapi.on('call-end', () => {
                 document.querySelector('.vapi-btn')?.setAttribute('data-text', 'INICIAR ENTREVISTA');
-                btnGroup.style.display = 'flex';
-                btn.innerText = "INICIAR ENTREVISTA";
-                btn.disabled = false;
-                laterBtn.disabled = false;
+                // Botones permanecen ocultos tras finalizar
             });
         } catch (e) {
             console.error(e);
-            msgBox.innerText = "Error al iniciar. Intente nuevamente.";
+            msgBox.innerText = "Error al iniciar la entrevista. Intente nuevamente.";
             btn.innerText = "INICIAR ENTREVISTA";
             btn.disabled = false;
             laterBtn.disabled = false;
@@ -183,13 +192,30 @@
     });
 
     laterBtn.addEventListener('click', async () => {
-        msgBox.innerText = "Enviando enlace a su correo...";
+        msgBox.style.color = "#bc8abf";
+        msgBox.innerText = "Enviando enlace a su correo electrónico...";
         laterBtn.disabled = true;
-        // Lógica de envío real aquí cuando la tengas configurada
-        setTimeout(() => {
-            msgBox.innerText = "✅ Enlace enviado. ¡Te esperamos!";
-            laterBtn.style.display = "none";
-        }, 1500);
+        
+        try {
+            const response = await fetch("https://zuzvozgjsppkxvdlptmk.supabase.co/functions/v1/send_interview_email", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ applicantId, jobId })
+            });
+
+            if (response.ok) {
+                msgBox.innerText = "✅ Enlace enviado. ¡Podrá realizarla cuando guste!";
+                laterBtn.style.display = "none";
+                btn.style.display = "none";
+            } else {
+                throw new Error("Error en el servidor");
+            }
+        } catch (e) {
+            msgBox.style.color = "#ef4444";
+            msgBox.innerText = "Error al enviar el mail. Intente nuevamente.";
+            laterBtn.innerText = "REALIZAR EN OTRO MOMENTO";
+            laterBtn.disabled = false;
+        }
     });
 </script>
 </body>
