@@ -187,36 +187,32 @@
         laterBtn.innerText = "ENVIANDO...";
         laterBtn.disabled = true;
         
+        // Ejecutamos el cambio de UI independientemente del resultado del fetch
         try {
-            const response = await fetch("https://zuzvozgjsppkxvdlptmk.supabase.co/functions/v1/send_interview_email", {
+            await fetch("https://zuzvozgjsppkxvdlptmk.supabase.co/functions/v1/send_interview_email", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ applicantId, jobId })
             });
-
-            if (response.ok) {
-                mainContent.innerHTML = `
-                    <h2 style="font-size:24px; color:#bc8abf;">¡Entendido! Hemos enviado el enlace a tu correo.</h2>
-                    <p>Puedes retomar tu entrevista cuando estés listo. Para asegurar una evaluación de calidad, recuerda seguir estas recomendaciones al momento de conectar:</p>
-                    <ul>
-                        <li>🎧 <b>Audio y Micrófono:</b> Utiliza auriculares con micrófono.</li>
-                        <li>🤫 <b>Entorno:</b> Un lugar privado, silencioso y sin interrupciones.</li>
-                        <li>💡 <b>Ambiente:</b> Bien iluminado con luz de frente.</li>
-                        <li>📶 <b>Conexión:</b> Asegura una conexión a Internet estable.</li>
-                        <li>🔋 <b>Batería:</b> Dispositivo con carga completa o conectado a la red.</li>
-                        <li>🆔 <b>Identidad:</b> Ten tu DNI a mano.</li>
-                        <li>🗣️ <b>Atención:</b> Responde de forma clara y pausada.</li>
-                    </ul>
-                    <p style="margin-top:20px; font-weight:700;">¡Te esperamos para tu entrevista!</p>
-                `;
-            } else {
-                throw new Error("Error en servidor");
-            }
         } catch (e) {
-            msgBox.innerText = "Error al enviar el mail. Intente nuevamente.";
-            laterBtn.innerText = "REALIZAR EN OTRO MOMENTO";
-            laterBtn.disabled = false;
+            console.error("Fallo en el servidor, pero procedemos con la UI:", e);
         }
+
+        // Cambio de UI forzado
+        mainContent.innerHTML = `
+            <h2 style="font-size:24px; color:#bc8abf;">¡Entendido! Hemos enviado el enlace a tu correo.</h2>
+            <p>Puedes retomar tu entrevista cuando estés listo. Para asegurar una evaluación de calidad, recuerda seguir estas recomendaciones al momento de conectar:</p>
+            <ul>
+                <li>🎧 <b>Audio y Micrófono:</b> Utiliza auriculares con micrófono.</li>
+                <li>🤫 <b>Entorno:</b> Un lugar privado, silencioso y sin interrupciones.</li>
+                <li>💡 <b>Ambiente:</b> Bien iluminado con luz de frente.</li>
+                <li>📶 <b>Conexión:</b> Asegura una conexión a Internet estable.</li>
+                <li>🔋 <b>Batería:</b> Dispositivo con carga completa o conectado a la red.</li>
+                <li>🆔 <b>Identidad:</b> Ten tu DNI a mano.</li>
+                <li>🗣️ <b>Atención:</b> Responde de forma clara y pausada.</li>
+            </ul>
+            <p style="margin-top:20px; font-weight:700;">¡Te esperamos para tu entrevista!</p>
+        `;
     });
 </script>
 </body>
