@@ -1,58 +1,55 @@
 /**
- * hbt_migracion_id.js
- * Migración de ID temporal a ID permanente en tabla 'habitat'
+ * hbt_migracion_id.js - Versión corregida
  */
 
 async function verificarYMigrarApplicantId() {
     console.log("--- [HBT_MIGRACION] Iniciando proceso de verificación ---");
 
-    // 1. Obtener sesión de Supabase
     const { data: { session } } = await window.sbClient.auth.getSession();
-    if (!session) {
-        console.log("--- [HBT_MIGRACION] No hay sesión activa. Saltando proceso. ---");
-        return;
-    }
+    if (!session) return;
 
     const idTemporal = localStorage.getItem('applicantId');
-    if (!idTemporal) {
-        console.log("--- [HBT_MIGRACION] No se encontró ID temporal en localStorage. ---");
+    const idPermanente = session.user.id;
+
+    if (!idTemporal) return;
+    
+    // Si ya son iguales, no hacemos nada
+    if (idTemporal === idPermanente) {
+        console.log("--- [HBT_MIGRACION] El ID ya es permanente, omitiendo. ---");
         return;
     }
 
-    const idPermanente = session.user.id;
-    console.log("--- [HBT_MIGRACION] ID Temporal detectado:", idTemporal);
-    console.log("--- [HBT_MIGRACION] ID Permanente (Google/Supabase):", idPermanente);
+    console.log("--- [HBT_MIGRACION] Buscando fila con owner_id:", idTemporal);
 
-    // 2. Buscar en la tabla 'habitat' por owner_id
-    console.log("--- [HBT_MIGRACION] Consultando tabla 'habitat' por owner_id coincidente ---");
-    const { data: registro, error } = await window.sbClient
+    // 1. Quitamos .single() y ajustamos la sintaxis del filtro
+    const { data: registros, error } = await window.sbClient
         .from('habitat')
         .select('id, owner_id, metadata')
-        .eq('owner_id', idTemporal)
-        .eq('metadata->>!tipo', '!postulacion')
-        .single();
+        .eq('owner_id', idTemporal); // Buscamos por owner_id que es lo más directo
 
     if (error) {
-        console.error("--- [HBT_MIGRACION] Error en la consulta:", error.message);
+        console.error("--- [HBT_MIGRACION] Error en consulta:", error.message);
         return;
     }
+
+    // 2. Filtramos manualmente en JS para evitar problemas de sintaxis JSONB en el filtro de la API
+    const registro = registros ? registros.find(r => r.metadata?.['!tipo'] === '!postulacion') : null;
 
     if (!registro) {
-        console.log("--- [HBT_MIGRACION] No se encontró fila con ese ID temporal (puede que ya esté migrado). ---");
+        console.log("--- [HBT_MIGRACION] No se encontró postulación activa con ese ID. ---");
         return;
     }
 
-    console.log("--- [HBT_MIGRACION] Fila encontrada con ID interno:", registro.id);
+    console.log("--- [HBT_MIGRACION] Registro encontrado. ID interno:", registro.id);
 
-    // 3. Preparar nueva metadata
+    // 3. Preparar actualización
     const nuevaMetadata = {
         ...registro.metadata,
         "!usuario_id": idPermanente
     };
 
-    console.log("--- [HBT_MIGRACION] Ejecutando actualización en tabla 'habitat' ---");
-    
-    // 4. Actualizar owner_id y metadata
+    console.log("--- [HBT_MIGRACION] Actualizando a:", idPermanente);
+
     const { error: updateError } = await window.sbClient
         .from('habitat')
         .update({
@@ -62,13 +59,11 @@ async function verificarYMigrarApplicantId() {
         .eq('id', registro.id);
 
     if (updateError) {
-        console.error("--- [HBT_MIGRACION] Error crítico durante el update:", updateError.message);
+        console.error("--- [HBT_MIGRACION] Error crítico durante update:", updateError.message);
     } else {
-        console.log("--- [HBT_MIGRACION] Actualización exitosa. Reemplazando localStorage. ---");
+        console.log("--- [HBT_MIGRACION] ÉXITO. Actualizando localStorage.");
         localStorage.setItem('applicantId', idPermanente);
-        console.log("--- [HBT_MIGRACION] Proceso finalizado correctamente. ---");
     }
 }
 
-// Ejecutar al cargar la página
 window.addEventListener('load', verificarYMigrarApplicantId);
