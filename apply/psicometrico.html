@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evaluación Psicométrica - Irina Hire Selection</title>
     
-    <!-- Carga de la librería base -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <!-- Módulo de autenticación -->
     <script src="../auth-module.js"></script>
     
     <style>
@@ -32,7 +30,6 @@
             align-items: center;
         }
         
-        /* MARCO AMPLIADO 10% */
         .outer-frame { 
             padding: 8px; 
             background: var(--irina-gradient); 
@@ -53,7 +50,7 @@
             overflow: hidden; 
         }
         
-        /* CABECERA (ID Original) */
+        /* CABECERA (Manteniendo ID original) */
         #blue-header { 
             width: 100%; 
             background: white; 
@@ -128,8 +125,8 @@
         #options-grid img { cursor: pointer !important; transition: transform 0.2s; }
         #options-grid img:hover { transform: scale(1.05); }
 
-        /* ANIMACIÓN LÁSER DEL BOTÓN */
-        .start-btn { 
+        /* ANIMACIÓN LÁSER DEL BOTÓN (Estilo solicitado) */
+        .laser-btn { 
             position: relative; 
             padding: 15px 30px; 
             border-radius: 12px; 
@@ -139,11 +136,11 @@
             cursor: pointer; 
             overflow: hidden; 
             font-weight: 700;
-            margin-top: 20px; 
+            margin: 15px; 
             z-index: 1;
         }
         
-        .start-btn::before {
+        .laser-btn::before {
             content: ""; 
             position: absolute; 
             top: -50%; 
@@ -155,7 +152,7 @@
             z-index: -1;
         }
         
-        .start-btn:hover { transform: scale(1.05); }
+        .laser-btn:hover { transform: scale(1.05); }
         
         @keyframes rotate { 
             100% { transform: rotate(360deg); } 
@@ -173,10 +170,8 @@
 <div class="outer-frame">
     <div class="app-container">
         
-        <!-- Header gestionado por auth-module.js -->
         <div id="blue-header"></div>
         
-        <!-- Stepper -->
         <div class="stepper-row">
             <div class="stepper-container">
                 <div class="step completed"><div class="step-circle">✓</div><div class="step-label">Postulación</div></div>
@@ -186,7 +181,6 @@
             </div>
         </div>
 
-        <!-- Área de contenido -->
         <div class="scroll-area">
             <img id="main-test-image" src="" alt="Test">
             <div id="options-grid"></div>
@@ -195,15 +189,25 @@
     </div>
 </div>
 
-<!-- Modal -->
 <div id="loginModal" class="modal">
     <div class="modal-content">
         <h2>BlueLab Acceso</h2>
+        <p>Debes estar logueado para iniciar el test.</p>
         <button class="google-btn" onclick="ingresarConGoogle()">INGRESAR CON GOOGLE</button>
     </div>
 </div>
 
-<!-- Scripts -->
+<script>
+    async function verificarAutenticacion(callback) {
+        const { data: { session } } = await window.sbClient.auth.getSession();
+        if (!session) {
+            document.getElementById('loginModal').style.display = 'flex';
+        } else {
+            callback();
+        }
+    }
+</script>
+
 <script src="motor-tests.js"></script>
 
 </body>
