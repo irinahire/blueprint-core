@@ -187,33 +187,21 @@
         laterBtn.innerText = "PROCESANDO...";
         laterBtn.disabled = true;
         
-        let emailMostrado = "correo no detectado";
+        let emailMostrado = "tu correo";
 
         try {
-            // Consulta directa a Supabase usando la instancia global window.sbClient
-            const { data: record, error } = await window.sbClient
-                .from('habitat')
-                .select('data')
-                .eq('id', applicantId)
-                .single();
-
-            if (record && record.data && record.data["!perfil"]) {
-                emailMostrado = record.data["!perfil"]["perfil-contacto"]["email"];
+            // Obtenemos el email directamente de la sesión actual
+            const { data: { session } } = await window.sbClient.auth.getSession();
+            if (session && session.user.email) {
+                emailMostrado = session.user.email;
             }
-
-            // Llamada al servidor para enviar el email
-            await fetch("https://zuzvozgjsppkxvdlptmk.supabase.co/functions/v1/send_interview_email", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ applicantId, jobId })
-            });
         } catch (e) {
-            console.error("Error en proceso:", e);
+            console.error("Error al obtener email:", e);
         }
 
-        // Cambio de UI final
+        // Cambio de UI final sin llamadas a funciones inexistentes
         mainContent.innerHTML = `
-            <h2 style="font-size:24px; color:#bc8abf;">¡Entendido! Hemos enviado el enlace a tu correo electrónico:</h2>
+            <h2 style="font-size:24px; color:#bc8abf;">¡Entendido! Te enviaremos el enlace a tu correo:</h2>
             <p style="font-size: 18px; font-weight: 700; color: #000;">${emailMostrado}</p>
             <p>Puedes retomar tu entrevista cuando estés listo. Para asegurar una evaluación de calidad, recuerda seguir estas recomendaciones al momento de conectar:</p>
             <ul>
