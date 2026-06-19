@@ -95,8 +95,14 @@ function cargarTest(idTest) {
         grid.innerHTML = `<div style="max-width:600px; margin:40px auto; padding:40px; background:#fff; border-radius:15px; box-shadow:0 10px 25px rgba(0,0,0,0.05); text-align:center;">
             <h2 style="color:#4A4A4A; margin-bottom:20px;">${data.instrucciones}</h2>
             <p style="text-align:left; color:#666; line-height:1.6; font-size:1.1rem;">${data.cuerpo}</p>
-            <button onclick="avanzar()" style="margin-top:30px; padding:15px 40px; cursor:pointer; background:linear-gradient(90deg, #8EE4D5, #B588C0); color:white; border:none; border-radius:30px; font-weight:700;">${data.textoBoton}</button>
+            <button id="btn-avanzar-texto" class="laser-btn">${data.textoBoton}</button>
         </div>`;
+        
+        // Asignamos la lógica de verificación al botón con la clase laser-btn
+        document.getElementById('btn-avanzar-texto').onclick = () => {
+            verificarAutenticacion(() => avanzar());
+        };
+
     } else if (data.tipo === "big_five") {
         mainImg.style.display = "none";
         grid.innerHTML += `<h2 style="margin-bottom:20px; color:#B588C0;">${data.titulo}</h2>`;
@@ -107,7 +113,7 @@ function cargarTest(idTest) {
             for(let j=1; j<=5; j++) d.innerHTML += `<label style="margin-right:20px; cursor:pointer;"><input type="radio" name="p${i}" value="${j}"> ${j}</label>`;
             grid.appendChild(d);
         });
-        grid.innerHTML += `<button id="btn-avanzar" style="margin-top:20px; padding:10px 30px; background:#B588C0; color:white; border:none; border-radius:20px; cursor:pointer;">AVANZAR</button>`;
+        grid.innerHTML += `<button id="btn-avanzar" class="laser-btn">AVANZAR</button>`;
         document.getElementById('btn-avanzar').onclick = () => {
             let ok = true;
             for(let i=0; i<5; i++) if(!document.querySelector(`input[name="p${i}"]:checked`)) ok = false;
