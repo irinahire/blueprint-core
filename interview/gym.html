@@ -7,47 +7,49 @@
     <script src="../auth-module.js"></script> 
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        /* ESTILO GLOBAL IGUAL A TUS OTRAS PÁGINAS */
         body { 
             font-family: 'Segoe UI', sans-serif; 
-            background: #000; /* Fondo negro como en las otras */
+            background: #000; 
             min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; 
         }
 
-        /* EL MARCO CON GRADIENTE (Estructura de tus otras páginas) */
+        /* MARCO CORREGIDO: Más grueso (10px) y gradiente invertido (Fucsia -> Turquesa) */
         .main-container { 
             width: 100%; max-width: 1200px; height: 85vh; 
-            display: flex; flex-direction: column; border-radius: 20px; 
+            display: flex; flex-direction: column; border-radius: 24px; 
             overflow: hidden; 
-            /* Borde de gradiente que tienen tus otras páginas */
-            background: linear-gradient(135deg, #8EE4D5, #B588C0); 
-            padding: 4px; 
+            background: linear-gradient(to right, #B588C0, #8EE4D5); 
+            padding: 10px; /* Ancho del marco */
         }
 
-        /* Contenedor interno que oculta el fondo para dejar solo el borde */
         .inner-wrapper {
-            background: #000; /* Fondo interno */
+            background: #000; 
             width: 100%; height: 100%;
             border-radius: 16px;
             display: flex; flex-direction: column;
             overflow: hidden;
         }
 
-        /* Cabecera donde el script inyecta el Auth */
-        #blue-header { width: 100%; flex-shrink: 0; }
+        /* HEADER CON GRADIENTE INTEGRADO */
+        #blue-header { 
+            width: 100%; flex-shrink: 0; 
+            background: linear-gradient(to right, #B588C0, #8EE4D5); 
+            padding: 2px; /* Pequeño borde para el header si es necesario */
+        }
+        
+        /* Contenedor interno del header para que mantenga el fondo negro */
+        #blue-header > div { background: #000; }
 
-        /* Área de contenido (Tu diseño original intacto) */
         .content-area { 
             flex: 1; 
             background: 
-                linear-gradient(to right, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.6) 60%, #ffffff 100%),
+                linear-gradient(to right, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 60%, #000 100%),
                 url('https://i.ibb.co/TDxyQKGg/309eb931-3bcb-44a9-abeb-bc0b6cf996e6-0.jpg') no-repeat center center/cover;
             position: relative; 
             display: flex; justify-content: flex-end; align-items: flex-start; 
             padding-right: 50px; padding-top: 50px; gap: 20px;
         }
 
-        /* Tus tarjetas y efectos intactos */
         .tarjeta-naipe { 
             background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); 
             border-radius: 20px; padding: 1.5rem; width: 220px; height: 300px; 
@@ -64,7 +66,6 @@
         .ejercicio-desc { font-size: 0.85rem; color: #444; margin-top: 10px; flex: 1; line-height: 1.4; }
         .sets-reps { font-size: 0.75rem; color: #666; font-weight: bold; border-top: 1px solid #eee; padding-top: 10px; }
 
-        /* Botón con animación original */
         .btn-container { position: absolute; bottom: 30px; left: 30px; }
         .btn-luz { 
             position: relative; padding: 1.2rem 2.5rem; font-family: 'Montserrat'; font-weight: 900; 
@@ -83,7 +84,7 @@
         .btn-luz:hover::before { opacity: 1; animation: glow 2s linear infinite; }
         @keyframes glow { 0% { background-position: 0 0; } 100% { background-position: 400% 0; } }
 
-        #mensaje-entrenamiento { display: none; text-align: center; padding: 50px; font-size: 1.5rem; color: #333; font-weight: bold; }
+        #mensaje-entrenamiento { display: none; text-align: center; padding: 50px; font-size: 1.5rem; color: #fff; font-weight: bold; }
     </style>
 </head>
 <body>
