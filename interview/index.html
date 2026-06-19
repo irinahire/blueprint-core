@@ -23,18 +23,22 @@
 
         .content { display: flex; min-height: 500px; position: relative; }
         
-        #start-wrapper { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 20; text-align: center; }
-        .btn-wrapper { padding: 2px; border-radius: 8px; border: 2px solid transparent; transition: border 0.3s ease; }
-        .btn-wrapper:hover { border: 2px solid var(--fucsia); }
-        .btn-pub { background: var(--btn-gradient); color: white; border: none; padding: 15px 30px; border-radius: 6px; font-weight: 800; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 14px; text-transform: uppercase; white-space: nowrap; }
-        
-        .left-col { padding: 40px 60px 40px 60px; margin-top: 60px; flex: 1; display: flex; flex-direction: column; }
+        .left-col { padding: 40px 60px; flex: 1; display: flex; flex-direction: column; }
         .right-col { width: 400px; height: 100%; }
         .right-col img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 0 0 40px 0; }
 
         h2 { font-size: 18px; margin-top: 0; }
         ul { padding-left: 20px; }
         li { margin-bottom: 12px; font-size: 14px; line-height: 1.4; }
+
+        /* Contenedor y estilos de botones */
+        .btn-group { display: flex; gap: 15px; margin-top: 20px; }
+        .btn-wrapper { padding: 2px; border-radius: 8px; border: 2px solid transparent; transition: border 0.3s ease; flex: 1; }
+        .btn-wrapper:hover { border: 2px solid var(--fucsia); }
+        .btn-pub { background: var(--btn-gradient); color: white; border: none; padding: 15px 0; width: 100%; border-radius: 6px; font-weight: 800; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 14px; text-transform: uppercase; }
+        
+        .btn-secondary { background: white; border: 2px solid var(--fucsia); color: var(--fucsia); padding: 15px 0; width: 100%; border-radius: 8px; font-weight: 800; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 14px; text-transform: uppercase; transition: all 0.3s ease; flex: 1; }
+        .btn-secondary:hover { background: var(--fucsia); color: white; }
 
         /* --- ESTILO VAPI-BTN FINAL --- */
         .vapi-btn {
@@ -84,17 +88,9 @@
 
 <div class="outer-frame">
     <div class="card">
-        <!-- Cabecera inyectada dinámicamente -->
         <div id="blue-header"></div>
         
         <div class="content">
-            <div id="start-wrapper">
-                <div class="btn-wrapper">
-                    <button class="btn-pub" id="start-btn">ESTOY LISTO PARA LA ENTREVISTA</button>
-                </div>
-                <div id="msg-box" style="margin-top:5px; color:#ef4444; font-size:11px;"></div>
-            </div>
-
             <div class="left-col">
                 <h2>PARA UNA ENTREVISTA DE CALIDAD:</h2>
                 <ul>
@@ -107,6 +103,14 @@
                     <li>🗣️ <b>Atención:</b> La entrevista es interactiva; responda de forma clara y pausada.</li>
                 </ul>
                 <p style="font-size: 11px; color: #666;">Al validar su identidad e iniciar la llamada, usted acepta nuestras Políticas de Privacidad y consiente la grabación de la sesión para fines exclusivos de evaluación profesional.</p>
+                
+                <div class="btn-group">
+                    <div class="btn-wrapper">
+                        <button class="btn-pub" id="start-btn">INICIAR ENTREVISTA</button>
+                    </div>
+                    <button class="btn-secondary" id="later-btn">REALIZAR EN OTRO MOMENTO</button>
+                </div>
+                <div id="msg-box" style="margin-top:15px; color:#ef4444; font-size:12px; font-weight:600;"></div>
             </div>
             <div class="right-col">
                 <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" alt="Irina">
@@ -117,18 +121,18 @@
 
 <script>
     const btn = document.getElementById('start-btn');
-    const startWrapper = document.getElementById('start-wrapper');
+    const laterBtn = document.getElementById('later-btn');
     const msgBox = document.getElementById('msg-box');
     const FUNCTION_URL = "https://zuzvozgjsppkxvdlptmk.supabase.co/functions/v1/hbt_start_interview";
     
-    // Captura de ambos parámetros desde la URL
     const urlParams = new URLSearchParams(window.location.search);
     const applicantId = urlParams.get('applicantId');
     const jobId = urlParams.get('jobId');
 
+    // Lógica Iniciar
     btn.addEventListener('click', async () => {
         if (!applicantId || !jobId) {
-            msgBox.innerText = "Error: Parámetros de entrevista no encontrados en la URL.";
+            msgBox.innerText = "Error: Parámetros no encontrados.";
             return;
         }
         btn.innerText = "CONECTANDO...";
@@ -138,14 +142,11 @@
             const response = await fetch(FUNCTION_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ applicantId, jobId }) // Enviamos ambos correctamente
+                body: JSON.stringify({ applicantId, jobId })
             });
 
             const config = await response.json();
-            
-            if (!config.publicKey || !config.assistantId) {
-                throw new Error("Configuración de Vapi incompleta.");
-            }
+            if (!config.publicKey || !config.assistantId) throw new Error("Error configuración.");
 
             const vapi = window.vapiSDK.run({
                 apiKey: config.publicKey, 
@@ -153,22 +154,38 @@
                 assistantOverrides: config.assistantOverrides
             });
 
-            const check = setInterval(() => {
-                const b = document.querySelector('.vapi-btn');
-                if (b) {
-                    b.setAttribute('data-text', 'INICIAR ENTREVISTA');
-                    startWrapper.style.display = 'none';
-                    clearInterval(check);
-                }
-            }, 100);
-
-            vapi.on('call-start', () => document.querySelector('.vapi-btn')?.setAttribute('data-text', 'FINALIZAR ENTREVISTA'));
-            vapi.on('call-end', () => document.querySelector('.vapi-btn')?.setAttribute('data-text', 'INICIAR ENTREVISTA'));
+            vapi.on('call-start', () => {
+                document.querySelector('.vapi-btn')?.setAttribute('data-text', 'FINALIZAR ENTREVISTA');
+                document.querySelector('.btn-group').style.display = 'none';
+            });
+            vapi.on('call-end', () => location.reload());
         } catch (e) {
-            console.error(e);
-            msgBox.innerText = "Error al iniciar la entrevista. Intente nuevamente.";
-            btn.innerText = "ESTOY LISTO PARA LA ENTREVISTA";
+            msgBox.innerText = "Error al iniciar. Intente nuevamente.";
+            btn.innerText = "INICIAR ENTREVISTA";
             btn.disabled = false;
+        }
+    });
+
+    // Lógica En otro momento
+    laterBtn.addEventListener('click', async () => {
+        laterBtn.innerText = "ENVIANDO...";
+        laterBtn.disabled = true;
+        msgBox.style.color = "#bc8abf";
+        msgBox.innerText = "Enviando enlace a su correo electrónico...";
+        
+        // Aquí conectaras con tu función de envío de mail
+        try {
+            // Ejemplo de llamada:
+            // await fetch("TU_URL_DE_FUNCION_ENVIO_MAIL", { method: "POST", body: JSON.stringify({ applicantId, jobId }) });
+            setTimeout(() => {
+                msgBox.innerText = "✅ Enlace enviado. ¡Podrá realizarla cuando guste!";
+                laterBtn.style.display = "none";
+            }, 1500);
+        } catch(e) {
+            msgBox.style.color = "#ef4444";
+            msgBox.innerText = "Error al enviar el mail. Intente nuevamente.";
+            laterBtn.innerText = "REALIZAR EN OTRO MOMENTO";
+            laterBtn.disabled = false;
         }
     });
 </script>
