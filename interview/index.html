@@ -31,8 +31,8 @@
         ul { padding-left: 20px; }
         li { margin-bottom: 12px; font-size: 14px; line-height: 1.4; }
 
-        /* Contenedor y estilos de botones */
-        .btn-group { display: flex; gap: 15px; margin-top: 20px; }
+        /* Contenedor botones */
+        .btn-group { display: flex; gap: 15px; margin-top: 30px; }
         .btn-wrapper { padding: 2px; border-radius: 8px; border: 2px solid transparent; transition: border 0.3s ease; flex: 1; }
         .btn-wrapper:hover { border: 2px solid var(--fucsia); }
         .btn-pub { background: var(--btn-gradient); color: white; border: none; padding: 15px 0; width: 100%; border-radius: 6px; font-weight: 800; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 14px; text-transform: uppercase; }
@@ -104,7 +104,7 @@
                 </ul>
                 <p style="font-size: 11px; color: #666;">Al validar su identidad e iniciar la llamada, usted acepta nuestras Políticas de Privacidad y consiente la grabación de la sesión para fines exclusivos de evaluación profesional.</p>
                 
-                <div class="btn-group">
+                <div class="btn-group" id="btn-group-wrapper">
                     <div class="btn-wrapper">
                         <button class="btn-pub" id="start-btn">INICIAR ENTREVISTA</button>
                     </div>
@@ -122,6 +122,7 @@
 <script>
     const btn = document.getElementById('start-btn');
     const laterBtn = document.getElementById('later-btn');
+    const btnGroup = document.getElementById('btn-group-wrapper');
     const msgBox = document.getElementById('msg-box');
     const FUNCTION_URL = "https://zuzvozgjsppkxvdlptmk.supabase.co/functions/v1/hbt_start_interview";
     
@@ -129,7 +130,6 @@
     const applicantId = urlParams.get('applicantId');
     const jobId = urlParams.get('jobId');
 
-    // Lógica Iniciar
     btn.addEventListener('click', async () => {
         if (!applicantId || !jobId) {
             msgBox.innerText = "Error: Parámetros no encontrados.";
@@ -137,6 +137,7 @@
         }
         btn.innerText = "CONECTANDO...";
         btn.disabled = true;
+        laterBtn.disabled = true;
 
         try {
             const response = await fetch(FUNCTION_URL, {
@@ -146,7 +147,7 @@
             });
 
             const config = await response.json();
-            if (!config.publicKey || !config.assistantId) throw new Error("Error configuración.");
+            if (!config.publicKey || !config.assistantId) throw new Error("Configuración incompleta.");
 
             const vapi = window.vapiSDK.run({
                 apiKey: config.publicKey, 
@@ -154,39 +155,41 @@
                 assistantOverrides: config.assistantOverrides
             });
 
-            vapi.on('call-start', () => {
-                document.querySelector('.vapi-btn')?.setAttribute('data-text', 'FINALIZAR ENTREVISTA');
-                document.querySelector('.btn-group').style.display = 'none';
+            // Lógica original de ocultar botones al aparecer Vapi
+            const check = setInterval(() => {
+                const b = document.querySelector('.vapi-btn');
+                if (b) {
+                    b.setAttribute('data-text', 'INICIAR ENTREVISTA');
+                    btnGroup.style.display = 'none';
+                    clearInterval(check);
+                }
+            }, 100);
+
+            vapi.on('call-start', () => document.querySelector('.vapi-btn')?.setAttribute('data-text', 'FINALIZAR ENTREVISTA'));
+            vapi.on('call-end', () => {
+                document.querySelector('.vapi-btn')?.setAttribute('data-text', 'INICIAR ENTREVISTA');
+                btnGroup.style.display = 'flex';
+                btn.innerText = "INICIAR ENTREVISTA";
+                btn.disabled = false;
+                laterBtn.disabled = false;
             });
-            vapi.on('call-end', () => location.reload());
         } catch (e) {
+            console.error(e);
             msgBox.innerText = "Error al iniciar. Intente nuevamente.";
             btn.innerText = "INICIAR ENTREVISTA";
             btn.disabled = false;
+            laterBtn.disabled = false;
         }
     });
 
-    // Lógica En otro momento
     laterBtn.addEventListener('click', async () => {
-        laterBtn.innerText = "ENVIANDO...";
+        msgBox.innerText = "Enviando enlace a su correo...";
         laterBtn.disabled = true;
-        msgBox.style.color = "#bc8abf";
-        msgBox.innerText = "Enviando enlace a su correo electrónico...";
-        
-        // Aquí conectaras con tu función de envío de mail
-        try {
-            // Ejemplo de llamada:
-            // await fetch("TU_URL_DE_FUNCION_ENVIO_MAIL", { method: "POST", body: JSON.stringify({ applicantId, jobId }) });
-            setTimeout(() => {
-                msgBox.innerText = "✅ Enlace enviado. ¡Podrá realizarla cuando guste!";
-                laterBtn.style.display = "none";
-            }, 1500);
-        } catch(e) {
-            msgBox.style.color = "#ef4444";
-            msgBox.innerText = "Error al enviar el mail. Intente nuevamente.";
-            laterBtn.innerText = "REALIZAR EN OTRO MOMENTO";
-            laterBtn.disabled = false;
-        }
+        // Lógica de envío real aquí cuando la tengas configurada
+        setTimeout(() => {
+            msgBox.innerText = "✅ Enlace enviado. ¡Te esperamos!";
+            laterBtn.style.display = "none";
+        }, 1500);
     });
 </script>
 </body>
