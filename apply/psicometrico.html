@@ -5,8 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evaluación Psicométrica - Irina Hire Selection</title>
     
-    <!-- Carga de Supabase y Módulo de Autenticación desde raíz -->
+    <!-- Carga de dependencias base -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Inicialización única de Supabase -->
+    <script>
+        window.sbClient = supabase.createClient(
+            'https://zuzvozgjsppkxvdlptmk.supabase.co', 
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0'
+        );
+    </script>
+    
+    <!-- Módulo de autenticación desde la raíz -->
     <script src="../auth-module.js"></script>
     
     <style>
@@ -27,6 +37,7 @@
             min-height: 100vh; 
             display: flex;
             justify-content: center;
+            align-items: center;
         }
         
         /* MARCO AMPLIADO 10% */
@@ -50,7 +61,7 @@
             overflow: hidden; 
         }
         
-        /* CABECERA (Placeholder para auth-module.js) */
+        /* CABECERA */
         #header-placeholder { 
             width: 100%; 
             background: white; 
@@ -58,7 +69,7 @@
             border-bottom: 1px solid #eee;
         }
 
-        /* STEPPER ROW */
+        /* STEPPER */
         .stepper-row { 
             display: flex; 
             justify-content: center; 
@@ -107,7 +118,7 @@
             letter-spacing: 0.5px;
         }
 
-        /* CONTENIDO PRINCIPAL */
+        /* ÁREA DE CONTENIDO (Mantenemos IDs intactos para motor-tests.js) */
         .scroll-area { 
             flex: 1; 
             padding: 3rem; 
@@ -115,9 +126,17 @@
             flex-direction: column; 
             align-items: center; 
             justify-content: center; 
+            overflow-y: auto;
         }
 
+        /* Elementos que el motor busca */
         #main-test-image { display: none; width: 400px; margin-bottom: 20px; }
+        #options-grid { width: 100%; display: flex; flex-direction: column; align-items: center; }
+        
+        /* MODAL */
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
+        .modal-content { background: #fff; padding: 40px; border-radius: 20px; width: 350px; text-align: center; }
+        .google-btn { background: #4285f4; color: white; padding: 12px; width: 100%; border-radius: 8px; border: none; cursor: pointer; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -125,10 +144,10 @@
 <div class="outer-frame">
     <div class="app-container">
         
-        <!-- Header gestionado por auth-module.js -->
+        <!-- Header inyectado dinámicamente -->
         <div id="header-placeholder"></div>
         
-        <!-- Stepper de navegación -->
+        <!-- Stepper -->
         <div class="stepper-row">
             <div class="stepper-container">
                 <div class="step completed"><div class="step-circle">✓</div><div class="step-label">Postulación</div></div>
@@ -138,23 +157,24 @@
             </div>
         </div>
 
-        <!-- Área de contenido para motor-tests.js -->
-        <div id="options-grid" class="scroll-area">
+        <!-- Contenedor de tests -->
+        <div class="scroll-area">
             <img id="main-test-image" src="" alt="Test">
+            <div id="options-grid"></div>
         </div>
         
     </div>
 </div>
 
-<script>
-    // Asegurar inicialización de Supabase para los módulos dependientes
-    window.sbClient = supabase.createClient(
-        'https://zuzvozgjsppkxvdlptmk.supabase.co', 
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0'
-    );
-</script>
+<!-- Modal login (por si el auth-module lo invoca) -->
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+        <h2>BlueLab Acceso</h2>
+        <button class="google-btn" onclick="ingresarConGoogle()">INGRESAR CON GOOGLE</button>
+    </div>
+</div>
 
-<!-- Script de carga de tests -->
+<!-- Script del motor -->
 <script src="motor-tests.js"></script>
 
 </body>
