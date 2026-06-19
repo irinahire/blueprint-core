@@ -5,13 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evaluación Psicométrica - Irina Hire Selection</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* CSS COMPLETO E ÍNTEGRO */
+        :root { 
+            --fucsia: #bc8abf; 
+            --turquesa: #96e8da;
+            --irina-gradient: linear-gradient(to right, var(--fucsia) 0%, var(--turquesa) 100%); 
+            --bg-dark: #05070a; 
+        }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(to bottom left, #8EE4D5, #B588C0); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
-        .main-container { background: #fff; width: 100%; max-width: 1200px; height: 85vh; display: flex; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
-        .left-column { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        .header-wrapper { position: sticky; top: 0; background: white; padding: 2rem; z-index: 100; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-dark); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+        
+        /* MARCO ESTÁNDAR */
+        .outer-frame { padding: 8px; background: var(--irina-gradient); border-radius: 50px; width: 92%; max-width: 1200px; min-height: 85vh; margin: 0 auto; }
+        .app-container { background: #f9f7f2; width: 100%; height: 100%; border-radius: 42px; display: flex; flex-direction: column; overflow: hidden; min-height: 80vh; }
+        
+        /* HEADER INTEGRADO */
+        .header-wrapper { padding: 2rem; z-index: 100; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; background: white; }
         
         .stepper-container { display: flex; align-items: center; gap: 20px; }
         .step { display: flex; flex-direction: column; align-items: center; width: 80px; }
@@ -20,40 +30,27 @@
         .step.active .step-circle { background: #B588C0; color: #fff; }
         .step-label { font-size: 10px; margin-top: 5px; color: #555; text-transform: uppercase; font-weight: 700; text-align: center; }
 
-        .scroll-area { flex: 1; overflow-y: auto; padding: 2rem; display: flex; flex-direction: column; align-items: center; background: #fafafa; }
-        .right-column { width: 30%; background: url('https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg') center/cover no-repeat; }
-
+        /* ÁREA DE CONTENIDO */
+        .scroll-area { flex: 1; padding: 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
         /* ESTILOS DE AUTENTICACIÓN */
-        .auth-btn { background: linear-gradient(135deg, #4e52a7, #85c1e9); color: white; border: none; padding: 15px 30px; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 15px rgba(133, 193, 233, 0.3); font-size: 0.9rem; }
+        .auth-btn { background: linear-gradient(135deg, #4e52a7, #85c1e9); color: white; border: none; padding: 12px 25px; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.8rem; }
         .user-profile { display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.05); padding: 5px 20px 5px 10px; border-radius: 50px; border: 1px solid #ddd; }
         .user-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
         
         /* MODAL */
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
-        .modal-content { background: #fff; padding: 40px; border-radius: 20px; width: 350px; text-align: center; position: relative; }
-        .close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; }
+        .modal-content { background: #fff; padding: 40px; border-radius: 20px; width: 350px; text-align: center; }
         .google-btn { background: #4285f4; color: white; padding: 12px; width: 100%; border-radius: 8px; border: none; cursor: pointer; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 20px; }
-        .google-icon { width: 20px; }
     </style>
 </head>
 <body>
 
-<div id="loginModal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn" onclick="document.getElementById('loginModal').style.display='none'">×</span>
-        <h2>BlueLab Acceso</h2>
-        <p style="font-size: 0.9rem; color: #888;">Ingresá con tu cuenta de Google para continuar.</p>
-        <button class="google-btn" onclick="ingresarConGoogle()">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" class="google-icon">
-            INGRESAR CON GOOGLE
-        </button>
-    </div>
-</div>
-
-<div class="main-container">
-    <div class="left-column">
+<div class="outer-frame">
+    <div class="app-container">
         <header class="header-wrapper">
             <img src="https://i.ibb.co/JFMJBm0S/logo-ihs.jpg" style="max-width: 120px;">
+            
             <div class="stepper-container">
                 <div class="step completed"><div class="step-circle">✓</div><div class="step-label">Postulación</div></div>
                 <div class="step completed"><div class="step-circle">✓</div><div class="step-label">Análisis</div></div>
@@ -62,81 +59,59 @@
             </div>
 
             <button class="auth-btn" id="loginBtn" onclick="document.getElementById('loginModal').style.display='flex'">ACCEDER AL PORTAL</button>
-
             <div id="userZone" style="display:none;" class="user-profile">
                 <img id="userAvatar" class="user-avatar" src="">
                 <span id="userName" class="user-name"></span>
-                <button class="auth-btn" style="padding: 8px 15px; font-size: 0.7rem; background: #333;" onclick="cerrarSesion()">SALIR</button>
+                <button class="auth-btn" style="padding: 8px 15px; background: #333;" onclick="cerrarSesion()">SALIR</button>
             </div>
         </header>
+
         <div class="scroll-area">
-            <img id="main-test-image" style="display:none; width:400px; margin-bottom:20px;">
             <div id="options-grid"></div>
         </div>
     </div>
-    <div class="right-column"></div>
+</div>
+
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+        <h2>BlueLab Acceso</h2>
+        <button class="google-btn" onclick="ingresarConGoogle()">INGRESAR CON GOOGLE</button>
+    </div>
 </div>
 
 <script>
-    // Inicialización de Supabase
-    if (!window.sbClient) {
-        window.sbClient = supabase.createClient(
-            'https://zuzvozgjsppkxvdlptmk.supabase.co', 
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0'
-        );
-    }
+    // Inicialización Supabase
+    window.sbClient = supabase.createClient('https://zuzvozgjsppkxvdlptmk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0');
 
-    // Login
-    window.ingresarConGoogle = async function() {
+    window.ingresarConGoogle = async () => {
         document.getElementById('loginModal').style.display = 'none';
-        await window.sbClient.auth.signInWithOAuth({ 
-            provider: 'google',
-            options: { redirectTo: window.location.href } 
-        });
+        await window.sbClient.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
     };
 
-    // Logout
-    window.cerrarSesion = async function() { 
-        await window.sbClient.auth.signOut(); 
-        location.reload(); 
-    };
+    window.cerrarSesion = async () => { await window.sbClient.auth.signOut(); location.reload(); };
 
-    // Corazón del sistema: Actualización UI
     window.sbClient.auth.onAuthStateChange((event, session) => {
         const loginBtn = document.getElementById('loginBtn');
         const userZone = document.getElementById('userZone');
-        
-        if (session) { 
-            localStorage.setItem('applicantId', session.user.id);
-            if (loginBtn) loginBtn.style.display = 'none';
-            if (userZone) {
-                userZone.style.display = 'flex';
-                document.getElementById('userName').innerText = session.user.user_metadata.full_name || 'Usuario';
-                document.getElementById('userAvatar').src = session.user.user_metadata.avatar_url || 'https://via.placeholder.com/40';
-            }
-        } else {
-            localStorage.removeItem('applicantId');
-            if (loginBtn) loginBtn.style.display = 'block';
-            if (userZone) userZone.style.display = 'none';
+        if (session) {
+            loginBtn.style.display = 'none';
+            userZone.style.display = 'flex';
+            document.getElementById('userName').innerText = session.user.user_metadata.full_name || 'Usuario';
+            document.getElementById('userAvatar').src = session.user.user_metadata.avatar_url || '';
         }
     });
 
-    // Verificación inicial al cargar
+    // Verificación inicial
     window.onload = async () => {
         const { data: { session } } = await window.sbClient.auth.getSession();
         if (session) {
-            const loginBtn = document.getElementById('loginBtn');
-            const userZone = document.getElementById('userZone');
-            if (loginBtn) loginBtn.style.display = 'none';
-            if (userZone) {
-                userZone.style.display = 'flex';
-                document.getElementById('userName').innerText = session.user.user_metadata.full_name || 'Usuario';
-                document.getElementById('userAvatar').src = session.user.user_metadata.avatar_url || '';
-            }
+            document.getElementById('loginBtn').style.display = 'none';
+            document.getElementById('userZone').style.display = 'flex';
+            document.getElementById('userName').innerText = session.user.user_metadata.full_name || 'Usuario';
+            document.getElementById('userAvatar').src = session.user.user_metadata.avatar_url || '';
         }
     };
 </script>
-
 <script src="motor-tests.js"></script>
 </body>
 </html>
