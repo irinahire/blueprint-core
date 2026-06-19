@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evaluación Psicométrica - Irina Hire Selection</title>
     
-    <!-- Módulos principales -->
+    <!-- Carga de Supabase y Módulo de Autenticación desde raíz -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../auth-module.js"></script>
     
     <style>
@@ -116,7 +117,6 @@
             justify-content: center; 
         }
 
-        /* Requerido por motor-tests.js para renderizar */
         #main-test-image { display: none; width: 400px; margin-bottom: 20px; }
     </style>
 </head>
@@ -145,6 +145,14 @@
         
     </div>
 </div>
+
+<script>
+    // Asegurar inicialización de Supabase para los módulos dependientes
+    window.sbClient = supabase.createClient(
+        'https://zuzvozgjsppkxvdlptmk.supabase.co', 
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0'
+    );
+</script>
 
 <!-- Script de carga de tests -->
 <script src="motor-tests.js"></script>
