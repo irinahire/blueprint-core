@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evaluación Psicométrica - Irina Hire Selection</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root { 
             --fucsia: #bc8abf; 
@@ -31,10 +31,10 @@
         .step.active .step-circle { background: #B588C0; color: #fff; }
         .step-label { font-size: 10px; margin-top: 5px; color: #555; text-transform: uppercase; font-weight: 700; text-align: center; }
 
-        /* AREA DE CONTENIDO (donde el script inyecta los elementos) */
+        /* AREA DE CONTENIDO - Mantiene la estructura que tu script necesita */
         .scroll-area { flex: 1; padding: 3rem; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         
-        /* AUTH UI */
+        /* AUTH UI (Unificada) */
         .auth-btn { background: linear-gradient(135deg, #4e52a7, #85c1e9); color: white; border: none; padding: 12px 25px; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.8rem; }
         .user-profile { display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.05); padding: 5px 20px 5px 10px; border-radius: 50px; border: 1px solid #ddd; }
         .user-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
@@ -67,7 +67,11 @@
             </div>
         </header>
 
-        <div id="options-grid" class="scroll-area"></div>
+        <!-- Elementos requeridos por motor-tests.js -->
+        <div class="scroll-area">
+            <img id="main-test-image" style="display:none; width:400px; margin-bottom:20px;">
+            <div id="options-grid"></div>
+        </div>
     </div>
 </div>
 
@@ -79,7 +83,7 @@
 </div>
 
 <script>
-    // Inicialización Supabase
+    // Inicialización del cliente Supabase
     window.sbClient = supabase.createClient('https://zuzvozgjsppkxvdlptmk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0');
 
     window.ingresarConGoogle = async () => {
@@ -89,6 +93,7 @@
 
     window.cerrarSesion = async () => { await window.sbClient.auth.signOut(); location.reload(); };
 
+    // Lógica de Autenticación Unificada
     window.sbClient.auth.onAuthStateChange((event, session) => {
         const loginBtn = document.getElementById('loginBtn');
         const userZone = document.getElementById('userZone');
@@ -97,6 +102,9 @@
             userZone.style.display = 'flex';
             document.getElementById('userName').innerText = session.user.user_metadata.full_name || 'Usuario';
             document.getElementById('userAvatar').src = session.user.user_metadata.avatar_url || '';
+        } else {
+            loginBtn.style.display = 'block';
+            userZone.style.display = 'none';
         }
     });
 
