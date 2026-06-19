@@ -128,22 +128,19 @@
         #options-grid img { cursor: pointer !important; transition: transform 0.2s; }
         #options-grid img:hover { transform: scale(1.05); }
 
-        /* ESTILO BOTÓN CON DEGRADADO FIJO Y LÁSER EN HOVER */
+        /* ESTILO BOTÓN: DEGRADADO FIJO Y LÁSER EN HOVER */
         .laser-btn { 
             position: relative; 
             padding: 15px 30px; 
             border-radius: 12px; 
-            background: #000; 
+            background: var(--irina-gradient); 
             color: #fff; 
-            border: 3px solid transparent; 
+            border: none; 
             cursor: pointer; 
             overflow: hidden; 
             font-weight: 700;
             margin: 15px; 
             z-index: 1;
-            background-clip: padding-box, border-box;
-            background-image: linear-gradient(to right, #000, #000), var(--irina-gradient);
-            background-origin: border-box;
             transition: transform 0.2s;
         }
         
@@ -154,7 +151,7 @@
             left: -50%; 
             width: 200%; 
             height: 200%;
-            background: conic-gradient(transparent, var(--fucsia), transparent 30%);
+            background: conic-gradient(transparent, rgba(255,255,255,0.4), transparent 30%);
             z-index: -1;
             opacity: 0;
             transition: opacity 0.3s;
