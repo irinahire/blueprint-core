@@ -52,6 +52,7 @@
             overflow: hidden; 
         }
         
+        /* CABECERA (Asegúrate que el script busque este ID) */
         #header-placeholder { 
             width: 100%; 
             background: white; 
@@ -59,66 +60,27 @@
             border-bottom: 1px solid #eee;
         }
 
-        .stepper-row { 
-            display: flex; 
-            justify-content: center; 
-            padding: 25px 20px; 
-            background: white; 
-            border-bottom: 1px solid #eee; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-        }
-
-        .stepper-container { 
-            display: flex; 
-            align-items: center; 
-            gap: 40px; 
-        }
-
-        .step { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            width: 80px; 
-        }
-
-        .step-circle { 
-            width: 35px; 
-            height: 35px; 
-            border-radius: 50%; 
-            background: #e0e0e0; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-weight: bold; 
-            color: #777; 
-            font-size: 14px;
-        }
-
+        /* STEPPER */
+        .stepper-row { display: flex; justify-content: center; padding: 25px 20px; background: white; border-bottom: 1px solid #eee; }
+        .stepper-container { display: flex; align-items: center; gap: 40px; }
+        .step { display: flex; flex-direction: column; align-items: center; width: 80px; }
+        .step-circle { width: 35px; height: 35px; border-radius: 50%; background: #e0e0e0; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #777; font-size: 14px; }
         .step.completed .step-circle { background: #8EE4D5; color: #fff; }
         .step.active .step-circle { background: #B588C0; color: #fff; }
+        .step-label { font-size: 10px; margin-top: 8px; color: #555; text-transform: uppercase; font-weight: 700; text-align: center; }
 
-        .step-label { 
-            font-size: 10px; 
-            margin-top: 8px; 
-            color: #555; 
-            text-transform: uppercase; 
-            font-weight: 700; 
-            text-align: center; 
-            letter-spacing: 0.5px;
-        }
+        /* INTERACTIVIDAD Y CURSORES */
+        /* Aplicamos puntero a las imágenes de respuesta */
+        #options-grid img, #options-grid div[onclick] { cursor: pointer !important; transition: transform 0.2s ease; }
+        #options-grid img:hover { transform: scale(1.05); }
 
-        .scroll-area { 
-            flex: 1; 
-            padding: 3rem; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            overflow-y: auto;
-        }
+        /* Animación para botones */
+        button { transition: all 0.3s ease; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); cursor: pointer; }
 
+        .scroll-area { flex: 1; padding: 3rem; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-y: auto; }
         #main-test-image { display: none; width: 400px; margin-bottom: 20px; }
-        #options-grid { width: 100%; display: flex; flex-direction: column; align-items: center; }
+        #options-grid { width: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
         
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
         .modal-content { background: #fff; padding: 40px; border-radius: 20px; width: 350px; text-align: center; }
@@ -130,6 +92,7 @@
 <div class="outer-frame">
     <div class="app-container">
         
+        <!-- El div que el script auth-module.js debe llenar -->
         <div id="header-placeholder"></div>
         
         <div class="stepper-row">
@@ -155,6 +118,17 @@
         <button class="google-btn" onclick="ingresarConGoogle()">INGRESAR CON GOOGLE</button>
     </div>
 </div>
+
+<script>
+    // IMPORTANTE: Si el auth-module.js no está inyectando la cabecera, 
+    // asegúrate de que al final de tu archivo auth-module.js tengas una función
+    // que haga document.getElementById('header-placeholder').innerHTML = ...
+    
+    // Verificamos si el auth-module definió la función de login
+    window.ingresarConGoogle = window.ingresarConGoogle || function() {
+        console.log("Esperando carga de auth-module...");
+    };
+</script>
 
 <script src="motor-tests.js"></script>
 
