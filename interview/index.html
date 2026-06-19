@@ -31,10 +31,7 @@
         ul { padding-left: 20px; }
         li { margin-bottom: 12px; font-size: 14px; line-height: 1.4; }
 
-        /* Contenedor botones unificado */
         .btn-group { display: flex; gap: 15px; margin-top: 30px; }
-        
-        /* Estilo base unificado para ambos botones */
         .btn-action { 
             background: var(--btn-gradient); 
             color: white; 
@@ -103,7 +100,7 @@
         <div id="blue-header"></div>
         
         <div class="content">
-            <div class="left-col">
+            <div class="left-col" id="main-content">
                 <h2>PARA UNA ENTREVISTA DE CALIDAD:</h2>
                 <ul>
                     <li>🎧 <b>Audio y Micrófono:</b> Es recomendable el uso de auriculares con micrófono.</li>
@@ -133,6 +130,7 @@
     const btn = document.getElementById('start-btn');
     const laterBtn = document.getElementById('later-btn');
     const btnGroup = document.getElementById('btn-group-wrapper');
+    const mainContent = document.getElementById('main-content');
     const msgBox = document.getElementById('msg-box');
     const FUNCTION_URL = "https://zuzvozgjsppkxvdlptmk.supabase.co/functions/v1/hbt_start_interview";
     
@@ -157,10 +155,7 @@
             });
 
             const config = await response.json();
-            
-            if (!config.publicKey || !config.assistantId) {
-                throw new Error("Configuración de Vapi incompleta.");
-            }
+            if (!config.publicKey || !config.assistantId) throw new Error("Configuración incompleta.");
 
             const vapi = window.vapiSDK.run({
                 apiKey: config.publicKey, 
@@ -178,10 +173,7 @@
             }, 100);
 
             vapi.on('call-start', () => document.querySelector('.vapi-btn')?.setAttribute('data-text', 'FINALIZAR ENTREVISTA'));
-            vapi.on('call-end', () => {
-                document.querySelector('.vapi-btn')?.setAttribute('data-text', 'INICIAR ENTREVISTA');
-                // Botones permanecen ocultos tras finalizar
-            });
+            vapi.on('call-end', () => document.querySelector('.vapi-btn')?.setAttribute('data-text', 'INICIAR ENTREVISTA'));
         } catch (e) {
             console.error(e);
             msgBox.innerText = "Error al iniciar la entrevista. Intente nuevamente.";
@@ -192,8 +184,7 @@
     });
 
     laterBtn.addEventListener('click', async () => {
-        msgBox.style.color = "#bc8abf";
-        msgBox.innerText = "Enviando enlace a su correo electrónico...";
+        laterBtn.innerText = "ENVIANDO...";
         laterBtn.disabled = true;
         
         try {
@@ -204,14 +195,24 @@
             });
 
             if (response.ok) {
-                msgBox.innerText = "✅ Enlace enviado. ¡Podrá realizarla cuando guste!";
-                laterBtn.style.display = "none";
-                btn.style.display = "none";
+                mainContent.innerHTML = `
+                    <h2 style="font-size:24px; color:#bc8abf;">¡Entendido! Hemos enviado el enlace a tu correo.</h2>
+                    <p>Puedes retomar tu entrevista cuando estés listo. Para asegurar una evaluación de calidad, recuerda seguir estas recomendaciones al momento de conectar:</p>
+                    <ul>
+                        <li>🎧 <b>Audio y Micrófono:</b> Utiliza auriculares con micrófono.</li>
+                        <li>🤫 <b>Entorno:</b> Un lugar privado, silencioso y sin interrupciones.</li>
+                        <li>💡 <b>Ambiente:</b> Bien iluminado con luz de frente.</li>
+                        <li>📶 <b>Conexión:</b> Asegura una conexión a Internet estable.</li>
+                        <li>🔋 <b>Batería:</b> Dispositivo con carga completa o conectado a la red.</li>
+                        <li>🆔 <b>Identidad:</b> Ten tu DNI a mano.</li>
+                        <li>🗣️ <b>Atención:</b> Responde de forma clara y pausada.</li>
+                    </ul>
+                    <p style="margin-top:20px; font-weight:700;">¡Te esperamos para tu entrevista!</p>
+                `;
             } else {
-                throw new Error("Error en el servidor");
+                throw new Error("Error en servidor");
             }
         } catch (e) {
-            msgBox.style.color = "#ef4444";
             msgBox.innerText = "Error al enviar el mail. Intente nuevamente.";
             laterBtn.innerText = "REALIZAR EN OTRO MOMENTO";
             laterBtn.disabled = false;
