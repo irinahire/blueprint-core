@@ -5,10 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evaluación Psicométrica - Irina Hire Selection</title>
     
-    <!-- Carga de la librería base -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <!-- Carga del módulo que gestiona la sesión y la cabecera -->
+    <script>
+        window.sbClient = supabase.createClient(
+            'https://zuzvozgjsppkxvdlptmk.supabase.co', 
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0'
+        );
+    </script>
+    
     <script src="../auth-module.js"></script>
     
     <style>
@@ -32,6 +37,7 @@
             align-items: center;
         }
         
+        /* Marco ampliado al 10% */
         .outer-frame { 
             padding: 8px; 
             background: var(--irina-gradient); 
@@ -52,36 +58,62 @@
             overflow: hidden; 
         }
         
-        /* CABECERA (Asegúrate que el script busque este ID) */
-        #header-placeholder { 
+        /* Cabecera inyectable */
+        #blue-header { 
             width: 100%; 
             background: white; 
             min-height: 80px; 
             border-bottom: 1px solid #eee;
         }
 
-        /* STEPPER */
-        .stepper-row { display: flex; justify-content: center; padding: 25px 20px; background: white; border-bottom: 1px solid #eee; }
+        /* Stepper de navegación */
+        .stepper-row { 
+            display: flex; 
+            justify-content: center; 
+            padding: 25px 20px; 
+            background: white; 
+            border-bottom: 1px solid #eee; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
         .stepper-container { display: flex; align-items: center; gap: 40px; }
         .step { display: flex; flex-direction: column; align-items: center; width: 80px; }
-        .step-circle { width: 35px; height: 35px; border-radius: 50%; background: #e0e0e0; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #777; font-size: 14px; }
+        .step-circle { 
+            width: 35px; height: 35px; border-radius: 50%; background: #e0e0e0; 
+            display: flex; align-items: center; justify-content: center; 
+            font-weight: bold; color: #777; font-size: 14px; 
+        }
         .step.completed .step-circle { background: #8EE4D5; color: #fff; }
         .step.active .step-circle { background: #B588C0; color: #fff; }
         .step-label { font-size: 10px; margin-top: 8px; color: #555; text-transform: uppercase; font-weight: 700; text-align: center; }
 
-        /* INTERACTIVIDAD Y CURSORES */
-        /* Aplicamos puntero a las imágenes de respuesta */
-        #options-grid img, #options-grid div[onclick] { cursor: pointer !important; transition: transform 0.2s ease; }
-        #options-grid img:hover { transform: scale(1.05); }
+        /* Área de contenido y tests */
+        .scroll-area { 
+            flex: 1; padding: 3rem; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; overflow-y: auto; 
+        }
 
-        /* Animación para botones */
-        button { transition: all 0.3s ease; }
-        button:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); cursor: pointer; }
-
-        .scroll-area { flex: 1; padding: 3rem; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-y: auto; }
         #main-test-image { display: none; width: 400px; margin-bottom: 20px; }
         #options-grid { width: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
         
+        /* Cursor mano para imágenes de respuesta */
+        #options-grid img { cursor: pointer !important; transition: transform 0.2s; }
+        #options-grid img:hover { transform: scale(1.05); }
+
+        /* Animación láser del botón */
+        .laser-btn { 
+            position: relative; padding: 12px 25px; border-radius: 12px; background: #000; 
+            color: #fff; border: none; cursor: pointer; overflow: hidden; font-weight: 700;
+        }
+        .laser-btn::before {
+            content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: conic-gradient(transparent, var(--fucsia), transparent 30%);
+            animation: rotate 3s linear infinite;
+        }
+        .laser-btn span { position: relative; z-index: 1; background: #000; display: block; padding: 10px; border-radius: 8px; }
+        @keyframes rotate { 100% { transform: rotate(360deg); } }
+
+        /* Modal */
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
         .modal-content { background: #fff; padding: 40px; border-radius: 20px; width: 350px; text-align: center; }
         .google-btn { background: #4285f4; color: white; padding: 12px; width: 100%; border-radius: 8px; border: none; cursor: pointer; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 20px; }
@@ -92,8 +124,7 @@
 <div class="outer-frame">
     <div class="app-container">
         
-        <!-- El div que el script auth-module.js debe llenar -->
-        <div id="header-placeholder"></div>
+        <div id="blue-header"></div>
         
         <div class="stepper-row">
             <div class="stepper-container">
@@ -118,17 +149,6 @@
         <button class="google-btn" onclick="ingresarConGoogle()">INGRESAR CON GOOGLE</button>
     </div>
 </div>
-
-<script>
-    // IMPORTANTE: Si el auth-module.js no está inyectando la cabecera, 
-    // asegúrate de que al final de tu archivo auth-module.js tengas una función
-    // que haga document.getElementById('header-placeholder').innerHTML = ...
-    
-    // Verificamos si el auth-module definió la función de login
-    window.ingresarConGoogle = window.ingresarConGoogle || function() {
-        console.log("Esperando carga de auth-module...");
-    };
-</script>
 
 <script src="motor-tests.js"></script>
 
