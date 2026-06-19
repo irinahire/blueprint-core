@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evaluación Psicométrica - Irina Hire Selection</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
     <style>
         :root { 
             --fucsia: #bc8abf; 
@@ -14,26 +14,27 @@
             --bg-dark: #05070a; 
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg-dark); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-dark); padding: 20px 2rem; min-height: 100vh; }
         
         /* MARCO ESTÁNDAR */
-        .outer-frame { padding: 8px; background: var(--irina-gradient); border-radius: 50px; width: 92%; max-width: 1200px; min-height: 85vh; margin: 0 auto; }
-        .app-container { background: #f9f7f2; width: 100%; height: 100%; border-radius: 42px; display: flex; flex-direction: column; overflow: hidden; min-height: 80vh; }
+        .outer-frame { padding: 8px; background: var(--irina-gradient); border-radius: 50px; width: 92%; max-width: 1200px; margin: 0 auto; min-height: 85vh; }
+        .app-container { background: #f9f7f2; width: 100%; min-height: calc(85vh - 16px); border-radius: 42px; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* HEADER INTEGRADO */
-        .header-wrapper { padding: 2rem; z-index: 100; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; background: white; }
+        /* HEADER */
+        .header-wrapper { padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; background: white; }
         
-        .stepper-container { display: flex; align-items: center; gap: 20px; }
+        /* STEPPER */
+        .stepper-container { display: flex; align-items: center; gap: 30px; }
         .step { display: flex; flex-direction: column; align-items: center; width: 80px; }
         .step-circle { width: 35px; height: 35px; border-radius: 50%; background: #e0e0e0; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #777; }
         .step.completed .step-circle { background: #8EE4D5; color: #fff; }
         .step.active .step-circle { background: #B588C0; color: #fff; }
         .step-label { font-size: 10px; margin-top: 5px; color: #555; text-transform: uppercase; font-weight: 700; text-align: center; }
 
-        /* ÁREA DE CONTENIDO */
-        .scroll-area { flex: 1; padding: 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        /* AREA DE CONTENIDO (donde el script inyecta los elementos) */
+        .scroll-area { flex: 1; padding: 3rem; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         
-        /* ESTILOS DE AUTENTICACIÓN */
+        /* AUTH UI */
         .auth-btn { background: linear-gradient(135deg, #4e52a7, #85c1e9); color: white; border: none; padding: 12px 25px; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.8rem; }
         .user-profile { display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.05); padding: 5px 20px 5px 10px; border-radius: 50px; border: 1px solid #ddd; }
         .user-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
@@ -66,9 +67,7 @@
             </div>
         </header>
 
-        <div class="scroll-area">
-            <div id="options-grid"></div>
-        </div>
+        <div id="options-grid" class="scroll-area"></div>
     </div>
 </div>
 
@@ -101,7 +100,6 @@
         }
     });
 
-    // Verificación inicial
     window.onload = async () => {
         const { data: { session } } = await window.sbClient.auth.getSession();
         if (session) {
