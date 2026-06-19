@@ -5,6 +5,7 @@
     <title>Gimnasio de Habilidades - Irina Hire Selection</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../auth-module.js"></script> 
+    <script src="../hbt_migracion_id.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -106,6 +107,14 @@
         msg.style.display = 'block';
         msg.innerHTML = `Entrenamiento activado para: ${id}`;
     }
+
+    // Escucha el evento de cambio de autenticación para disparar la migración si es necesario
+    window.addEventListener('auth-change', () => {
+        console.log("Detectado evento auth-change, llamando a verificarYMigrarApplicantId...");
+        if (typeof verificarYMigrarApplicantId === 'function') {
+            verificarYMigrarApplicantId();
+        }
+    });
 </script>
 </body>
 </html>
