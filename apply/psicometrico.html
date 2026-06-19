@@ -5,10 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evaluación Psicométrica - Irina Hire Selection</title>
     
+    <!-- Librerías de Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
+    <!-- Módulo de autenticación -->
     <script src="../auth-module.js"></script>
     
+    <!-- Estilos originales y añadidos -->
     <style>
         :root { 
             --fucsia: #bc8abf; 
@@ -50,7 +53,7 @@
             overflow: hidden; 
         }
         
-        /* CABECERA (Manteniendo ID original) */
+        /* CABECERA */
         #blue-header { 
             width: 100%; 
             background: white; 
@@ -125,19 +128,23 @@
         #options-grid img { cursor: pointer !important; transition: transform 0.2s; }
         #options-grid img:hover { transform: scale(1.05); }
 
-        /* ANIMACIÓN LÁSER DEL BOTÓN (Estilo solicitado) */
+        /* ESTILO BOTÓN CON DEGRADADO FIJO Y LÁSER EN HOVER */
         .laser-btn { 
             position: relative; 
             padding: 15px 30px; 
             border-radius: 12px; 
             background: #000; 
             color: #fff; 
-            border: none; 
+            border: 3px solid transparent; 
             cursor: pointer; 
             overflow: hidden; 
             font-weight: 700;
             margin: 15px; 
             z-index: 1;
+            background-clip: padding-box, border-box;
+            background-image: linear-gradient(to right, #000, #000), var(--irina-gradient);
+            background-origin: border-box;
+            transition: transform 0.2s;
         }
         
         .laser-btn::before {
@@ -148,15 +155,15 @@
             width: 200%; 
             height: 200%;
             background: conic-gradient(transparent, var(--fucsia), transparent 30%);
-            animation: rotate 3s linear infinite; 
             z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
         
         .laser-btn:hover { transform: scale(1.05); }
+        .laser-btn:hover::before { opacity: 1; animation: rotate 3s linear infinite; }
         
-        @keyframes rotate { 
-            100% { transform: rotate(360deg); } 
-        }
+        @keyframes rotate { 100% { transform: rotate(360deg); } }
 
         /* MODAL LOGIN */
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
@@ -170,8 +177,10 @@
 <div class="outer-frame">
     <div class="app-container">
         
+        <!-- Header gestionado por auth-module.js -->
         <div id="blue-header"></div>
         
+        <!-- Stepper -->
         <div class="stepper-row">
             <div class="stepper-container">
                 <div class="step completed"><div class="step-circle">✓</div><div class="step-label">Postulación</div></div>
@@ -181,6 +190,7 @@
             </div>
         </div>
 
+        <!-- Área de contenido original -->
         <div class="scroll-area">
             <img id="main-test-image" src="" alt="Test">
             <div id="options-grid"></div>
@@ -189,6 +199,7 @@
     </div>
 </div>
 
+<!-- Modal -->
 <div id="loginModal" class="modal">
     <div class="modal-content">
         <h2>BlueLab Acceso</h2>
@@ -197,6 +208,7 @@
     </div>
 </div>
 
+<!-- Scripts de lógica original -->
 <script>
     async function verificarAutenticacion(callback) {
         const { data: { session } } = await window.sbClient.auth.getSession();
