@@ -138,29 +138,6 @@
     const applicantId = urlParams.get('applicantId');
     const jobId = urlParams.get('jobId');
 
-    // Variable donde guardaremos el email real
-    let applicantEmail = "Cargando...";
-
-    // Inicialización inmediata para traer el email antes de que interactúen
-    (async () => {
-        if (applicantId) {
-            try {
-                const { data: record, error } = await _supabase
-                    .from('habitat')
-                    .select('data')
-                    .eq('id', applicantId)
-                    .single();
-                
-                if (record && record.data["!perfil"]) {
-                    applicantEmail = record.data["!perfil"]["perfil-contacto"]["email"];
-                }
-            } catch (e) {
-                console.error("Error al recuperar email:", e);
-                applicantEmail = "no disponible";
-            }
-        }
-    })();
-
     btn.addEventListener('click', async () => {
         if (!applicantId || !jobId) {
             msgBox.innerText = "Error: Parámetros de entrevista no encontrados en la URL.";
@@ -207,22 +184,37 @@
     });
 
     laterBtn.addEventListener('click', async () => {
-        laterBtn.innerText = "ENVIANDO...";
+        laterBtn.innerText = "PROCESANDO...";
         laterBtn.disabled = true;
         
+        let emailMostrado = "correo no detectado";
+
         try {
+            // Consulta directa a Supabase dentro del evento click
+            const { data: record, error } = await _supabase
+                .from('habitat')
+                .select('data')
+                .eq('id', applicantId)
+                .single();
+
+            if (record && record.data && record.data["!perfil"]) {
+                emailMostrado = record.data["!perfil"]["perfil-contacto"]["email"];
+            }
+
+            // Llamada al servidor para enviar el email
             await fetch("https://zuzvozgjsppkxvdlptmk.supabase.co/functions/v1/send_interview_email", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ applicantId, jobId })
             });
         } catch (e) {
-            console.error("Fallo en servidor:", e);
+            console.error("Error en proceso:", e);
         }
 
+        // Cambio de UI final
         mainContent.innerHTML = `
             <h2 style="font-size:24px; color:#bc8abf;">¡Entendido! Hemos enviado el enlace a tu correo electrónico:</h2>
-            <p style="font-size: 18px; font-weight: 700; color: #000;">${applicantEmail}</p>
+            <p style="font-size: 18px; font-weight: 700; color: #000;">${emailMostrado}</p>
             <p>Puedes retomar tu entrevista cuando estés listo. Para asegurar una evaluación de calidad, recuerda seguir estas recomendaciones al momento de conectar:</p>
             <ul>
                 <li>🎧 <b>Audio y Micrófono:</b> Utiliza auriculares con micrófono.</li>
