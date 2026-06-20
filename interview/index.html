@@ -133,6 +133,7 @@
     const mainContent = document.getElementById('main-content');
     const msgBox = document.getElementById('msg-box');
     const FUNCTION_URL = "https://zuzvozgjsppkxvdlptmk.supabase.co/functions/v1/hbt_start_interview";
+    const EMAIL_FUNCTION_URL = "https://zuzvozgjsppkxvdlptmk.supabase.co/functions/v1/hbt_get_applicant_email";
     
     const urlParams = new URLSearchParams(window.location.search);
     const applicantId = urlParams.get('applicantId');
@@ -187,21 +188,25 @@
         laterBtn.innerText = "PROCESANDO...";
         laterBtn.disabled = true;
         
-        let emailMostrado = "tu correo";
+        let emailMostrado = "correo no encontrado";
 
         try {
-            // Obtenemos el email directamente de la sesión actual
-            const { data: { session } } = await window.sbClient.auth.getSession();
-            if (session && session.user.email) {
-                emailMostrado = session.user.email;
+            const response = await fetch(EMAIL_FUNCTION_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ applicantId, jobId })
+            });
+            const data = await response.json();
+            if (data.email) {
+                emailMostrado = data.email;
             }
         } catch (e) {
             console.error("Error al obtener email:", e);
         }
 
-        // Cambio de UI final sin llamadas a funciones inexistentes
         mainContent.innerHTML = `
-            <h2 style="font-size:24px; color:#bc8abf;">¡Entendido! Te enviaremos el enlace a tu correo:</h2>
+            <h2 style="font-size:24px; color:#bc8abf;">¡Entendido! Hemos registrado tu solicitud para realizarla después.</h2>
+            <p>El enlace de acceso será enviado a tu correo:</p>
             <p style="font-size: 18px; font-weight: 700; color: #000;">${emailMostrado}</p>
             <p>Puedes retomar tu entrevista cuando estés listo. Para asegurar una evaluación de calidad, recuerda seguir estas recomendaciones al momento de conectar:</p>
             <ul>
