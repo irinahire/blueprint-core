@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evaluación Psicométrica - Irina Hire Selection</title>
     
-    <!-- Librerías de Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <!-- Módulo de autenticación -->
     <script src="../auth-module.js"></script>
+
+    <script src="hbt_migracion_id.js"></script>
     
-    <!-- Estilos originales y añadidos -->
     <style>
         :root { 
             --fucsia: #bc8abf; 
@@ -174,10 +173,8 @@
 <div class="outer-frame">
     <div class="app-container">
         
-        <!-- Header gestionado por auth-module.js -->
         <div id="blue-header"></div>
         
-        <!-- Stepper -->
         <div class="stepper-row">
             <div class="stepper-container">
                 <div class="step completed"><div class="step-circle">✓</div><div class="step-label">Postulación</div></div>
@@ -187,7 +184,6 @@
             </div>
         </div>
 
-        <!-- Área de contenido original -->
         <div class="scroll-area">
             <img id="main-test-image" src="" alt="Test">
             <div id="options-grid"></div>
@@ -196,7 +192,6 @@
     </div>
 </div>
 
-<!-- Modal -->
 <div id="loginModal" class="modal">
     <div class="modal-content">
         <h2>BlueLab Acceso</h2>
@@ -205,7 +200,6 @@
     </div>
 </div>
 
-<!-- Scripts de lógica original -->
 <script>
     async function verificarAutenticacion(callback) {
         const { data: { session } } = await window.sbClient.auth.getSession();
@@ -215,6 +209,14 @@
             callback();
         }
     }
+
+    // Vigilante de Autenticación: Detecta el retorno de Google y dispara la migración
+    window.sbClient.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN' && session) {
+            console.log("--- [VIGILANTE] Sesión detectada tras login. Ejecutando migración... ---");
+            verificarYMigrarApplicantId();
+        }
+    });
 </script>
 
 <script src="motor-tests.js"></script>
