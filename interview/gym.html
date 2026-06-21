@@ -101,18 +101,18 @@
 
 <script>
     function iniciarRutina() {
-        const id = new URLSearchParams(window.location.search).get('applicantId') || "Invitado";
+        const id = localStorage.getItem('applicantId') || "Invitado";
         document.getElementById('area-juego').style.display = 'none';
         const msg = document.getElementById('mensaje-entrenamiento');
         msg.style.display = 'block';
         msg.innerHTML = `Entrenamiento activado para: ${id}`;
     }
 
-    // Escucha el evento de cambio de autenticación para disparar la migración si es necesario
-    window.addEventListener('auth-change', () => {
-        console.log("Detectado evento auth-change, llamando a verificarYMigrarApplicantId...");
-        if (typeof verificarYMigrarApplicantId === 'function') {
-            verificarYMigrarApplicantId();
+    // Vigilante unificado igual al de psicométrico
+    window.sbClient.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN' && session) {
+            console.log("--- [VIGILANTE GIMNASIO] Sesión detectada tras login. Ejecutando migración... ---");
+            verificarYMigrarApplicantId(session);
         }
     });
 </script>
