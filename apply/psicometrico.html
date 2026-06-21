@@ -8,7 +8,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script src="../auth-module.js"></script>
-
     <script src="hbt_migracion_id.js"></script>
     
     <style>
@@ -123,11 +122,9 @@
         #main-test-image { display: none; width: 400px; margin-bottom: 20px; }
         #options-grid { width: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
 
-        /* INTERACTIVIDAD Y CURSORES */
         #options-grid img { cursor: pointer !important; transition: transform 0.2s; }
         #options-grid img:hover { transform: scale(1.05); }
 
-        /* ESTILO BOTÓN: DEGRADADO FIJO Y LÁSER EN HOVER */
         .laser-btn { 
             position: relative; 
             padding: 15px 30px; 
@@ -165,7 +162,6 @@
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
         .modal-content { background: #fff; padding: 40px; border-radius: 20px; width: 350px; text-align: center; }
         .google-btn { background: #4285f4; color: white; padding: 12px; width: 100%; border-radius: 8px; border: none; cursor: pointer; font-weight: 800; }
-        
     </style>
 </head>
 <body>
@@ -213,8 +209,9 @@
     // Vigilante de Autenticación: Detecta el retorno de Google y dispara la migración
     window.sbClient.auth.onAuthStateChange((event, session) => {
         if (event === 'SIGNED_IN' && session) {
-            console.log("--- [VIGILANTE] Sesión detectada tras login. Ejecutando migración... ---");
-            verificarYMigrarApplicantId();
+            console.log("--- [VIGILANTE PSICOMÉTRICO] Sesión detectada tras login. Ejecutando migración... ---");
+            // Pasamos la sesión para asegurar la vinculación correcta
+            verificarYMigrarApplicantId(session);
         }
     });
 </script>
