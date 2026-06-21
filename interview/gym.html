@@ -106,7 +106,17 @@
         msg.innerHTML = `Entrenamiento activado para: ${id}`;
     }
 
-    // El vigilante está al final, asegurando que ya se cargaron los scripts anteriores
+    // Inicialización al cargar la página
+    async function inicializarGimnasio() {
+        const { data: { session } } = await window.sbClient.auth.getSession();
+        if (session) {
+            console.log("--- [GIMNASIO] Sesión previa detectada. Verificando migración... ---");
+            verificarYMigrarApplicantId(session);
+        }
+    }
+    inicializarGimnasio();
+
+    // Vigilante para sesiones nuevas
     window.sbClient.auth.onAuthStateChange((event, session) => {
         if (event === 'SIGNED_IN' && session) {
             console.log("--- [VIGILANTE GIMNASIO] Sesión detectada tras login. Ejecutando migración... ---");
