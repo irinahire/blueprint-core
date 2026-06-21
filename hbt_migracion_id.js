@@ -1,6 +1,6 @@
 /**
  * hbt_migracion_id.js 
- * Lógica paso a paso para auditoría en consola.
+ * Lógica corregida: Toma el applicantId de la URL (fuente inmutable)
  */
 
 async function verificarYMigrarApplicantId(sesionForzada = null) {
@@ -17,29 +17,27 @@ async function verificarYMigrarApplicantId(sesionForzada = null) {
         return;
     }
 
-    // Extracción de valores
-    const idTemporal = localStorage.getItem('applicantId');
+    // --- CAMBIO CRÍTICO: Obtenemos el ID de la URL ---
+    const urlParams = new URLSearchParams(window.location.search);
+    const applicantId = urlParams.get('applicantId'); 
     const idPermanente = session.user.id;
 
-    // Auditoría paso a paso
     console.log("--- [HBT_MIGRACION] 2. Auditoría de valores:");
-    console.log("Este es el id Temporal:", idTemporal);
-    console.log("Este es el id Permanente:", idPermanente);
+    console.log("Este es el id obtenido de la URL:", applicantId);
+    console.log("Este es el id Permanente (sesión):", idPermanente);
 
-    if (!idTemporal) {
-        console.log("--- [HBT_MIGRACION] 2.1. No existe ID temporal. Finalizando. ---");
-        localStorage.setItem('permanentUid', idPermanente);
+    if (!applicantId) {
+        console.log("--- [HBT_MIGRACION] 2.1. No existe applicantId en la URL. Finalizando. ---");
         return;
     }
 
-    // Paso de llamada
-    console.log("--- [HBT_MIGRACION] 3. Se llama a la función para que cambie este valor temporal por este otro permanente en el Owner ID ---");
-    console.log(`--- [HBT_MIGRACION] Instrucción: Busca en la fila un 'owner_id' que coincida con el valor temporal: ${idTemporal} ---`);
+    // Paso de llamada: Enviamos applicantId y dejamos que la Edge Function busque en metadata
+    console.log("--- [HBT_MIGRACION] 3. Llamando a función para vincular cuenta ---");
 
     try {
         const { data, error } = await window.sbClient.functions.invoke('hbt_vincular_usuario', {
             body: { 
-                tempId: idTemporal, 
+                applicantId: applicantId, // Nombre de variable consistente con la Edge Function
                 nuevoUid: idPermanente 
             }
         });
@@ -49,16 +47,10 @@ async function verificarYMigrarApplicantId(sesionForzada = null) {
             return;
         }
 
-        console.log("--- [HBT_MIGRACION] 4.2. Se encontró el valor temporal en la columna 'owner_id' ---");
-        console.log(`--- [HBT_MIGRACION] 4.3. Se procede a reemplazar el valor de 'owner_id' por este valor permanente: ${idPermanente} ---`);
-        
         console.log("--- [HBT_MIGRACION] 5. ÉXITO:", data.message);
         
-        // Actualizar estado
-        localStorage.setItem('permanentUid', idPermanente);
-        localStorage.removeItem('applicantId');
-        
-        console.log("--- [HBT_MIGRACION] 6. Proceso finalizado. LocalStorage actualizado.");
+        // Limpiamos solo si quieres, pero el proceso ya es seguro
+        console.log("--- [HBT_MIGRACION] 6. Proceso finalizado.");
 
     } catch (err) {
         console.error("--- [HBT_MIGRACION] 4.4. Error crítico durante el llamado:", err);
