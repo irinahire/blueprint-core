@@ -1,69 +1,59 @@
 /**
- * hbt_migracion_id.js - Versión corregida
+ * hbt_migracion_id.js 
+ * Lógica para vincular el ID temporal con el ID permanente vía Edge Function.
  */
 
 async function verificarYMigrarApplicantId() {
-    console.log("--- [HBT_MIGRACION] Iniciando proceso de verificación ---");
+    console.log("--- [HBT_MIGRACION] 1. Iniciando proceso ---");
 
+    // 1. Obtener sesión
     const { data: { session } } = await window.sbClient.auth.getSession();
-    if (!session) return;
+    if (!session) {
+        console.log("--- [HBT_MIGRACION] 1.1. No hay sesión, abortando ---");
+        return;
+    }
 
     const idTemporal = localStorage.getItem('applicantId');
     const idPermanente = session.user.id;
 
-    if (!idTemporal) return;
+    // --- LÍNEA SOLICITADA PARA AUDITORÍA ---
+    console.log("--- [HBT_MIGRACION] 1.2. Valor exacto en localStorage (applicantId):", idTemporal);
+
+    console.log("--- [HBT_MIGRACION] 2. IDs Comparativa -> Temporal:", idTemporal, "| Permanente:", idPermanente);
+
+    if (!idTemporal) {
+        console.log("--- [HBT_MIGRACION] 2.1. No hay ID temporal en localStorage. Nada que hacer. ---");
+        return;
+    }
     
-    // Si ya son iguales, no hacemos nada
     if (idTemporal === idPermanente) {
-        console.log("--- [HBT_MIGRACION] El ID ya es permanente, omitiendo. ---");
+        console.log("--- [HBT_MIGRACION] 2.2. El ID en localStorage ya es igual al ID de sesión. ---");
         return;
     }
 
-    console.log("--- [HBT_MIGRACION] Buscando fila con owner_id:", idTemporal);
+    console.log("--- [HBT_MIGRACION] 3. Llamando a Edge Function 'hbt_vincular_usuario' ---");
 
-    // 1. Quitamos .single() y ajustamos la sintaxis del filtro
-    const { data: registros, error } = await window.sbClient
-        .from('habitat')
-        .select('id, owner_id, metadata')
-        .eq('owner_id', idTemporal); // Buscamos por owner_id que es lo más directo
+    try {
+        // 4. Invocación a la Edge Function
+        const { data, error } = await window.sbClient.functions.invoke('hbt_vincular_usuario', {
+            body: { 
+                tempId: idTemporal, 
+                nuevoUid: idPermanente 
+            }
+        });
 
-    if (error) {
-        console.error("--- [HBT_MIGRACION] Error en consulta:", error.message);
-        return;
-    }
+        if (error) {
+            console.error("--- [HBT_MIGRACION] 4.1. Error recibido de Edge Function:", error);
+            return;
+        }
 
-    // 2. Filtramos manualmente en JS para evitar problemas de sintaxis JSONB en el filtro de la API
-    const registro = registros ? registros.find(r => r.metadata?.['!tipo'] === '!postulacion') : null;
-
-    if (!registro) {
-        console.log("--- [HBT_MIGRACION] No se encontró postulación activa con ese ID. ---");
-        return;
-    }
-
-    console.log("--- [HBT_MIGRACION] Registro encontrado. ID interno:", registro.id);
-
-    // 3. Preparar actualización
-    const nuevaMetadata = {
-        ...registro.metadata,
-        "!usuario_id": idPermanente
-    };
-
-    console.log("--- [HBT_MIGRACION] Actualizando a:", idPermanente);
-
-    const { error: updateError } = await window.sbClient
-        .from('habitat')
-        .update({
-            owner_id: idPermanente,
-            metadata: nuevaMetadata
-        })
-        .eq('id', registro.id);
-
-    if (updateError) {
-        console.error("--- [HBT_MIGRACION] Error crítico durante update:", updateError.message);
-    } else {
-        console.log("--- [HBT_MIGRACION] ÉXITO. Actualizando localStorage.");
+        console.log("--- [HBT_MIGRACION] 5. ÉXITO:", data.message);
+        
+        // 5. Actualizar localStorage solo si la función respondió éxito
         localStorage.setItem('applicantId', idPermanente);
+        console.log("--- [HBT_MIGRACION] 6. LocalStorage actualizado correctamente a:", idPermanente);
+
+    } catch (err) {
+        console.error("--- [HBT_MIGRACION] 4.2. Error crítico durante el llamado:", err);
     }
 }
-
-window.addEventListener('load', verificarYMigrarApplicantId);
