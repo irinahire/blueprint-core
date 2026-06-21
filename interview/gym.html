@@ -108,10 +108,11 @@
         msg.innerHTML = `Entrenamiento activado para: ${id}`;
     }
 
-    // Vigilante unificado igual al de psicométrico
+    // Vigilante unificado para detectar cuando el usuario se loguea
     window.sbClient.auth.onAuthStateChange((event, session) => {
         if (event === 'SIGNED_IN' && session) {
             console.log("--- [VIGILANTE GIMNASIO] Sesión detectada tras login. Ejecutando migración... ---");
+            // Pasamos la sesión directamente para asegurar que la función tenga el ID nuevo
             verificarYMigrarApplicantId(session);
         }
     });
