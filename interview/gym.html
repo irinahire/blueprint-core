@@ -6,6 +6,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../auth-module.js"></script> 
     <script src="../hbt_migracion_id.js"></script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -16,7 +17,6 @@
         }
         body { margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; }
         
-        /* ESTRUCTURA EXTERIOR */
         .outer-frame { padding: 8px; background: var(--irina-gradient); border-radius: 50px; width: 92%; max-width: 1150px; height: 85vh; display: flex; position: relative; }
         .app-container { background: #000; width: 100%; height: 100%; border-radius: 40px; display: flex; flex-direction: column; overflow: hidden; }
         
@@ -24,9 +24,8 @@
         
         .content-area { 
             flex: 1; 
-            background: 
-                linear-gradient(to right, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 60%, #000 100%),
-                url('https://i.ibb.co/TDxyQKGg/309eb931-3bcb-44a9-abeb-bc0b6cf996e6-0.jpg') no-repeat center center/cover;
+            background: linear-gradient(to right, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 60%, #000 100%),
+                        url('https://i.ibb.co/TDxyQKGg/309eb931-3bcb-44a9-abeb-bc0b6cf996e6-0.jpg') no-repeat center center/cover;
             position: relative; display: flex; justify-content: flex-end; align-items: flex-start; 
             padding: 50px; gap: 20px;
         }
@@ -47,7 +46,6 @@
         .ejercicio-desc { font-size: 0.85rem; color: #444; margin-top: 10px; flex: 1; line-height: 1.4; }
         .sets-reps { font-size: 0.75rem; color: #666; font-weight: bold; border-top: 1px solid #eee; padding-top: 10px; }
 
-        /* BOTÓN CON ANIMACIÓN RECUPERADA */
         .btn-container { position: absolute; bottom: 50px; left: 50px; }
         .btn-luz { 
             position: relative; padding: 1.2rem 2.5rem; font-family: 'Montserrat'; font-weight: 900; 
@@ -108,11 +106,10 @@
         msg.innerHTML = `Entrenamiento activado para: ${id}`;
     }
 
-    // Vigilante unificado para detectar cuando el usuario se loguea
+    // El vigilante está al final, asegurando que ya se cargaron los scripts anteriores
     window.sbClient.auth.onAuthStateChange((event, session) => {
         if (event === 'SIGNED_IN' && session) {
             console.log("--- [VIGILANTE GIMNASIO] Sesión detectada tras login. Ejecutando migración... ---");
-            // Pasamos la sesión directamente para asegurar que la función tenga el ID nuevo
             verificarYMigrarApplicantId(session);
         }
     });
