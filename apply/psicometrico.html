@@ -210,7 +210,8 @@
     window.sbClient.auth.onAuthStateChange((event, session) => {
         if (event === 'SIGNED_IN' && session) {
             console.log("--- [VIGILANTE PSICOMÉTRICO] Sesión detectada tras login. Ejecutando migración... ---");
-            // Pasamos la sesión para asegurar la vinculación correcta
+            // La función verificarYMigrarApplicantId en hbt_migracion_id.js 
+            // ya contiene la lógica para extraer el applicantId de la URL
             verificarYMigrarApplicantId(session);
         }
     });
