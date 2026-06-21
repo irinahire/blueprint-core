@@ -98,6 +98,9 @@
 </div>
 
 <script>
+    // Candado global para evitar el bucle de ejecución
+    window.esProcesando = false;
+
     function iniciarRutina() {
         const id = localStorage.getItem('applicantId') || "Invitado";
         document.getElementById('area-juego').style.display = 'none';
@@ -106,22 +109,30 @@
         msg.innerHTML = `Entrenamiento activado para: ${id}`;
     }
 
-    // Inicialización al cargar la página
-    async function inicializarGimnasio() {
-        const { data: { session } } = await window.sbClient.auth.getSession();
-        if (session) {
-            console.log("--- [GIMNASIO] Sesión previa detectada. Verificando migración... ---");
-            verificarYMigrarApplicantId(session);
+    // Función centralizada para ejecutar la migración una sola vez
+    async function dispararMigracion(session) {
+        if (window.esProcesando) return;
+        window.esProcesando = true;
+        
+        console.log("--- [SISTEMA] Iniciando migración única ---");
+        try {
+            await verificarYMigrarApplicantId(session);
+        } catch (error) {
+            console.error("--- [SISTEMA] Error en migración:", error);
+            window.esProcesando = false; // Permitir reintento si falla
         }
     }
-    inicializarGimnasio();
 
-    // Vigilante para sesiones nuevas
-    window.sbClient.auth.onAuthStateChange((event, session) => {
+    // 1. Vigilante para cuando el usuario se loguea (vuelve de Google)
+    window.sbClient.auth.onAuthStateChange(async (event, session) => {
         if (event === 'SIGNED_IN' && session) {
-            console.log("--- [VIGILANTE GIMNASIO] Sesión detectada tras login. Ejecutando migración... ---");
-            verificarYMigrarApplicantId(session);
+            await dispararMigracion(session);
         }
+    });
+
+    // 2. Comprobación inmediata por si la sesión ya existe al cargar la página
+    window.sbClient.auth.getSession().then(({ data: { session } }) => {
+        if (session) dispararMigracion(session);
     });
 </script>
 </body>
