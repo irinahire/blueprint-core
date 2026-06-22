@@ -91,10 +91,8 @@
         const params = new URLSearchParams(window.location.search);
         const applicant_id = params.get('id'); 
         
-        // El token completo
         const ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0";
 
-        // 1. Ejecución de pasos visuales
         for (let i of [1, 2, 3, 4]) {
             document.getElementById(`step-${i}`).classList.add('active');
             progressBar.style.width = `${i * 25}%`;
@@ -104,7 +102,6 @@
             document.getElementById(`step-${i}`).innerText = `✅ ` + document.getElementById(`step-${i}`).innerText.substring(2);
         }
 
-        // 2. Llamada a la función con cabecera Authorization
         try {
             const response = await fetch('https://zuzvozgjsppkxvdlptmk.supabase.co/functions/v1/hbt_irina_compara_cv', {
                 method: 'POST',
@@ -115,27 +112,28 @@
                 body: JSON.stringify({ applicant_id })
             });
             const result = await response.json();
-        diagnosticBox.style.display = 'block';
+            diagnosticBox.style.display = 'block';
 
-        if (response.ok) {
-            statusTitle.innerText = "Análisis Finalizado";
-            diagnosticBox.innerHTML = `<strong>Resultado:</strong> ${result.idoneo ? '✅ Idóneo' : '❌ No cumple el perfil'}<br><br><small>${result.resumen || 'Sin resumen disponible'}</small>`;
-            
-if (result.idoneo) {
-window.location.href = 'https://www.bluelab.online/interview?applicantId=' + applicant_id;
-} else {
-window.location.href = 'https://www.bluelab.online/interview/gym.html?applicantId=' + applicant_id;
-}
+            if (response.ok) {
+                statusTitle.innerText = "Análisis Finalizado";
+                diagnosticBox.innerHTML = `<strong>Resultado:</strong> ${result.idoneo ? '✅ Idóneo' : '❌ No cumple el perfil'}<br><br><small>${result.resumen || 'Sin resumen disponible'}</small>`;
+                
+                // Mantenemos la lógica de redirección que pediste:
+                if (result.idoneo) {
+                    window.location.href = 'https://www.bluelab.online/apply/psicometrico.html?applicantId=' + applicant_id;
+                } else {
+                    window.location.href = 'https://www.bluelab.online/interview/gym.html?applicantId=' + applicant_id;
+                }
 
-        } else {
-            statusTitle.innerText = "Error en el proceso";
-            diagnosticBox.innerHTML = `<strong style="color:red;">Error del servidor:</strong><br>${result.error || JSON.stringify(result)}`;
+            } else {
+                statusTitle.innerText = "Error en el proceso";
+                diagnosticBox.innerHTML = `<strong style="color:red;">Error del servidor:</strong><br>${result.error || JSON.stringify(result)}`;
+            }
+        } catch (error) {
+            diagnosticBox.style.display = 'block';
+            diagnosticBox.innerHTML = `<strong style="color:red;">Error de red:</strong> ${error.message}`;
         }
-    } catch (error) {
-        diagnosticBox.style.display = 'block';
-        diagnosticBox.innerHTML = `<strong style="color:red;">Error de red:</strong> ${error.message}`;
     }
-}
     window.onload = iniciarAnalisis;
 </script>
 
