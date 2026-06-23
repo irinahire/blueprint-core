@@ -89,12 +89,12 @@
         const diagnosticBox = document.getElementById('diagnostic-box');
         const statusTitle = document.getElementById('status-title');
         const params = new URLSearchParams(window.location.search);
-        const applicant_id = params.get('id'); 
+        const applicantId = params.get('applicantId'); 
         
         const ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0";
         const BASE_URL = "https://zuzvozgjsppkxvdlptmk.supabase.co/functions/v1";
 
-        console.log("🚩 [Inicio] Procesando applicant_id:", applicant_id);
+        console.log("🚩 [Inicio] Procesando applicantId:", applicantId);
 
         async function ejecutarPaso(i, label, fn) {
             document.getElementById(`step-${i}`).classList.add('active');
@@ -110,10 +110,10 @@
         try {
             // PASO 1: PARSEO (hbt_parsear_cv)
             await ejecutarPaso(1, "Parseando CV", async () => {
-                const res = await fetch(`${BASE_URL}/hbt_parsear_cv?aplicante_id=${applicant_id}`, {
+                const res = await fetch(`${BASE_URL}/hbt_parsear_cv?applicantId=${applicantId}`, {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${ANON_KEY}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ applicant_id })
+                    body: JSON.stringify({ applicantId })
                 });
                 if (!res.ok) throw new Error("Error en hbt_parsear_cv: " + res.statusText);
                 console.log("✅ Parseo exitoso");
@@ -122,10 +122,10 @@
             // PASO 2: COMPARACIÓN (hbt_irina_compara_cv)
             let result;
             await ejecutarPaso(2, "Comparando aptitudes", async () => {
-                const res = await fetch(`${BASE_URL}/hbt_irina_compara_cv?aplicante_id=${applicant_id}`, {
+                const res = await fetch(`${BASE_URL}/hbt_irina_compara_cv?applicantId=${applicantId}`, {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${ANON_KEY}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ applicant_id })
+                    body: JSON.stringify({ applicantId })
                 });
                 if (!res.ok) throw new Error("Error en hbt_irina_compara_cv: " + res.statusText);
                 result = await res.json();
@@ -143,7 +143,7 @@
             diagnosticBox.innerHTML = `<strong>Resultado:</strong> ${result.idoneo ? '✅ Idóneo' : '❌ No cumple el perfil'}<br><br><small>${result.resumen || 'Sin resumen disponible'}</small>`;
             
             await new Promise(r => setTimeout(r, 2000));
-            window.location.href = (result.idoneo ? 'https://www.bluelab.online/apply/psicometrico.html?applicantId=' : 'https://www.bluelab.online/interview/gym.html?applicantId=') + applicant_id;
+            window.location.href = (result.idoneo ? 'https://www.bluelab.online/apply/psicometrico.html?applicantId=' : 'https://www.bluelab.online/interview/gym.html?applicantId=') + applicantId;
 
         } catch (error) {
             console.error("🚩 [Error Crítico]:", error);
