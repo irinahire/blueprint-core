@@ -64,15 +64,15 @@
         
         <div class="content">
             <div class="left-col">
-                <h1 id="status-title">Analizando perfil...</h1>
+                <h1 id="status-title">Iniciando proceso...</h1>
                 <div class="progress-container">
                     <div id="progress-fill"></div>
                 </div>
                 <ul id="steps-list" style="list-style: none; padding: 0;">
-                    <li id="step-1" class="step">⏳ Leyendo tu trayectoria</li>
-                    <li id="step-2" class="step">⏳ Analizando aptitudes técnicas</li>
-                    <li id="step-3" class="step">⏳ Validando idoneidad</li>
-                    <li id="step-4" class="step">⏳ Preparando acceso</li>
+                    <li id="step-1" class="step">⏳ Preparando entorno</li>
+                    <li id="step-2" class="step">⏳ Parseando estructura del CV</li>
+                    <li id="step-3" class="step">⏳ Comparando idoneidad</li>
+                    <li id="step-4" class="step">⏳ Finalizando análisis</li>
                 </ul>
                 <div id="diagnostic-box"></div>
             </div>
@@ -92,46 +92,64 @@
         const applicant_id = params.get('id'); 
         
         const ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0";
+        const BASE_URL = "https://zuzvozgjsppkxvdlptmk.supabase.co/functions/v1";
 
-        for (let i of [1, 2, 3, 4]) {
+        console.log("🚩 [Inicio] Procesando applicant_id:", applicant_id);
+
+        async function ejecutarPaso(i, label, fn) {
             document.getElementById(`step-${i}`).classList.add('active');
             progressBar.style.width = `${i * 25}%`;
-            await new Promise(r => setTimeout(r, 800)); 
+            console.log(`🚩 [Paso ${i}] Iniciando: ${label}`);
+            await fn();
             document.getElementById(`step-${i}`).classList.remove('active');
             document.getElementById(`step-${i}`).classList.add('done');
             document.getElementById(`step-${i}`).innerText = `✅ ` + document.getElementById(`step-${i}`).innerText.substring(2);
+            console.log(`🚩 [Paso ${i}] Completado: ${label}`);
         }
 
         try {
-            const response = await fetch('https://zuzvozgjsppkxvdlptmk.supabase.co/functions/v1/hbt_irina_compara_cv', {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${ANON_KEY}`
-                },
-                body: JSON.stringify({ applicant_id })
+            // PASO 1: PARSEO (hbt_parsear_cv)
+            await ejecutarPaso(1, "Parseando CV", async () => {
+                const res = await fetch(`${BASE_URL}/hbt_parsear_cv?aplicante_id=${applicant_id}`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${ANON_KEY}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ applicant_id })
+                });
+                if (!res.ok) throw new Error("Error en hbt_parsear_cv: " + res.statusText);
+                console.log("✅ Parseo exitoso");
             });
-            const result = await response.json();
+
+            // PASO 2: COMPARACIÓN (hbt_irina_compara_cv)
+            let result;
+            await ejecutarPaso(2, "Comparando aptitudes", async () => {
+                const res = await fetch(`${BASE_URL}/hbt_irina_compara_cv?aplicante_id=${applicant_id}`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${ANON_KEY}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ applicant_id })
+                });
+                if (!res.ok) throw new Error("Error en hbt_irina_compara_cv: " + res.statusText);
+                result = await res.json();
+                console.log("✅ Comparación exitosa", result);
+            });
+
+            // FINALIZACIÓN
+            document.getElementById('step-3').classList.add('done');
+            document.getElementById('step-3').innerText = "✅ Comparación finalizada";
+            document.getElementById('step-4').classList.add('done');
+            document.getElementById('step-4').innerText = "✅ Redirigiendo...";
+            
             diagnosticBox.style.display = 'block';
+            statusTitle.innerText = "Análisis Finalizado";
+            diagnosticBox.innerHTML = `<strong>Resultado:</strong> ${result.idoneo ? '✅ Idóneo' : '❌ No cumple el perfil'}<br><br><small>${result.resumen || 'Sin resumen disponible'}</small>`;
+            
+            await new Promise(r => setTimeout(r, 2000));
+            window.location.href = (result.idoneo ? 'https://www.bluelab.online/apply/psicometrico.html?applicantId=' : 'https://www.bluelab.online/interview/gym.html?applicantId=') + applicant_id;
 
-            if (response.ok) {
-                statusTitle.innerText = "Análisis Finalizado";
-                diagnosticBox.innerHTML = `<strong>Resultado:</strong> ${result.idoneo ? '✅ Idóneo' : '❌ No cumple el perfil'}<br><br><small>${result.resumen || 'Sin resumen disponible'}</small>`;
-                
-                // Mantenemos la lógica de redirección que pediste:
-                if (result.idoneo) {
-                    window.location.href = 'https://www.bluelab.online/apply/psicometrico.html?applicantId=' + applicant_id;
-                } else {
-                    window.location.href = 'https://www.bluelab.online/interview/gym.html?applicantId=' + applicant_id;
-                }
-
-            } else {
-                statusTitle.innerText = "Error en el proceso";
-                diagnosticBox.innerHTML = `<strong style="color:red;">Error del servidor:</strong><br>${result.error || JSON.stringify(result)}`;
-            }
         } catch (error) {
+            console.error("🚩 [Error Crítico]:", error);
+            statusTitle.innerText = "Error en el proceso";
             diagnosticBox.style.display = 'block';
-            diagnosticBox.innerHTML = `<strong style="color:red;">Error de red:</strong> ${error.message}`;
+            diagnosticBox.innerHTML = `<strong style="color:red;">Error del sistema:</strong><br>${error.message}`;
         }
     }
     window.onload = iniciarAnalisis;
