@@ -1,7 +1,6 @@
-// motor-tests.js - Versión Final con Pantalla de Bienvenida Integrada
+// motor-tests.js - Versión Final Completa y Robusta
 
 const testData = {
-    // --- NUEVA PANTALLA DE BIENVENIDA ---
     "bienvenida": { 
         tipo: "texto", 
         instrucciones: "¡Felicitaciones por llegar a esta instancia!", 
@@ -9,7 +8,6 @@ const testData = {
         textoBoton: "INICIAR EVALUACIÓN" 
     },
 
-    // --- ETAPA 1: LÓGICA VISUAL ---
     "test_a1": { tipo: "visual", instrucciones: "Observa la secuencia lógica y selecciona la opción que completa el patrón correctamente.", imgPrincipal: "https://www.bluelab.online/apply/img/test_a1.png", baseUrl: "https://www.bluelab.online/apply/img/", prefijo: "test_a1_r", opciones: 8 },
     "test_a2": { tipo: "visual", instrucciones: "Analiza el siguiente patrón y selecciona la pieza faltante.", imgPrincipal: "https://www.bluelab.online/apply/img/test_a2.png", baseUrl: "https://www.bluelab.online/apply/img/", prefijo: "test_a2_r", opciones: 8 },
     "test_a3": { tipo: "visual", instrucciones: "Analiza el siguiente patrón y selecciona la pieza faltante.", imgPrincipal: "https://www.bluelab.online/apply/img/test_a3.png", baseUrl: "https://www.bluelab.online/apply/img/", prefijo: "test_a3_r", opciones: 8 },
@@ -19,7 +17,6 @@ const testData = {
     "test_a7": { tipo: "visual", instrucciones: "Analiza el siguiente patrón y selecciona la pieza faltante.", imgPrincipal: "https://www.bluelab.online/apply/img/test_a7.png", baseUrl: "https://www.bluelab.online/apply/img/", prefijo: "test_a7_r", opciones: 8 },
     "test_a8": { tipo: "visual", instrucciones: "Analiza el siguiente patrón y selecciona la pieza faltante.", imgPrincipal: "https://www.bluelab.online/apply/img/test_a8.png", baseUrl: "https://www.bluelab.online/apply/img/", prefijo: "test_a8_r", opciones: 8 },
     
-    // --- ETAPA 2: PERSONALIDAD ---
     "intro_bigfive": { tipo: "texto", instrucciones: "Evaluación de Perfil y Estilo de Trabajo", cuerpo: "Has completado la primera etapa de razonamiento lógico. Ahora, queremos conocer más sobre tu enfoque profesional y cómo te desenvuelves en distintos entornos.<br><br><b>Ten en cuenta:</b><br>• No hay respuestas correctas. Tu respuesta más honesta es siempre la más útil.<br>• Sé espontáneo/a: no dediques demasiado tiempo a cada pregunta.<br>• Describe cómo actúas generalmente en un entorno profesional.", textoBoton: "INICIAR SEGUNDO TEST" },
     "bloque_1": { tipo: "big_five", titulo: "Bloque I: Enfoque y Entorno de Trabajo", preguntas: ["Ante un cambio de prioridades repentino, prefiero terminar lo que empecé antes de ajustar el plan.", "Cuando surge un problema inesperado, mi primera reacción es analizar el origen antes de actuar.", "Suelo desconectar completamente del trabajo al terminar la jornada, sin pensar en temas pendientes.", "En momentos de alta presión, me resulta más fácil tomar decisiones solo que consultar a todo el equipo.", "Prefiero entornos de trabajo predecibles donde sé exactamente qué esperar de cada día."] },
     "bloque_2": { tipo: "big_five", titulo: "Bloque II: Extraversión", preguntas: ["Prefiero resolver problemas complejos trabajando solo que debatiéndolo en reuniones.", "En una presentación, me siento más cómodo exponiendo datos duros que tratando de persuadir con historias.", "Disfruto más del trabajo cuando puedo colaborar activamente con otros que cuando tengo metas independientes.", "Suelo tomar la iniciativa para romper el hielo en grupos de trabajo nuevos.", "Siento que mi energía aumenta después de una jornada intensa de reuniones y trabajo en equipo."] },
@@ -27,7 +24,6 @@ const testData = {
     "bloque_4": { tipo: "big_five", titulo: "Bloque IV: Amabilidad", preguntas: ["Para lograr un objetivo importante, creo que es aceptable ser directo y firme, incluso si alguien se siente un poco molesto.", "Prefiero ceder en una idea propia si veo que el equipo está muy convencido de otra, para mantener el consenso.", "Suelo notar si un colega está desmotivado antes de que él mismo lo exprese.", "Valoro más la honestidad absoluta en el feedback que mantener la cortesía.", "Considero que el éxito personal es irrelevante si no contribuye al éxito del equipo completo."] },
     "bloque_5": { tipo: "big_five", titulo: "Bloque V: Responsabilidad", preguntas: ["Prefiero tener un plan de trabajo detallado semana a semana que tener libertad total para decidir mis tareas diarias.", "Si encuentro un atajo que ahorra tiempo pero ignora un paso del proceso oficial, suelo tomarlo.", "Suelo revisar mi trabajo varias veces antes de entregarlo, aunque eso signifique ir al límite del tiempo.", "Me resulta difícil dejar un proyecto a medias, incluso si sé que es poco rentable a largo plazo.", "Me siento más cómodo entregando resultados rápidos aunque tengan detalles pendientes, que esperando a la perfección."] },
     
-    // --- ETAPA 3: SITUACIONAL ---
     "intro_situacional": { tipo: "texto", instrucciones: "Etapa Final: Evaluación Situacional", cuerpo: "Has llegado a la etapa final. Analizaremos cómo resuelves desafíos concretos en entornos profesionales. Debes seleccionar la opción que mejor represente tu criterio profesional.", textoBoton: "INICIAR EVALUACIÓN" },
     "sit_1": { tipo: "situacional", titulo: "Situación 1: El límite del cliente", pregunta: "Un cliente te pide algo fuera de las normas, pero es muy fiel.", opciones: [{id:"A", texto:"Accedes a regañadientes para no perder la lealtad."}, {id:"B", texto:"Explicas las normas con mucha firmeza, priorizando la equidad."}, {id:"C", texto:"Buscas una solución creativa que cumpla la norma pero satisfaga su necesidad."}, {id:"D", texto:"Escalás el problema a tu jefe para no tomar la decisión tú."}] },
     "sit_2": { tipo: "situacional", titulo: "Situación 2: El error del equipo", pregunta: "Tu equipo entregó un proyecto con errores y tu jefe te pide cuentas.", opciones: [{id:"A", texto:"Asumes la responsabilidad total como líder."}, {id:"B", texto:"Señalas específicamente quién cometió el error."}, {id:"C", texto:"Dices que hubo un malentendido general."}, {id:"D", texto:"Te enfocas en cómo solucionar el error antes de explicar qué pasó."}] },
@@ -43,7 +39,28 @@ const testData = {
 
 const secuencia = ["bienvenida", "test_a1", "test_a2", "test_a3", "test_a4", "test_a5", "test_a6", "test_a7", "test_a8", "intro_bigfive", "bloque_1", "bloque_2", "bloque_3", "bloque_4", "bloque_5", "intro_situacional", "sit_1", "sit_2", "sit_3", "sit_4", "sit_5", "sit_6", "sit_7", "sit_8", "sit_9", "sit_10"];
 let indiceSecuencia = 0;
-let respuestas = {};
+let respuestas = { LOG_ABS: {}, BIG_FIVE: {}, SIT_EST: {} };
+
+// Función auxiliar de aleatoriedad (Shuffle)
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+// Función para enviar al backend
+async function guardarEnBackend(codigo, datos, esFinal = false) {
+    const applicantId = localStorage.getItem('applicantId');
+    const jobId = localStorage.getItem('jobId');
+    try {
+        await window.sbClient.functions.invoke('hbt_guardar_psicometrico', {
+            body: { applicantId, jobId, codigo, respuestas: datos, isFinal }
+        });
+        console.log(`[LOG] Datos enviados: ${codigo}`);
+    } catch (error) { console.error("Error al guardar en backend:", error); }
+}
 
 function actualizarBarraProgreso(idTest) {
     let contenedor = document.getElementById('contenedor-progreso');
@@ -83,13 +100,17 @@ function cargarTest(idTest) {
         mainImg.src = data.imgPrincipal;
         grid.style.display = 'grid';
         grid.style.gridTemplateColumns = 'repeat(4, 1fr)';
-        for (let i = 1; i <= data.opciones; i++) {
+        
+        let indices = [1, 2, 3, 4, 5, 6, 7, 8];
+        shuffle(indices);
+        
+        indices.forEach(i => {
             const div = document.createElement('div');
             div.className = 'option-box';
             div.innerHTML = `<img src="${data.baseUrl}${data.prefijo}${i}.png">`;
-            div.onclick = () => avanzar();
+            div.onclick = () => { respuestas.LOG_ABS[idTest] = i; avanzar(); };
             grid.appendChild(div);
-        }
+        });
     } else if (data.tipo === "texto") {
         mainImg.style.display = "none";
         grid.innerHTML = `<div style="max-width:600px; margin:40px auto; padding:40px; background:#fff; border-radius:15px; box-shadow:0 10px 25px rgba(0,0,0,0.05); text-align:center;">
@@ -97,12 +118,10 @@ function cargarTest(idTest) {
             <p style="text-align:left; color:#666; line-height:1.6; font-size:1.1rem;">${data.cuerpo}</p>
             <button id="btn-avanzar-texto" class="laser-btn">${data.textoBoton}</button>
         </div>`;
-        
-        // Asignamos la lógica de verificación al botón con la clase laser-btn
         document.getElementById('btn-avanzar-texto').onclick = () => {
-            verificarAutenticacion(() => avanzar());
+            if (idTest === "bienvenida") avanzar();
+            else verificarAutenticacion(() => avanzar());
         };
-
     } else if (data.tipo === "big_five") {
         mainImg.style.display = "none";
         grid.innerHTML += `<h2 style="margin-bottom:20px; color:#B588C0;">${data.titulo}</h2>`;
@@ -110,14 +129,17 @@ function cargarTest(idTest) {
             const d = document.createElement('div');
             d.style = "margin-bottom:20px; border-bottom:1px solid #eee; padding-bottom:10px;";
             d.innerHTML = `<p style="font-weight:600;">${i+1}. ${p}</p>`;
-            for(let j=1; j<=5; j++) d.innerHTML += `<label style="margin-right:20px; cursor:pointer;"><input type="radio" name="p${i}" value="${j}"> ${j}</label>`;
+            for(let j=1; j<=5; j++) d.innerHTML += `<label style="margin-right:20px; cursor:pointer;"><input type="radio" name="${idTest}_p${i}" value="${j}"> ${j}</label>`;
             grid.appendChild(d);
         });
         grid.innerHTML += `<button id="btn-avanzar" class="laser-btn">AVANZAR</button>`;
         document.getElementById('btn-avanzar').onclick = () => {
             let ok = true;
-            for(let i=0; i<5; i++) if(!document.querySelector(`input[name="p${i}"]:checked`)) ok = false;
-            if(ok) avanzar(); else alert("Completa todas las opciones.");
+            for(let i=0; i<5; i++) if(!document.querySelector(`input[name="${idTest}_p${i}"]:checked`)) ok = false;
+            if(ok) {
+                document.querySelectorAll(`input[name="${idTest}_p"]`).forEach(r => respuestas.BIG_FIVE[r.name] = r.value);
+                avanzar();
+            } else alert("Completa todas las opciones.");
         };
     } else if (data.tipo === "situacional") {
         mainImg.style.display = "none";
@@ -126,19 +148,26 @@ function cargarTest(idTest) {
             <p style="font-size:1.3rem; font-weight:600; margin-bottom:30px;">${data.pregunta}</p>
             <div id="opts"></div>
         </div>`;
-        data.opciones.forEach(o => {
+        
+        let opcionesBarajadas = shuffle([...data.opciones]);
+        opcionesBarajadas.forEach(o => {
             const b = document.createElement('button');
             b.style = "display:block; width:100%; padding:20px; margin-bottom:15px; border:2px solid #eee; border-radius:12px; cursor:pointer; background:white; text-align:left; font-size:1.1rem; transition:0.3s;";
             b.innerHTML = `<b>${o.id}</b> - ${o.texto}`;
-            b.onmouseover = () => b.style.borderColor = "#8EE4D5";
-            b.onmouseout = () => b.style.borderColor = "#eee";
-            b.onclick = () => { respuestas[idTest] = o.id; avanzar(); };
+            b.onclick = () => { respuestas.SIT_EST[idTest] = o.id; avanzar(); };
             document.getElementById('opts').appendChild(b);
         });
     }
 }
 
 function avanzar() {
+    const idActual = secuencia[indiceSecuencia];
+
+    // Enviar bloques de datos al backend en puntos críticos
+    if (idActual === "test_a8") guardarEnBackend('LOG_ABS', respuestas.LOG_ABS);
+    if (idActual === "bloque_5") guardarEnBackend('BIG_FIVE', respuestas.BIG_FIVE);
+    if (idActual === "sit_10") guardarEnBackend('SIT_EST', respuestas.SIT_EST, true);
+
     indiceSecuencia++;
     if (indiceSecuencia < secuencia.length) cargarTest(secuencia[indiceSecuencia]);
     else {
