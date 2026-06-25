@@ -174,4 +174,9 @@ async function avanzar() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => cargarTest(secuencia[0]));
+document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('applicantId')) localStorage.setItem('applicantId', params.get('applicantId'));
+    if (params.get('jobId')) localStorage.setItem('jobId', params.get('jobId'));
+    cargarTest(secuencia[0]);
+});
