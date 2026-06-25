@@ -48,12 +48,12 @@ function shuffle(array) {
     return array;
 }
 
-async function guardarEnBackend(codigo, datos, esFinal = false) {
+async function guardarEnBackend(codigo, datos, esFinal) {
     const applicantId = localStorage.getItem('applicantId');
     const jobId = localStorage.getItem('jobId');
     try {
         await window.sbClient.functions.invoke('hbt_guardar_psicometrico', {
-            body: { applicantId, jobId, codigo, respuestas: datos, isFinal }
+            body: { applicantId, jobId, codigo, respuestas: datos, isFinal: esFinal }
         });
         console.log(`[LOG] Datos guardados: ${codigo}`);
     } catch (error) { console.error("Error al guardar en backend:", error); }
@@ -155,10 +155,12 @@ async function avanzar() {
     const idActual = secuencia[indiceSecuencia];
     if (["test_a8", "bloque_5", "sit_10"].includes(idActual)) {
         document.body.style.cursor = 'wait';
+        // Definimos el booleano explícitamente antes de pasarlo
+        const esFinal = (idActual === 'sit_10');
         await guardarEnBackend(
             idActual === 'test_a8' ? 'LOG_ABS' : idActual === 'bloque_5' ? 'BIG_FIVE' : 'SIT_EST', 
             idActual === 'test_a8' ? respuestas.LOG_ABS : idActual === 'bloque_5' ? respuestas.BIG_FIVE : respuestas.SIT_EST, 
-            idActual === 'sit_10'
+            esFinal
         );
         document.body.style.cursor = 'default';
     }
