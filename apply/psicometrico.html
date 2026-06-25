@@ -198,6 +198,8 @@
 
 <script>
     async function verificarAutenticacion(callback) {
+        // Esperamos a que sbClient esté inicializado
+        if (!window.sbClient) { await new Promise(r => setTimeout(r, 500)); }
         const { data: { session } } = await window.sbClient.auth.getSession();
         if (!session) {
             document.getElementById('loginModal').style.display = 'flex';
@@ -206,24 +208,28 @@
         }
     }
 
-    // Vigilante de Autenticación: Detecta el retorno de Google y dispara la migración
+    // Vigilante blindado
     window.sbClient.auth.onAuthStateChange(async (event, session) => {
         if (event === 'SIGNED_IN' && session) {
-            console.log("--- [VIGILANTE PSICOMÉTRICO] Sesión detectada tras login. Ejecutando migración... ---");
+            console.log("--- [VIGILANTE] Sesión detectada ---");
             
+            // 1. Evitar error si el script de migración no ha cargado aún
+            if (typeof verificarYMigrarApplicantId !== 'function') {
+                console.error("--- [VIGILANTE] hbt_migracion_id.js no cargado. ---");
+                return;
+            }
+
+            // 2. Ejecutar migración solo si no estamos ya migrados
             const nuevoId = session.user.id;
             const urlParams = new URLSearchParams(window.location.search);
-            const jobId = urlParams.get('jobId');
-
-            // Ejecutamos la migración en la base de datos
-            await verificarYMigrarApplicantId(session);
-
-            // Si el ID en la URL es diferente al ID de la sesión, refrescamos la página
+            
             if (urlParams.get('applicantId') !== nuevoId) {
-                console.log("--- [VIGILANTE] Cambio de identidad detectado. Refrescando URL ---");
-                const nuevaUrl = `${window.location.origin}${window.location.pathname}?applicantId=${nuevoId}&jobId=${jobId}`;
+                console.log("--- [VIGILANTE] Iniciando migración y refresco ---");
+                await verificarYMigrarApplicantId(session);
+                
                 localStorage.setItem('applicantId', nuevoId);
-                window.location.href = nuevaUrl;
+                const jobId = urlParams.get('jobId');
+                window.location.href = `${window.location.origin}${window.location.pathname}?applicantId=${nuevoId}&jobId=${jobId}`;
             }
         }
     });
