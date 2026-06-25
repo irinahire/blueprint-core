@@ -1,5 +1,4 @@
 // motor-tests.js - Versión Final Completa y Robusta
-
 const testData = {
     "bienvenida": { 
         tipo: "texto", 
@@ -41,7 +40,6 @@ const secuencia = ["bienvenida", "test_a1", "test_a2", "test_a3", "test_a4", "te
 let indiceSecuencia = 0;
 let respuestas = { LOG_ABS: {}, BIG_FIVE: {}, SIT_EST: {} };
 
-// Función auxiliar de aleatoriedad (Shuffle)
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -50,7 +48,6 @@ function shuffle(array) {
     return array;
 }
 
-// Función para enviar al backend
 async function guardarEnBackend(codigo, datos, esFinal = false) {
     const applicantId = localStorage.getItem('applicantId');
     const jobId = localStorage.getItem('jobId');
@@ -58,7 +55,7 @@ async function guardarEnBackend(codigo, datos, esFinal = false) {
         await window.sbClient.functions.invoke('hbt_guardar_psicometrico', {
             body: { applicantId, jobId, codigo, respuestas: datos, isFinal }
         });
-        console.log(`[LOG] Datos enviados: ${codigo}`);
+        console.log(`[LOG] Datos guardados: ${codigo}`);
     } catch (error) { console.error("Error al guardar en backend:", error); }
 }
 
@@ -70,12 +67,10 @@ function actualizarBarraProgreso(idTest) {
         contenedor.style = "width: 100%; display: flex; gap: 4px; margin-bottom: 25px; padding: 0 10px;";
         document.getElementById('options-grid').prepend(contenedor);
     }
-    
     let total = 0, actual = 0;
     if (idTest.startsWith('bloque_')) { total = 5; actual = parseInt(idTest.split('_')[1]); }
     else if (idTest.startsWith('sit_')) { total = 10; actual = parseInt(idTest.split('_')[1]); }
     else { contenedor.style.display = 'none'; return; }
-    
     contenedor.style.display = 'flex';
     contenedor.innerHTML = '';
     for (let i = 1; i <= total; i++) {
@@ -91,19 +86,15 @@ function cargarTest(idTest) {
     const mainImg = document.getElementById('main-test-image');
     grid.style.display = 'block';
     grid.innerHTML = '';
-    
     if (idTest.startsWith('bloque_') || idTest.startsWith('sit_')) actualizarBarraProgreso(idTest);
     else if (document.getElementById('contenedor-progreso')) document.getElementById('contenedor-progreso').style.display = 'none';
-    
     if (data.tipo === "visual") {
         mainImg.style.display = "block";
         mainImg.src = data.imgPrincipal;
         grid.style.display = 'grid';
         grid.style.gridTemplateColumns = 'repeat(4, 1fr)';
-        
         let indices = [1, 2, 3, 4, 5, 6, 7, 8];
         shuffle(indices);
-        
         indices.forEach(i => {
             const div = document.createElement('div');
             div.className = 'option-box';
@@ -137,7 +128,8 @@ function cargarTest(idTest) {
             let ok = true;
             for(let i=0; i<5; i++) if(!document.querySelector(`input[name="${idTest}_p${i}"]:checked`)) ok = false;
             if(ok) {
-                document.querySelectorAll(`input[name="${idTest}_p"]`).forEach(r => respuestas.BIG_FIVE[r.name] = r.value);
+                const radios = document.querySelectorAll(`input[name^="${idTest}_p"]:checked`);
+                radios.forEach(r => respuestas.BIG_FIVE[r.name] = r.value);
                 avanzar();
             } else alert("Completa todas las opciones.");
         };
@@ -148,7 +140,6 @@ function cargarTest(idTest) {
             <p style="font-size:1.3rem; font-weight:600; margin-bottom:30px;">${data.pregunta}</p>
             <div id="opts"></div>
         </div>`;
-        
         let opcionesBarajadas = shuffle([...data.opciones]);
         opcionesBarajadas.forEach(o => {
             const b = document.createElement('button');
@@ -160,14 +151,17 @@ function cargarTest(idTest) {
     }
 }
 
-function avanzar() {
+async function avanzar() {
     const idActual = secuencia[indiceSecuencia];
-
-    // Enviar bloques de datos al backend en puntos críticos
-    if (idActual === "test_a8") guardarEnBackend('LOG_ABS', respuestas.LOG_ABS);
-    if (idActual === "bloque_5") guardarEnBackend('BIG_FIVE', respuestas.BIG_FIVE);
-    if (idActual === "sit_10") guardarEnBackend('SIT_EST', respuestas.SIT_EST, true);
-
+    if (["test_a8", "bloque_5", "sit_10"].includes(idActual)) {
+        document.body.style.cursor = 'wait';
+        await guardarEnBackend(
+            idActual === 'test_a8' ? 'LOG_ABS' : idActual === 'bloque_5' ? 'BIG_FIVE' : 'SIT_EST', 
+            idActual === 'test_a8' ? respuestas.LOG_ABS : idActual === 'bloque_5' ? respuestas.BIG_FIVE : respuestas.SIT_EST, 
+            idActual === 'sit_10'
+        );
+        document.body.style.cursor = 'default';
+    }
     indiceSecuencia++;
     if (indiceSecuencia < secuencia.length) cargarTest(secuencia[indiceSecuencia]);
     else {
