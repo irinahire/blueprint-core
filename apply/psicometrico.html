@@ -207,12 +207,24 @@
     }
 
     // Vigilante de Autenticación: Detecta el retorno de Google y dispara la migración
-    window.sbClient.auth.onAuthStateChange((event, session) => {
+    window.sbClient.auth.onAuthStateChange(async (event, session) => {
         if (event === 'SIGNED_IN' && session) {
             console.log("--- [VIGILANTE PSICOMÉTRICO] Sesión detectada tras login. Ejecutando migración... ---");
-            // La función verificarYMigrarApplicantId en hbt_migracion_id.js 
-            // ya contiene la lógica para extraer el applicantId de la URL
-            verificarYMigrarApplicantId(session);
+            
+            const nuevoId = session.user.id;
+            const urlParams = new URLSearchParams(window.location.search);
+            const jobId = urlParams.get('jobId');
+
+            // Ejecutamos la migración en la base de datos
+            await verificarYMigrarApplicantId(session);
+
+            // Si el ID en la URL es diferente al ID de la sesión, refrescamos la página
+            if (urlParams.get('applicantId') !== nuevoId) {
+                console.log("--- [VIGILANTE] Cambio de identidad detectado. Refrescando URL ---");
+                const nuevaUrl = `${window.location.origin}${window.location.pathname}?applicantId=${nuevoId}&jobId=${jobId}`;
+                localStorage.setItem('applicantId', nuevoId);
+                window.location.href = nuevaUrl;
+            }
         }
     });
 </script>
