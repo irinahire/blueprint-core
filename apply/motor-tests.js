@@ -155,7 +155,6 @@ async function avanzar() {
     const idActual = secuencia[indiceSecuencia];
     if (["test_a8", "bloque_5", "sit_10"].includes(idActual)) {
         document.body.style.cursor = 'wait';
-        // Definimos el booleano explícitamente antes de pasarlo
         const esFinal = (idActual === 'sit_10');
         await guardarEnBackend(
             idActual === 'test_a8' ? 'LOG_ABS' : idActual === 'bloque_5' ? 'BIG_FIVE' : 'SIT_EST', 
@@ -164,15 +163,18 @@ async function avanzar() {
         );
         document.body.style.cursor = 'default';
     }
+    
     indiceSecuencia++;
     if (indiceSecuencia < secuencia.length) cargarTest(secuencia[indiceSecuencia]);
     else {
         const applicantId = localStorage.getItem('applicantId') || 'unknown';
+        const jobId = localStorage.getItem('jobId') || 'unknown'; // Recuperamos el jobId
         document.getElementById('options-grid').innerHTML = `<div style="text-align:center; padding:50px;">
             <h2 style="color:#B588C0;">Evaluación Finalizada</h2>
             <p>Has completado todas las etapas. Serás redirigido a tu entrevista con Irina.</p>
         </div>`;
-        setTimeout(() => window.location.href = `https://www.bluelab.online/interview?applicantId=${applicantId}`, 3000);
+        // Agregamos ambos parámetros en la URL
+        setTimeout(() => window.location.href = `https://www.bluelab.online/interview?applicantId=${applicantId}&jobId=${jobId}`, 3000);
     }
 }
 
