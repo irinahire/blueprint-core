@@ -3,53 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Irina Hire Selection - Dashboard</title>
-    <!-- Librerías Externas -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
-    
-    <!-- Estilos -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- ESTE ES EL MARCO QUE DIBUJA EL DEGRADADO -->
     <div class="outer-frame">
         <div class="app-container">
-            <!-- AQUÍ VA TU MÓDULO DE AUTENTICACIÓN -->
-            <div id="blue-header">
-                <script src="../auth-module.js"></script>
-            </div>
-            
+            <div id="blue-header"></div>
             <div class="dashboard-content">
                 <div class="grid-container" id="dashboard"></div>
             </div>
         </div>
     </div>
-
-    <!-- Modal (Es parte de la estructura visual del HTML) -->
-    <div id="modal-perfil" onclick="this.style.display='none'">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <div class="profile-layout">
-                <div>
-                    <div id="m-foto" class="profile-photo"></div>
-                    <h2 id="m-nombre">Nombre</h2>
-                    <p id="m-mail"></p>
-                    <p id="m-telefono" style="font-weight:bold;"></p>
-                </div>
-                <div>
-                    <h3>Trayectoria</h3><div id="m-trayectoria"></div>
-                    <h3>Formación</h3><div id="m-estudios"></div>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-                        <div><h3>Blandas</h3><p id="m-blandas"></p></div>
-                        <div><h3>Duras</h3><p id="m-duras"></p></div>
-                    </div>
-                </div>
-            </div>
-            <button onclick="document.getElementById('modal-perfil').style.display='none'" style="margin-top:20px; padding:15px;">Cerrar</button>
-        </div>
-    </div>
-
-    <!-- Script de lógica -->
+    
+    <script src="../auth-module.js"></script>
+    
     <script src="naipes.js"></script>
 </body>
 </html>
