@@ -5,7 +5,6 @@
     <title>Irina Hire Selection - Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="../auth-module.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -13,13 +12,16 @@
     <div class="outer-frame">
         <div class="app-container">
             <div id="blue-header">
-                </div>
+                <!-- Aquí se inyectará tu módulo de autenticación -->
+                <script src="../auth-module.js"></script>
+            </div>
             <div class="dashboard-content">
                 <div class="grid-container" id="dashboard"></div>
             </div>
         </div>
     </div>
 
+    <!-- Modal de Perfil -->
     <div id="modal-perfil" onclick="this.style.display='none'">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="profile-layout">
