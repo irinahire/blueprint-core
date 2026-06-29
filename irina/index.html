@@ -4,53 +4,60 @@
     <meta charset="UTF-8">
     <title>Irina Hire Selection | Landing</title>
     <style>
-        :root { --fucsia: #bc8abf; --turquesa: #96e8da; --bg-dark: #05070a; }
-        body { margin: 0; background: var(--bg-dark); font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        :root { --fucsia: #bc8abf; --turquesa: #96e8da; }
+        body { margin: 0; background: linear-gradient(135deg, var(--fucsia), var(--turquesa)); 
+               font-family: 'Inter', sans-serif; display: flex; justify-content: center; 
+               align-items: center; min-height: 100vh; padding: 20px; }
         
-        /* Contenedor principal con degradé */
-        .outer-frame { padding: 8px; background: linear-gradient(135deg, var(--fucsia), var(--turquesa)); border-radius: 40px; width: 100%; max-width: 1000px; }
-        .inner-content { background: white; border-radius: 32px; padding: 50px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; color: #333; }
+        .inner-content { background: white; border-radius: 32px; padding: 0; display: grid; 
+                         grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; 
+                         color: #333; overflow: hidden; max-width: 1000px; width: 100%; }
         
-        .left-col { display: flex; flex-direction: column; gap: 20px; }
-        .logo { width: 200px; }
-        .img-irina { width: 100%; border-radius: 20px; }
-        .btn-contratar { background: #000; color: white; padding: 15px 30px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; width: fit-content; }
+        .left-col { padding: 50px; display: flex; flex-direction: column; gap: 20px; }
+        .logo { width: 180px; }
+        .img-irina { width: 100%; height: 100%; object-fit: cover; border-top-right-radius: 32px; border-bottom-right-radius: 32px; }
+        .btn-contratar { background: #000; color: white; padding: 15px 30px; border: none; 
+                         border-radius: 10px; cursor: pointer; font-weight: bold; width: fit-content; }
 
-        /* Modal de Precios con tabla comparativa */
-        #modal-precios { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index:1000; justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 40px; border-radius: 20px; max-width: 800px; width: 90%; }
+        #modal-precios { display: none; position: fixed; top:0; left:0; width:100%; height:100%; 
+                         background: rgba(0,0,0,0.85); z-index:1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 40px; border-radius: 20px; max-width: 700px; width: 90%; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th, td { padding: 15px; border-bottom: 1px solid #eee; text-align: center; }
+        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: center; }
+        .btn-group { display: flex; gap: 10px; }
+        .btn-plan { flex: 1; padding: 15px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="outer-frame">
-    <div class="inner-content">
-        <div class="left-col">
-            <img src="https://i.ibb.co/JFMJBm0S/logo-ihs.jpg" alt="Logo" class="logo">
-            <h1>El Algoritmo de la Empatía</h1>
-            <p>Irina Hire Selection es la plataforma que estructura el talento mediante modelos fractales. Automatizamos la evaluación, filtramos el ruido y conectamos a las personas con su potencial real.</p>
-            <button class="btn-contratar" onclick="document.getElementById('modal-precios').style.display='flex'">CONTRATAR AHORA</button>
-        </div>
-        <div>
-            <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" alt="Irina" class="img-irina">
-        </div>
+<div class="inner-content">
+    <div class="left-col">
+        <img src="https://i.ibb.co/JFMJBm0S/logo-ihs.jpg" alt="Logo" class="logo">
+        <h1>El Algoritmo de la Empatía</h1>
+        <p>Irina Hire Selection es la plataforma que estructura el talento mediante modelos fractales. Automatizamos la evaluación, filtramos el ruido y conectamos a las personas con su potencial real.</p>
+        <button class="btn-contratar" onclick="document.getElementById('modal-precios').style.display='flex'">VER PLANES Y CONTRATAR</button>
+    </div>
+    <div style="height: 100%;">
+        <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" alt="Irina" class="img-irina">
     </div>
 </div>
 
-<!-- Modal Comparativo -->
 <div id="modal-precios" onclick="this.style.display='none'">
     <div class="modal-content" onclick="event.stopPropagation()">
-        <h2>Planes de Selección</h2>
+        <h2>Elige tu nivel de automatización</h2>
         <table>
-            <tr><th>Función</th><th>Starter</th><th>Business</th></tr>
+            <tr><th>Beneficio</th><th>Starter</th><th>Business</th></tr>
+            <tr><td>Ahorro de tiempo</td><td>✅</td><td>✅</td></tr>
+            <tr><td>Reducción Horas-Hombre</td><td>✅</td><td>✅</td></tr>
             <tr><td>Análisis Fractal</td><td>✅</td><td>✅</td></tr>
-            <tr><td>Selección Automática</td><td>✅</td><td>✅</td></tr>
             <tr><td>Múltiples Ofertas</td><td>❌</td><td>✅</td></tr>
             <tr><td>API Externa</td><td>❌</td><td>✅</td></tr>
+            <tr><td>Soporte Prioritario</td><td>❌</td><td>✅</td></tr>
         </table>
-        <button onclick="alert('Iniciando pago...')" style="width: 100%; padding: 15px; background: linear-gradient(to right, var(--fucsia), var(--turquesa)); border: none; font-weight: bold; cursor: pointer;">PROCESAR PAGO</button>
+        <div class="btn-group">
+            <button class="btn-plan" style="background: #eee;" onclick="alert('Contratando Starter...')">CONTRATAR STARTER</button>
+            <button class="btn-plan" style="background: linear-gradient(to right, var(--fucsia), var(--turquesa));" onclick="alert('Contratando Business...')">CONTRATAR BUSINESS</button>
+        </div>
     </div>
 </div>
 
