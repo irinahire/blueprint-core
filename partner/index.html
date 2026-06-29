@@ -7,18 +7,41 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../auth-module.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css"> <!-- ENLACE CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="outer-frame">
         <div class="app-container">
-            <div id="blue-header"></div>
+            <div id="blue-header">
+                </div>
             <div class="dashboard-content">
                 <div class="grid-container" id="dashboard"></div>
             </div>
         </div>
     </div>
-    <!-- ... (aquí mantienes el resto de tu HTML del modal) ... -->
-    <script src="naipes.js"></script> <!-- ENLACE JS -->
+
+    <div id="modal-perfil" onclick="this.style.display='none'">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="profile-layout">
+                <div>
+                    <div id="m-foto" class="profile-photo"></div>
+                    <h2 id="m-nombre">Nombre</h2>
+                    <p id="m-mail"></p>
+                    <p id="m-telefono" style="font-weight:bold;"></p>
+                </div>
+                <div>
+                    <h3>Trayectoria</h3><div id="m-trayectoria"></div>
+                    <h3>Formación</h3><div id="m-estudios"></div>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                        <div><h3>Blandas</h3><p id="m-blandas"></p></div>
+                        <div><h3>Duras</h3><p id="m-duras"></p></div>
+                    </div>
+                </div>
+            </div>
+            <button onclick="document.getElementById('modal-perfil').style.display='none'" style="margin-top:20px; padding:15px;">Cerrar</button>
+        </div>
+    </div>
+
+    <script src="naipes.js"></script>
 </body>
 </html>
