@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Irina Hire Selection | El Futuro del Talento</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --fucsia: #bc8abf; --turquesa: #96e8da; --bg-dark: #05070a; }
+        body { margin: 0; background: var(--bg-dark); color: white; font-family: 'Inter', sans-serif; }
+        
+        .hero { padding: 80px 20px; text-align: center; }
+        .logo { width: 150px; margin-bottom: 20px; }
+        .preview-img { width: 90%; max-width: 800px; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); margin: 40px 0; }
+        
+        .btn-main { background: linear-gradient(135deg, var(--turquesa), var(--fucsia)); border: none; padding: 20px 40px; color: black; font-weight: 800; border-radius: 50px; cursor: pointer; font-size: 1.2rem; transition: 0.3s; }
+        .btn-main:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--fucsia); }
+
+        /* Modal de Precios */
+        #modal-precios { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); z-index:1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; color: #333; padding: 40px; border-radius: 20px; max-width: 600px; width: 90%; }
+        .plan-card { border: 2px solid #eee; padding: 20px; margin: 10px 0; border-radius: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <section class="hero">
+        <img src="https://i.ibb.co/JFMJBm0S/logo-ihs.jpg" alt="Logo Irina" class="logo">
+        <h1>El Algoritmo de la Empatía</h1>
+        <p>Transformamos procesos de selección tradicionales en ecosistemas de talento fractal.</p>
+        
+        <img src="https://i.ibb.co/DPdwz5BK/pages-entrevista-01.jpg" alt="Dashboard Preview" class="preview-img">
+        
+        <br>
+        <button class="btn-main" onclick="document.getElementById('modal-precios').style.display='flex'">CONTRATAR IRINA AHORA</button>
+    </section>
+
+    <!-- Modal de Precios -->
+    <div id="modal-precios" onclick="this.style.display='none'">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2>Elige tu plan de escalabilidad</h2>
+            <div class="plan-card">
+                <h3>Starter</h3>
+                <p>Para equipos que buscan optimizar sus primeras búsquedas.</p>
+                <strong>USD 99/mes</strong>
+            </div>
+            <div class="plan-card">
+                <h3>Business</h3>
+                <p>Análisis fractal avanzado y múltiples ofertas simultáneas.</p>
+                <strong>USD 299/mes</strong>
+            </div>
+            <button onclick="alert('Redirigiendo a pasarela de pagos...')" style="width: 100%; padding: 15px; margin-top: 20px; background: #000; color: white; border: none; border-radius: 10px;">PROCESAR PAGO</button>
+        </div>
+    </div>
+
+</body>
+</html>
