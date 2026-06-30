@@ -1,55 +1,46 @@
 const MenuPartner = {
     init: async function() {
         const container = document.getElementById('menu-container');
-        if (!container || !window.sbClient) return;
+        if (!container) return;
 
-        // Filtramos directamente en Supabase buscando los registros que son ofertas
-        // Usamos el operador de contención en JSONB para metadata
-        const { data, error } = await window.sbClient
-            .from('habitat')
-            .select('data')
-            .contains('metadata', { '!tipo': '!oferta' });
-
-        if (error) {
-            console.error("Error al cargar ofertas reales:", error);
-            return;
-        }
-
-        // Procesamos los datos reales del JSON 'data'
-        const ofertas = data.map(row => {
+        const { data, error } = await window.sbClient.from('habitat').select('data').contains('metadata', { '!tipo': '!oferta' });
+        const ofertas = error ? [] : data.map(row => {
             const d = typeof row.data === 'string' ? JSON.parse(row.data) : row.data;
-            return {
-                id: d.job_id,
-                titulo: d.titulo
-            };
-        }).filter(o => o.id && o.titulo);
+            return { id: d.job_id, titulo: d.titulo };
+        });
 
-        this.render(container, ofertas);
-    },
-
-    render: function(container, ofertas) {
         container.innerHTML = `
             <div class="menu-control">
-                <input type="text" id="search-input" placeholder="Búsqueda semántica..." 
-                       oninput="MenuPartner.handleSearch(this.value)">
+                <button class="btn-primary" onclick="alert('Modal Crear Oferta')">+ Nueva Oferta</button>
+                
+                <button class="btn-filter" onclick="document.getElementById('modal-filtros').style.display='flex'">
+                    Filtrar por ofertas
+                </button>
 
-                <select id="filtro-ofertas" multiple>
-                    ${ofertas.map(o => `<option value="${o.id}">${o.titulo}</option>`).join('')}
-                </select>
+                <input type="text" class="semantic-search" placeholder="🔍 Búsqueda semántica (ej: experto en liderazgo...)" 
+                       onkeypress="if(event.key==='Enter') MenuPartner.handleSearch(this.value)">
+            </div>
 
-                <button class="btn-primary" onclick="MenuPartner.aplicarFiltros()">Filtrar</button>
+            <div id="modal-filtros" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+                <div class="modal-content" style="background:white; padding:20px; border-radius:10px;">
+                    <h3>Seleccionar ofertas</h3>
+                    <select id="filtro-ofertas" multiple style="width:100%; height:150px;">
+                        ${ofertas.map(o => `<option value="${o.id}">${o.titulo}</option>`).join('')}
+                    </select>
+                    <button onclick="MenuPartner.aplicarFiltros(); document.getElementById('modal-filtros').style.display='none'">Aplicar</button>
+                </div>
             </div>
         `;
     },
 
     handleSearch: function(query) {
-        console.log("Búsqueda semántica sobre vector_embedding:", query);
+        console.log("Consultando base vectorial para:", query);
+        // Aquí llamarás a la función RPC de Supabase: await sbClient.rpc('match_perfiles', { query_embedding: ... })
     },
 
     aplicarFiltros: function() {
         const selected = Array.from(document.getElementById('filtro-ofertas').selectedOptions).map(o => o.value);
-        console.log("Filtrando naipes. Se seleccionaron los IDs de oferta:", selected);
-        // Aquí deberás llamar a tu función de filtrado en naipes.js
+        console.log("Filtrando tarjetas con IDs:", selected);
     }
 };
 
