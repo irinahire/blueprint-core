@@ -53,6 +53,26 @@ body {
     color: white; 
 }
 
+.menu-control {
+    display: grid;
+    grid-template-columns: 200px 1fr 350px; /* Izquierda, Centro, Derecha */
+    gap: 15px;
+    padding: 20px 45px;
+    background: #ffffff;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+}
+
+.semantic-search {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.btn-primary { background: #bc8abf; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; }
+.btn-filter { background: #f0f0f0; border: 1px solid #ccc; padding: 10px; border-radius: 8px; cursor: pointer; }
+
 .blic-card:hover { 
     box-shadow: 0 0 20px rgba(188, 138, 191, 0.8), 0 0 10px rgba(150, 232, 218, 0.5); 
 }
