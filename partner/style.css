@@ -6,31 +6,32 @@
 }
 
 /* Estructura Base */
+/* Ajuste para eliminar espacios en blanco externos */
 body { 
     margin: 0; 
+    padding: 0; /* Cambiado de 20px a 0 */
     background: var(--bg-dark); 
     font-family: 'Inter', sans-serif; 
-    padding: 20px 2rem; 
-    min-height: 100vh; 
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Centra el marco perfectamente */
 }
 
 .outer-frame { 
-    padding: 8px; 
+    padding: 8px; /* Este es el grosor del borde degradado */
     background: var(--irina-gradient); 
     border-radius: 50px; 
-    width: 92%; 
-    max-width: 1150px; 
-    margin: 0 auto; 
+    width: 95%; /* Ajustado para mejor fit */
+    max-width: 1200px;
+    margin: 20px auto; /* Margen para que no toque los bordes del navegador */
 }
 
 .app-container { 
     background: #f9f7f2; 
     width: 100%; 
-    border-radius: 42px; 
-    display: flex; 
-    flex-direction: column; 
+    border-radius: 42px; /* Debe ser ligeramente menor que el outer-frame */
     overflow: hidden; 
-    min-height: 80vh;
 }
 
 #blue-header { width: 100%; flex-shrink: 0; padding: 20px; }
