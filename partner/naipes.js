@@ -1,30 +1,33 @@
-// Usamos window.sbClient que es la instancia única creada en auth-module.js
+/**
+ * partner/naipes.js
+ * Lógica completa para el dashboard de Irina Hire Selection
+ */
+
 async function cargarDatos() {
-    // Verificamos que sbClient esté disponible
+    // 1. Verificación de entorno Supabase
     if (!window.sbClient) {
         console.error("Supabase cliente no disponible.");
         return;
     }
 
-    // Consulta de todos los registros en la tabla habitat
+    // 2. Consulta de datos en la tabla 'habitat'
     const { data, error } = await window.sbClient.from('habitat').select('*');
-    if (error) { console.error("Error al cargar datos:", error); return; }
+    if (error) { 
+        console.error("Error al cargar datos:", error); 
+        return; 
+    }
     
     const grid = document.getElementById('dashboard');
-    grid.innerHTML = ''; // Limpiamos el grid antes de cargar
+    grid.innerHTML = ''; // Limpieza del contenedor principal
 
+    // 3. Procesamiento de tarjetas (Naipe)
     data.forEach((row, index) => {
-        // Parseo de los datos reales
         const d = typeof row.data === 'string' ? JSON.parse(row.data) : row.data;
-        
-        // Extraemos variables clave de tu estructura real
         const irinaData = d?.["!irina"] || {};
         const score = irinaData?.evaluacion?.score_general || 0;
-        
-        // Identificamos el job_id para que el filtro del menú funcione
         const job_id = d?.["!vinculo-oferta"]?.job_id || "sin-oferta";
         
-        // Selección de clase de color basada en el score
+        // Asignación de clases CSS según el score
         const clase = score >= 98 ? 'bg-irina-animado' : 
                       (score >= 90 ? 'bg-emerald-metal' : 
                       (score >= 80 ? 'bg-verde' : 
@@ -33,8 +36,8 @@ async function cargarDatos() {
         
         const card = document.createElement('div');
         card.className = "blic-card " + clase;
-        card.dataset.oferta = job_id; // Necesario para el filtro del menú
-        card.onclick = () => abrirModal(row); // Pasamos toda la fila
+        card.dataset.oferta = job_id;
+        card.onclick = () => abrirModal(row);
         
         card.innerHTML = `
             <div style="font-weight:900;">SCORE: ${score}</div>
@@ -48,7 +51,7 @@ async function cargarDatos() {
         `;
         grid.appendChild(card);
         
-        // Renderizado del gráfico radar con datos reales si existen
+        // 4. Renderizado del Gráfico de Radar con escala fija para evitar distorsiones
         const subscores = irinaData?.evaluacion?.metricas || { tecnica: 0, experiencia: 0 };
         new Chart(document.getElementById("radar-" + index), { 
             type: 'radar', 
@@ -56,19 +59,30 @@ async function cargarDatos() {
                 labels: ['Téc', 'Exp', 'Ada', 'Lid', 'IA'], 
                 datasets: [{ 
                     data: [subscores.tecnica || 0, subscores.experiencia || 0, 0, 0, 0], 
-                    backgroundColor: 'rgba(255,255,255,0.4)' 
+                    backgroundColor: 'rgba(255,255,255,0.4)',
+                    borderColor: '#fff',
+                    borderWidth: 1
                 }] 
             }, 
-            options: { plugins: { legend: { display: false } } } 
+            options: { 
+                plugins: { legend: { display: false } },
+                scales: { 
+                    r: { 
+                        min: 0, 
+                        max: 100, 
+                        ticks: { display: false }, 
+                        grid: { color: 'rgba(255,255,255,0.2)' }, 
+                        pointLabels: { color: '#fff', font: { size: 10 } } 
+                    } 
+                }
+            } 
         });
     });
 }
 
+// 5. Lógica del Modal (Apertura y carga de datos)
 function abrirModal(row) {
-    // Parseamos la fila para obtener el JSON completo
     const d = typeof row.data === 'string' ? JSON.parse(row.data) : row.data;
-    
-    // Rutas extraídas de tu JSON de ejemplo
     const perfil = d["!perfil"] || {};
     const base = perfil["perfil-base"] || {};
     const contacto = perfil["perfil-contacto"] || {};
@@ -76,18 +90,19 @@ function abrirModal(row) {
     const trayectoria = d["!trayectoria"] || {};
     const psico = d["!psicometrico"] || {};
     
-    // Asignación de datos al modal
+    // Inyección de texto
     document.getElementById('m-nombre').innerText = base.nombre || "Sin nombre";
     document.getElementById('m-mail').innerText = contacto.email || "Sin email";
     document.getElementById('m-telefono').innerText = contacto.telefono || "Sin teléfono";
     document.getElementById('m-foto').style.backgroundImage = base.foto_url ? `url('${base.foto_url}')` : 'none';
     
-    // Trayectoria
+    // Carga de Trayectoria
     const trayContainer = document.getElementById('m-trayectoria');
     trayContainer.innerHTML = '';
     if (Array.isArray(trayectoria.experiencia)) {
         trayectoria.experiencia.forEach(exp => {
             const p = document.createElement('p');
+            p.style.margin = "0 0 10px 0";
             p.innerText = exp.descripcion || "Sin descripción";
             trayContainer.appendChild(p);
         });
@@ -95,7 +110,7 @@ function abrirModal(row) {
         trayContainer.innerText = "No disponible";
     }
     
-    // Análisis Psicológico (Nuevo en el modal)
+    // Análisis Psicológico
     const psicoContainer = document.getElementById('m-psico');
     if (psicoContainer) {
         psicoContainer.innerHTML = `
@@ -105,18 +120,18 @@ function abrirModal(row) {
         `;
     }
     
-    // Estudios
+    // Formación y Habilidades
     const educacion = trayectoria.educacion || [];
     document.getElementById('m-estudios').innerText = educacion.map(e => e.descripcion).join(', ') || "No disponible";
     
-    // Habilidades
     document.getElementById('m-blandas').innerText = Array.isArray(habilidades.blandas) 
         ? habilidades.blandas.join(', ') : "No disponible";
     document.getElementById('m-duras').innerText = Array.isArray(habilidades.tecnicas) 
         ? habilidades.tecnicas.join(', ') : "No disponible";
         
+    // Mostrar modal
     document.getElementById('modal-perfil').style.display = 'flex';
 }
 
-// Ejecución inicial: esperamos a que el DOM esté listo
+// 6. Inicialización al cargar DOM
 document.addEventListener('DOMContentLoaded', cargarDatos);
