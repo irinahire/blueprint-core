@@ -24,23 +24,31 @@
 
     <div id="modal-perfil" onclick="this.style.display='none'">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <div class="profile-layout">
+            <div class="modal-header">
                 <div>
-                    <div id="m-foto" class="profile-photo"></div>
-                    <h2 id="m-nombre">Nombre</h2>
+                    <h1 id="m-nombre"></h1>
                     <p id="m-mail"></p>
                     <p id="m-telefono" style="font-weight:bold;"></p>
                 </div>
-                <div>
-                    <h3>Trayectoria</h3><div id="m-trayectoria"></div>
-                    <h3>Formación</h3><div id="m-estudios"></div>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-                        <div><h3>Blandas</h3><p id="m-blandas"></p></div>
-                        <div><h3>Duras</h3><p id="m-duras"></p></div>
-                    </div>
-                </div>
+                <div id="m-foto" class="profile-photo"></div>
             </div>
-            <button onclick="document.getElementById('modal-perfil').style.display='none'" style="margin-top:20px; padding:15px;">Cerrar</button>
+            
+            <div class="modal-body">
+                <h3>Trayectoria</h3>
+                <div id="m-trayectoria"></div>
+                <h3>Análisis Psicológico</h3>
+                <div id="m-psico"></div>
+            </div>
+            
+            <div class="modal-sidebar">
+                <h3>Formación</h3>
+                <div id="m-estudios"></div>
+                <h3>Habilidades Blandas</h3>
+                <p id="m-blandas"></p>
+                <h3>Habilidades Técnicas</h3>
+                <p id="m-duras"></p>
+                <button onclick="document.getElementById('modal-perfil').style.display='none'" style="width:100%; padding:15px; margin-top:20px;">Cerrar</button>
+            </div>
         </div>
     </div>
 
