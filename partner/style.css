@@ -80,7 +80,7 @@ body {
 
 .btn-filter:hover { background: var(--fucsia); color: white; }
 
-/* Buscador: Placeholder a la derecha, texto escrito a la izquierda */
+/* Buscador */
 .semantic-search {
     width: 100%;
     padding: 12px 20px;
@@ -88,19 +88,11 @@ body {
     border-radius: 8px;
     box-sizing: border-box;
     transition: border 0.3s;
-    
-    /* El texto escrito irá a la izquierda */
     text-align: left; 
-    
-    /* Lupa a la derecha */
     background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23bc8abf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>') no-repeat right 10px center;
 }
 
-/* Truco para que el placeholder se vea alineado a la derecha */
-.semantic-search::placeholder {
-    text-align: right;
-}
-
+.semantic-search::placeholder { text-align: right; }
 .semantic-search:focus { outline: none; border-color: var(--turquesa); }
 
 /* Estilos de Tarjetas (BLICs) */
@@ -113,9 +105,7 @@ body {
     aspect-ratio: 1 / 1.5; 
     cursor: pointer; 
     color: white;
-    /* Sombra fija abajo y derecha */
     box-shadow: 6px 6px 10px rgba(0,0,0,0.3);
-    /* Efecto láser: transición solo en el borde */
     border: 2px solid transparent;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
@@ -140,8 +130,32 @@ body {
 .btn-card { padding: 6px; border: none; border-radius: 6px; cursor: pointer; font-size: 8px; font-weight: bold; background: rgba(0,0,0,0.2); color: white; transition: background 0.2s; }
 .btn-card:hover { background: rgba(255,255,255,0.3); }
 
-/* Modal */
-#modal-perfil { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index:1000; padding: 30px; overflow-y: auto; }
-.modal-content { width: 90%; max-width: 1100px; margin: auto; background: white; padding: 50px; border-radius: 20px; color: #333; }
-.profile-layout { display: grid; grid-template-columns: 250px 1fr; gap: 40px; }
-.profile-photo { width: 100%; aspect-ratio: 1/1; background: #eee; border-radius: 15px; background-size: cover; background-position: center; border: 2px solid #ddd; }
+/* --- MODAL REESTRUCTURADO --- */
+#modal-perfil { 
+    display: none; 
+    position: fixed; 
+    top: 0; left: 0; 
+    width: 100%; height: 100%; 
+    background: rgba(0,0,0,0.85); 
+    z-index: 1000; 
+    padding: 30px; 
+    overflow-y: auto; 
+}
+
+.modal-content { 
+    width: 100%; 
+    max-width: 1100px; 
+    margin: 40px auto; 
+    background: white; 
+    padding: 50px; 
+    border-radius: 20px; 
+    color: #333; 
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 40px;
+}
+
+.modal-header { grid-column: 1 / 3; display: flex; justify-content: space-between; align-items: start; }
+.modal-body { grid-column: 1 / 2; }
+.modal-sidebar { grid-column: 2 / 3; }
+.profile-photo { width: 300px; height: 300px; background-size: cover; background-position: center; border-radius: 15px; border: 2px solid #ddd; }
