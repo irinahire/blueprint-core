@@ -1,19 +1,30 @@
 const MenuPartner = {
     init: async function() {
         const container = document.getElementById('menu-container');
-        if (!container) return;
+        if (!container || !window.sbClient) return;
 
-        // Solo consultamos ofertas, ya que el resto es implícito por los permisos del usuario
-        const { data: ofertas, error } = await window.sbClient
-            .from('ofertas')
-            .select('id, titulo'); // Aquí Supabase aplica la RLS automáticamente
+        // Filtramos directamente en Supabase buscando los registros que son ofertas
+        // Usamos el operador de contención en JSONB para metadata
+        const { data, error } = await window.sbClient
+            .from('habitat')
+            .select('data')
+            .contains('metadata', { '!tipo': '!oferta' });
 
         if (error) {
-            console.error("Error al cargar ofertas del menú:", error);
+            console.error("Error al cargar ofertas reales:", error);
             return;
         }
 
-        this.render(container, ofertas || []);
+        // Procesamos los datos reales del JSON 'data'
+        const ofertas = data.map(row => {
+            const d = typeof row.data === 'string' ? JSON.parse(row.data) : row.data;
+            return {
+                id: d.job_id,
+                titulo: d.titulo
+            };
+        }).filter(o => o.id && o.titulo);
+
+        this.render(container, ofertas);
     },
 
     render: function(container, ofertas) {
@@ -23,7 +34,6 @@ const MenuPartner = {
                        oninput="MenuPartner.handleSearch(this.value)">
 
                 <select id="filtro-ofertas" multiple>
-                    <option value="" disabled>Seleccionar ofertas...</option>
                     ${ofertas.map(o => `<option value="${o.id}">${o.titulo}</option>`).join('')}
                 </select>
 
@@ -33,14 +43,13 @@ const MenuPartner = {
     },
 
     handleSearch: function(query) {
-        // Lógica de búsqueda semántica (se conectará con Supabase Vector)
-        console.log("Consultando base vectorial:", query);
+        console.log("Búsqueda semántica sobre vector_embedding:", query);
     },
 
     aplicarFiltros: function() {
         const selected = Array.from(document.getElementById('filtro-ofertas').selectedOptions).map(o => o.value);
-        console.log("Filtrando naipes por ofertas:", selected);
-        // Aquí llamarías a una función en naipes.js para ocultar/mostrar elementos
+        console.log("Filtrando naipes. Se seleccionaron los IDs de oferta:", selected);
+        // Aquí deberás llamar a tu función de filtrado en naipes.js
     }
 };
 
