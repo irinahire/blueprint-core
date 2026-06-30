@@ -6,31 +6,30 @@
 }
 
 /* Estructura Base */
-/* Ajuste para eliminar espacios en blanco externos */
 body { 
     margin: 0; 
-    padding: 0; /* Cambiado de 20px a 0 */
+    padding: 0; 
     background: var(--bg-dark); 
     font-family: 'Inter', sans-serif; 
     min-height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: center; /* Centra el marco perfectamente */
+    align-items: center;
 }
 
 .outer-frame { 
-    padding: 8px; /* Este es el grosor del borde degradado */
+    padding: 8px; 
     background: var(--irina-gradient); 
     border-radius: 50px; 
-    width: 95%; /* Ajustado para mejor fit */
+    width: 95%; 
     max-width: 1200px;
-    margin: 20px auto; /* Margen para que no toque los bordes del navegador */
+    margin: 20px auto; 
 }
 
 .app-container { 
     background: #f9f7f2; 
     width: 100%; 
-    border-radius: 42px; /* Debe ser ligeramente menor que el outer-frame */
+    border-radius: 42px; 
     overflow: hidden; 
 }
 
@@ -39,60 +38,67 @@ body {
 .dashboard-content { padding: 40px; }
 .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
 
-/* Nuevo estilo para el menú integrado */
+/* Menú Control - Diseño final solicitado */
 .menu-control {
     display: grid;
-    grid-template-columns: 180px 1fr 350px;
+    grid-template-columns: 200px 250px 1fr;
     gap: 15px;
-    padding: 15px 45px;
-    margin: 20px 45px;
+    padding: 20px 45px;
     background: #ffffff;
-    border-radius: 30px; /* Bordes redondeados como el contenedor */
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    width: 100%;
+    box-sizing: border-box;
     align-items: center;
-    border: 2px solid transparent;
-    background-clip: padding-box, border-box;
-    background-origin: padding-box, border-box;
-    background-image: linear-gradient(to right, #fff, #fff), var(--irina-gradient);
-    border: 2px solid transparent; /* Para que el degradado se vea en el borde */
+    border-bottom: 2px solid var(--fucsia);
 }
 
-/* Botones con identidad de Irina */
+/* Botones con animaciones y efectos Hover */
 .btn-primary { 
-    background: var(--irina-gradient); 
+    background: var(--fucsia); 
     color: white; 
     border: none; 
     padding: 12px 20px; 
-    border-radius: 20px; 
-    font-weight: 700;
+    border-radius: 8px; 
     cursor: pointer; 
     text-transform: uppercase;
-    font-size: 11px;
+    font-weight: 700;
+    transition: transform 0.2s, background 0.3s;
+}
+
+.btn-primary:hover { 
+    background: var(--turquesa); 
+    transform: scale(1.05);
 }
 
 .btn-filter { 
     background: #f9f7f2; 
     border: 2px solid var(--fucsia); 
-    color: var(--fucsia);
-    padding: 10px 20px; 
-    border-radius: 20px; 
+    color: var(--fucsia); 
+    padding: 12px 20px; 
+    border-radius: 8px; 
     cursor: pointer; 
-    font-weight: 600;
+    transition: all 0.3s ease;
 }
 
-/* Buscador con estilo */
+.btn-filter:hover { 
+    background: var(--fucsia); 
+    color: white; 
+}
+
+/* Buscador con lupa a la derecha y texto alineado */
 .semantic-search {
     width: 100%;
     padding: 12px 20px;
-    border: 2px solid #eee;
-    border-radius: 20px;
-    outline: none;
+    border: 2px solid var(--fucsia);
+    border-radius: 8px;
+    text-align: right;
+    box-sizing: border-box;
     transition: border 0.3s;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23bc8abf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>') no-repeat right 10px center;
 }
 
-.semantic-search:focus { border-color: var(--fucsia); }
+.semantic-search:focus { outline: none; border-color: var(--turquesa); }
 
-/* Estilos de Tarjetas (BLICs) */
+/* Estilos de Tarjetas (BLICs) con Animaciones */
 .blic-card { 
     border-radius: 12px; 
     padding: 12px; 
@@ -102,34 +108,16 @@ body {
     gap: 8px; 
     aspect-ratio: 1 / 1.5; 
     cursor: pointer; 
-    transition: 0.3s; 
+    transition: transform 0.3s ease, box-shadow 0.3s ease; 
     color: white; 
 }
 
-.menu-control {
-    display: grid;
-    grid-template-columns: 200px 1fr 350px; /* Izquierda, Centro, Derecha */
-    gap: 15px;
-    padding: 20px 45px;
-    background: #ffffff;
-    align-items: center;
-    border-bottom: 1px solid #eee;
-}
-
-.semantic-search {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-}
-
-.btn-primary { background: #bc8abf; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; }
-.btn-filter { background: #f0f0f0; border: 1px solid #ccc; padding: 10px; border-radius: 8px; cursor: pointer; }
-
 .blic-card:hover { 
-    box-shadow: 0 0 20px rgba(188, 138, 191, 0.8), 0 0 10px rgba(150, 232, 218, 0.5); 
+    transform: translateY(-10px);
+    box-shadow: 0 10px 25px rgba(188, 138, 191, 0.4); 
 }
 
+/* Colores de estado */
 .bg-marron { background-color: #8B4513; }
 .bg-rojo { background-color: #e74c3c; }
 .bg-amarillo { background-color: #f1c40f; color: black; }
@@ -141,7 +129,8 @@ body {
 .radar-container { flex: 4; display: flex; align-items: center; justify-content: center; }
 .icons-grid { display: flex; gap: 8px; padding: 0 10px; justify-content: center; }
 .icon-box { background: rgba(0,0,0,0.15); width: 30px; height: 30px; border-radius: 4px; display: flex; align-items: center; justify-content: center; }
-.btn-card { padding: 6px; border: none; border-radius: 6px; cursor: pointer; font-size: 8px; font-weight: bold; background: rgba(0,0,0,0.2); color: white; }
+.btn-card { padding: 6px; border: none; border-radius: 6px; cursor: pointer; font-size: 8px; font-weight: bold; background: rgba(0,0,0,0.2); color: white; transition: background 0.2s; }
+.btn-card:hover { background: rgba(255,255,255,0.3); }
 
 /* Modal */
 #modal-perfil { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index:1000; padding: 30px; overflow-y: auto; }
