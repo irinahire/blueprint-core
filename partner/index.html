@@ -6,13 +6,17 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* CSS directo para forzar ancho total */
-        #modal-perfil { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; overflow-y: auto; padding: 20px; }
-        .modal-content { width: 95%; max-width: 1400px; margin: 20px auto; background: white; padding: 40px; border-radius: 20px; position: relative; }
-        .full-table { width: 100%; border-collapse: collapse; }
-        .full-table td { vertical-align: top; padding: 20px; width: 50%; }
-        .profile-photo { width: 100%; max-width: 300px; height: 300px; background-size: cover; background-position: center; border-radius: 15px; margin-bottom: 20px; }
-        .radar-box { width: 100%; max-width: 500px; height: 400px; }
+        /* Estilos básicos para el Modal */
+        #modal-perfil { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; overflow-y: auto; padding: 20px; box-sizing: border-box; }
+        .modal-content { background: white; width: 90%; max-width: 1000px; margin: 40px auto; padding: 40px; border-radius: 20px; position: relative; }
+        
+        /* Flexbox para 2 columnas estables */
+        .modal-body-container { display: flex; flex-direction: row; gap: 40px; align-items: flex-start; }
+        .col-left { flex: 1; }
+        .col-right { flex: 1; }
+        
+        .profile-photo { width: 100%; height: 300px; background-size: cover; background-position: center; border-radius: 15px; margin-bottom: 20px; border: 1px solid #ccc; }
+        .radar-box { width: 100%; height: 300px; margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -28,34 +32,31 @@
 
     <div id="modal-perfil" onclick="this.style.display='none'">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <table class="full-table">
-                <tr>
-                    <td colspan="2">
-                        <h1 id="m-nombre" style="margin:0;"></h1>
-                        <p id="m-mail"></p>
-                        <p id="m-telefono"></p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h3>Trayectoria</h3>
-                        <div id="m-trayectoria"></div>
-                        <h3>Análisis Psicológico</h3>
-                        <div id="m-psico"></div>
-                    </td>
-                    <td>
-                        <div id="m-foto" class="profile-photo"></div>
-                        <div class="radar-box">
-                            <canvas id="m-radar-bigfive"></canvas>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-            <button onclick="document.getElementById('modal-perfil').style.display='none'" style="width:100%; padding:20px; font-size:18px;">Cerrar</button>
+            <h1 id="m-nombre"></h1>
+            <p id="m-mail"></p>
+            <p id="m-telefono" style="font-weight:bold;"></p>
+            <hr>
+            
+            <div class="modal-body-container">
+                <div class="col-left">
+                    <h3>Trayectoria</h3>
+                    <div id="m-trayectoria"></div>
+                    <h3>Análisis Psicológico</h3>
+                    <div id="m-psico"></div>
+                </div>
+                <div class="col-right">
+                    <div id="m-foto" class="profile-photo"></div>
+                    <div class="radar-box">
+                        <canvas id="m-radar-bigfive"></canvas>
+                    </div>
+                </div>
+            </div>
+            <button onclick="document.getElementById('modal-perfil').style.display='none'" style="width:100%; padding:15px; margin-top:20px; cursor:pointer;">Cerrar</button>
         </div>
     </div>
 
     <script src="../auth-module.js"></script>
     <script src="partner/naipes.js" defer></script>
+    <script src="partner/menu-partner.js" defer></script>
 </body>
 </html>
