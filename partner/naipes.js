@@ -1,11 +1,12 @@
-// Inicialización del cliente Supabase
-const sb = supabase.createClient(
-    'https://zuzvozgjsppkxvdlptmk.supabase.co', 
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1enZvemdqc3Bwa3h2ZGxwdG1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTM2MTYsImV4cCI6MjA5NTQ2OTYxNn0.M-g00y8s9FYwzzVg2mqJoazwQkOsk35gukoOqDZ32r0'
-);
-
+// Usamos window.sbClient que es la instancia única creada en auth-module.js
 async function cargarDatos() {
-    const { data, error } = await sb.from('habitat').select('*');
+    // Verificamos que sbClient esté disponible
+    if (!window.sbClient) {
+        console.error("Supabase cliente no disponible.");
+        return;
+    }
+
+    const { data, error } = await window.sbClient.from('habitat').select('*');
     if (error) { console.error("Error al cargar datos:", error); return; }
     
     const grid = document.getElementById('dashboard');
@@ -81,5 +82,5 @@ function abrirModal(d) {
     document.getElementById('modal-perfil').style.display = 'flex';
 }
 
-// Ejecución inicial
-cargarDatos();
+// Ejecución inicial: esperamos a que el DOM esté listo
+document.addEventListener('DOMContentLoaded', cargarDatos);
