@@ -34,7 +34,7 @@ body {
     overflow: hidden; 
 }
 
-#blue-header { width: 100%; flex-shrink: 0; padding: 20px; }
+#blue-header { width: 100%; flex-shrink: 0; padding: 0px; }
 
 .dashboard-content { padding: 40px; }
 .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
