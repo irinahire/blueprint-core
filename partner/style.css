@@ -39,6 +39,59 @@ body {
 .dashboard-content { padding: 40px; }
 .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
 
+/* Nuevo estilo para el menú integrado */
+.menu-control {
+    display: grid;
+    grid-template-columns: 180px 1fr 350px;
+    gap: 15px;
+    padding: 15px 45px;
+    margin: 20px 45px;
+    background: #ffffff;
+    border-radius: 30px; /* Bordes redondeados como el contenedor */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    align-items: center;
+    border: 2px solid transparent;
+    background-clip: padding-box, border-box;
+    background-origin: padding-box, border-box;
+    background-image: linear-gradient(to right, #fff, #fff), var(--irina-gradient);
+    border: 2px solid transparent; /* Para que el degradado se vea en el borde */
+}
+
+/* Botones con identidad de Irina */
+.btn-primary { 
+    background: var(--irina-gradient); 
+    color: white; 
+    border: none; 
+    padding: 12px 20px; 
+    border-radius: 20px; 
+    font-weight: 700;
+    cursor: pointer; 
+    text-transform: uppercase;
+    font-size: 11px;
+}
+
+.btn-filter { 
+    background: #f9f7f2; 
+    border: 2px solid var(--fucsia); 
+    color: var(--fucsia);
+    padding: 10px 20px; 
+    border-radius: 20px; 
+    cursor: pointer; 
+    font-weight: 600;
+}
+
+/* Buscador con estilo */
+.semantic-search {
+    width: 100%;
+    padding: 12px 20px;
+    border: 2px solid #eee;
+    border-radius: 20px;
+    outline: none;
+    transition: border 0.3s;
+}
+
+.semantic-search:focus { border-color: var(--fucsia); }
+
 /* Estilos de Tarjetas (BLICs) */
 .blic-card { 
     border-radius: 12px; 
