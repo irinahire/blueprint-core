@@ -74,14 +74,15 @@ function abrirModal(row) {
     const contacto = perfil["perfil-contacto"] || {};
     const habilidades = d["!habilidades"] || {};
     const trayectoria = d["!trayectoria"] || {};
+    const psico = d["!psicometrico"] || {};
     
-    // Asignación de datos al modal usando rutas reales
+    // Asignación de datos al modal
     document.getElementById('m-nombre').innerText = base.nombre || "Sin nombre";
     document.getElementById('m-mail').innerText = contacto.email || "Sin email";
     document.getElementById('m-telefono').innerText = contacto.telefono || "Sin teléfono";
     document.getElementById('m-foto').style.backgroundImage = base.foto_url ? `url('${base.foto_url}')` : 'none';
     
-    // Trayectoria: array de objetos en !trayectoria.experiencia
+    // Trayectoria
     const trayContainer = document.getElementById('m-trayectoria');
     trayContainer.innerHTML = '';
     if (Array.isArray(trayectoria.experiencia)) {
@@ -94,11 +95,21 @@ function abrirModal(row) {
         trayContainer.innerText = "No disponible";
     }
     
-    // Estudios: array de objetos en !trayectoria.educacion
+    // Análisis Psicológico (Nuevo en el modal)
+    const psicoContainer = document.getElementById('m-psico');
+    if (psicoContainer) {
+        psicoContainer.innerHTML = `
+            <p><strong>Lógica:</strong> ${psico.LOG_ABS?.analisis || "N/A"}</p>
+            <p><strong>Situacional:</strong> ${psico.SIT_EST?.analisis || "N/A"}</p>
+            <p><strong>Big Five:</strong> ${psico.BIG_FIVE?.analisis || "N/A"}</p>
+        `;
+    }
+    
+    // Estudios
     const educacion = trayectoria.educacion || [];
     document.getElementById('m-estudios').innerText = educacion.map(e => e.descripcion).join(', ') || "No disponible";
     
-    // Habilidades: arrays en !habilidades
+    // Habilidades
     document.getElementById('m-blandas').innerText = Array.isArray(habilidades.blandas) 
         ? habilidades.blandas.join(', ') : "No disponible";
     document.getElementById('m-duras').innerText = Array.isArray(habilidades.tecnicas) 
