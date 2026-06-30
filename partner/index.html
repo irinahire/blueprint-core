@@ -21,32 +21,38 @@
 
     <div id="modal-perfil" onclick="this.style.display='none'">
         <div class="modal-content" onclick="event.stopPropagation()">
-            
-            <div class="modal-header">
-                <div>
-                    <h1 id="m-nombre" style="margin:0;"></h1>
+            <div style="border-bottom: 2px solid #eee; margin-bottom: 20px; padding-bottom: 10px;">
+                <h1 id="m-nombre" style="margin:0;"></h1>
+                <div style="display:flex; align-items:center; gap:10px;">
                     <p id="m-mail" style="margin:5px 0;"></p>
+                    <a id="btn-mail" href="#" style="text-decoration:none;">📧</a>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px;">
                     <p id="m-telefono" style="font-weight:bold; margin:0;"></p>
+                    <a id="btn-wapp" href="#" style="text-decoration:none;">💬</a>
                 </div>
             </div>
-            
-            <div class="modal-body">
-                <h3>Trayectoria</h3>
-                <div id="m-trayectoria"></div>
-                <h3>Análisis Psicológico</h3>
-                <div id="m-psico"></div>
-            </div>
-            
-            <div class="modal-sidebar">
-                <div id="m-foto" class="profile-photo" style="margin-bottom: 20px;"></div>
-                <h3>Formación</h3>
-                <div id="m-estudios"></div>
-                <h3>Habilidades Blandas</h3>
-                <p id="m-blandas"></p>
-                <h3>Habilidades Técnicas</h3>
-                <p id="m-duras"></p>
-                <button onclick="document.getElementById('modal-perfil').style.display='none'" style="width:100%; padding:15px; margin-top:20px; cursor:pointer;">Cerrar</button>
-            </div>
+
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                    <td style="width: 60%; vertical-align: top; padding-right: 20px;">
+                        <h3>Trayectoria</h3>
+                        <div id="m-trayectoria"></div>
+                        <h3>Análisis Psicológico</h3>
+                        <div id="m-psico"></div>
+                    </td>
+                    <td style="width: 40%; vertical-align: top;">
+                        <div id="m-foto" class="profile-photo"></div>
+                        <h3>Formación</h3>
+                        <div id="m-estudios"></div>
+                        <h3>Habilidades Blandas</h3>
+                        <p id="m-blandas"></p>
+                        <h3>Habilidades Técnicas</h3>
+                        <p id="m-duras"></p>
+                        <button onclick="document.getElementById('modal-perfil').style.display='none'" style="width:100%; padding:15px; margin-top:20px; cursor:pointer;">Cerrar</button>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 
