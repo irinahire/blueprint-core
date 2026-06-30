@@ -3,12 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Irina Hire Selection - Dashboard</title>
-    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="partner/style.css">
 </head>
 <body>
@@ -24,13 +21,13 @@
 
     <div id="modal-perfil" onclick="this.style.display='none'">
         <div class="modal-content" onclick="event.stopPropagation()">
+            
             <div class="modal-header">
                 <div>
-                    <h1 id="m-nombre"></h1>
-                    <p id="m-mail"></p>
-                    <p id="m-telefono" style="font-weight:bold;"></p>
+                    <h1 id="m-nombre" style="margin:0;"></h1>
+                    <p id="m-mail" style="margin:5px 0;"></p>
+                    <p id="m-telefono" style="font-weight:bold; margin:0;"></p>
                 </div>
-                <div id="m-foto" class="profile-photo"></div>
             </div>
             
             <div class="modal-body">
@@ -41,13 +38,14 @@
             </div>
             
             <div class="modal-sidebar">
+                <div id="m-foto" class="profile-photo" style="margin-bottom: 20px;"></div>
                 <h3>Formación</h3>
                 <div id="m-estudios"></div>
                 <h3>Habilidades Blandas</h3>
                 <p id="m-blandas"></p>
                 <h3>Habilidades Técnicas</h3>
                 <p id="m-duras"></p>
-                <button onclick="document.getElementById('modal-perfil').style.display='none'" style="width:100%; padding:15px; margin-top:20px;">Cerrar</button>
+                <button onclick="document.getElementById('modal-perfil').style.display='none'" style="width:100%; padding:15px; margin-top:20px; cursor:pointer;">Cerrar</button>
             </div>
         </div>
     </div>
