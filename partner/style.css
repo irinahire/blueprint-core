@@ -80,16 +80,25 @@ body {
 
 .btn-filter:hover { background: var(--fucsia); color: white; }
 
-/* Buscador */
+/* Buscador: Placeholder a la derecha, texto escrito a la izquierda */
 .semantic-search {
     width: 100%;
     padding: 12px 20px;
     border: 2px solid var(--fucsia);
     border-radius: 8px;
-    text-align: right;
     box-sizing: border-box;
     transition: border 0.3s;
+    
+    /* El texto escrito irá a la izquierda */
+    text-align: left; 
+    
+    /* Lupa a la derecha */
     background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23bc8abf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>') no-repeat right 10px center;
+}
+
+/* Truco para que el placeholder se vea alineado a la derecha */
+.semantic-search::placeholder {
+    text-align: right;
 }
 
 .semantic-search:focus { outline: none; border-color: var(--turquesa); }
