@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Perfil de Candidato</title>
+    <style>
+        body { margin: 0; background: linear-gradient(135deg, #a1c4fd, #c2e9fb); font-family: 'Inter', sans-serif; display: flex; justify-content: center; padding: 40px; min-height: 100vh; }
+        .card { background: white; width: 900px; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .grid-perfil { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        .photo { width: 100%; height: 300px; background-size: cover; background-position: center; border-radius: 15px; border: 1px solid #ddd; }
+        .btn-action { display: inline-block; padding: 10px 20px; margin-right: 10px; text-decoration: none; border-radius: 8px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1 id="m-nombre">Cargando...</h1>
+        <div class="grid-perfil">
+            <div>
+                <h3>Datos</h3>
+                <p id="m-mail"></p>
+                <p id="m-tel"></p>
+                <h3>Trayectoria</h3>
+                <div id="m-trayectoria"></div>
+            </div>
+            <div>
+                <div id="m-foto" class="photo"></div>
+                <div id="m-acciones">
+                    <a id="btn-wapp" class="btn-action" style="background:#25D366; color:white;">WhatsApp</a>
+                    <a id="btn-mail" class="btn-action" style="background:#007bff; color:white;">Email</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Carga el SDK de Supabase desde tu CDN o vía window -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="perfil.js"></script>
+</body>
+</html>
