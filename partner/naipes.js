@@ -11,7 +11,12 @@ async function cargarDatos() {
     }
 
     // 2. Consulta de datos en la tabla 'habitat'
-    const { data, error } = await window.sbClient.from('habitat').select('*');
+    // Filtramos solo por tipo para asegurar calidad, sin limitar a un único ID
+    const { data, error } = await window.sbClient
+        .from('habitat')
+        .select('*')
+        .eq('metadata->>!tipo', '!postulacion');
+
     if (error) { 
         console.error("Error al cargar datos:", error); 
         return; 
@@ -23,11 +28,19 @@ async function cargarDatos() {
     // 3. Procesamiento de tarjetas (Naipe)
     data.forEach((row, index) => {
         const d = typeof row.data === 'string' ? JSON.parse(row.data) : row.data;
+        const metadata = typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata;
+        
         const irinaData = d?.["!irina"] || {};
         const score = irinaData?.evaluacion?.score_general || 0;
-        const job_id = d?.["!vinculo-oferta"]?.job_id || "sin-oferta";
         
-        // Asignación de clases CSS según el score
+        // Extracción exacta de IDs
+        const ownerId = row.owner_id; // Columna directa raíz
+        const jobId = metadata?.["!vinculos"]?.oferta_id?.[0] || "sin-oferta";
+        
+        // Obtención de la URL del radar
+        const radarUrl = d?.["!psicometrico"]?.url_big_five_radar || "";
+        
+        // Asignación de clases CSS
         const clase = score >= 98 ? 'bg-irina-animado' : 
                       (score >= 90 ? 'bg-emerald-metal' : 
                       (score >= 80 ? 'bg-verde' : 
@@ -36,12 +49,18 @@ async function cargarDatos() {
         
         const card = document.createElement('div');
         card.className = "blic-card " + clase;
-        card.dataset.oferta = job_id;
-        card.onclick = () => abrirModal(row);
+        card.dataset.oferta = jobId;
+        
+        // Navegación a perfil.html pasando parámetros para la consulta de perfil.js
+        card.onclick = () => {
+            window.open(`perfil.html?owner_id=${ownerId}&job_id=${jobId}`, '_blank');
+        };
         
         card.innerHTML = `
             <div style="font-weight:900;">SCORE: ${score}</div>
-            <div class="radar-container"><canvas id="radar-${index}"></canvas></div>
+            <div class="radar-container">
+                ${radarUrl ? `<img src="${radarUrl}" style="width:100%; height:auto;" alt="Radar">` : `<canvas id="radar-${index}"></canvas>`}
+            </div>
             <div class="icons-grid">${['🚀', '🛡️', '🧠', '🔗'].map(i => `<div class="icon-box">${i}</div>`).join('')}</div>
             <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:5px; margin-top:5px;">
                 <button class="btn-card">CV</button>
@@ -51,87 +70,34 @@ async function cargarDatos() {
         `;
         grid.appendChild(card);
         
-        // 4. Renderizado del Gráfico de Radar con escala fija para evitar distorsiones
-        const subscores = irinaData?.evaluacion?.metricas || { tecnica: 0, experiencia: 0 };
-        new Chart(document.getElementById("radar-" + index), { 
-            type: 'radar', 
-            data: { 
-                labels: ['Téc', 'Exp', 'Ada', 'Lid', 'IA'], 
-                datasets: [{ 
-                    data: [subscores.tecnica || 0, subscores.experiencia || 0, 0, 0, 0], 
-                    backgroundColor: 'rgba(255,255,255,0.4)',
-                    borderColor: '#fff',
-                    borderWidth: 1
-                }] 
-            }, 
-            options: { 
-                plugins: { legend: { display: false } },
-                scales: { 
-                    r: { 
-                        min: 0, 
-                        max: 100, 
-                        ticks: { display: false }, 
-                        grid: { color: 'rgba(255,255,255,0.2)' }, 
-                        pointLabels: { color: '#fff', font: { size: 10 } } 
-                    } 
-                }
-            } 
-        });
+        // 4. Renderizado del Gráfico de Radar (si no hay imagen)
+        if (!radarUrl) {
+            const subscores = irinaData?.evaluacion?.metricas || { tecnica: 0, experiencia: 0 };
+            new Chart(document.getElementById("radar-" + index), { 
+                type: 'radar', 
+                data: { 
+                    labels: ['Téc', 'Exp', 'Ada', 'Lid', 'IA'], 
+                    datasets: [{ 
+                        data: [subscores.tecnica || 0, subscores.experiencia || 0, 0, 0, 0], 
+                        backgroundColor: 'rgba(255,255,255,0.4)',
+                        borderColor: '#fff',
+                        borderWidth: 1
+                    }] 
+                }, 
+                options: { 
+                    plugins: { legend: { display: false } },
+                    scales: { 
+                        r: { 
+                            min: 0, max: 100, ticks: { display: false }, 
+                            grid: { color: 'rgba(255,255,255,0.2)' }, 
+                            pointLabels: { color: '#fff', font: { size: 10 } } 
+                        } 
+                    }
+                } 
+            });
+        }
     });
 }
 
-// 5. Lógica del Modal (Apertura y carga de datos)
-function abrirModal(row) {
-    const d = typeof row.data === 'string' ? JSON.parse(row.data) : row.data;
-    const perfil = d["!perfil"] || {};
-    const base = perfil["perfil-base"] || {};
-    const contacto = perfil["perfil-contacto"] || {};
-    const habilidades = d["!habilidades"] || {};
-    const trayectoria = d["!trayectoria"] || {};
-    const psico = d["!psicometrico"] || {};
-    
-    // Inyección de texto
-    document.getElementById('m-nombre').innerText = base.nombre || "Sin nombre";
-    document.getElementById('m-mail').innerText = contacto.email || "Sin email";
-    document.getElementById('m-telefono').innerText = contacto.telefono || "Sin teléfono";
-    document.getElementById('m-foto').style.backgroundImage = base.foto_url ? `url('${base.foto_url}')` : 'none';
-    
-    // Carga de Trayectoria
-    const trayContainer = document.getElementById('m-trayectoria');
-    trayContainer.innerHTML = '';
-    if (Array.isArray(trayectoria.experiencia)) {
-        trayectoria.experiencia.forEach(exp => {
-            const p = document.createElement('p');
-            p.style.margin = "0 0 10px 0";
-            p.innerText = exp.descripcion || "Sin descripción";
-            trayContainer.appendChild(p);
-        });
-    } else {
-        trayContainer.innerText = "No disponible";
-    }
-    
-    // Análisis Psicológico
-    const psicoContainer = document.getElementById('m-psico');
-    if (psicoContainer) {
-        psicoContainer.innerHTML = `
-            <p><strong>Lógica:</strong> ${psico.LOG_ABS?.analisis || "N/A"}</p>
-            <p><strong>Situacional:</strong> ${psico.SIT_EST?.analisis || "N/A"}</p>
-            <p><strong>Big Five:</strong> ${psico.BIG_FIVE?.analisis || "N/A"}</p>
-        `;
-    }
-    
-    // Formación y Habilidades
-    const educacion = trayectoria.educacion || [];
-    document.getElementById('m-estudios').innerText = educacion.map(e => e.descripcion).join(', ') || "No disponible";
-    
-    document.getElementById('m-blandas').innerText = Array.isArray(habilidades.blandas) 
-        ? habilidades.blandas.join(', ') : "No disponible";
-    document.getElementById('m-duras').innerText = Array.isArray(habilidades.tecnicas) 
-        ? habilidades.tecnicas.join(', ') : "No disponible";
-        
-    // Mostrar modal
-    document.getElementById('modal-perfil').style.display = 'flex';
-}
-
-// 6. Inicialización al cargar DOM
+// 5. Inicialización al cargar DOM
 document.addEventListener('DOMContentLoaded', cargarDatos);
