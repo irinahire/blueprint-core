@@ -53,7 +53,7 @@ async function cargarDatos() {
         
         // Navegación a perfil.html pasando parámetros para la consulta de perfil.js
         card.onclick = () => {
-            window.open(`perfil.html?owner_id=${ownerId}&job_id=${jobId}`, '_blank');
+            window.open(`partner/perfil.html?owner_id=${ownerId}&job_id=${jobId}`, '_blank');
         };
         
         card.innerHTML = `
