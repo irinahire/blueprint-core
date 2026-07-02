@@ -3,39 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <title>Perfil de Candidato | Irina Hire</title>
-    <!-- Estilos de marco que me mostraste -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* Ajuste para que el contenedor principal ocupe el marco */
-        .dashboard-content { padding: 40px; }
-        .card { background: white; width: 900px; margin: 0 auto; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .photo { width: 100%; height: 300px; background-size: cover; background-position: center; border-radius: 15px; border: 1px solid #ddd; margin-bottom: 20px; }
+        .btn-action { display: inline-block; padding: 10px 20px; margin-right: 10px; text-decoration: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: white !important; }
+        .card { background: white; width: 900px; margin: 20px auto; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .grid-perfil { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
     </style>
 </head>
 <body>
     <div class="outer-frame">
         <div class="app-container">
-            <!-- Solo el contenedor de cabecera para mantener el diseño visual -->
             <div id="blue-header"></div>
-            
             <div class="dashboard-content">
                 <div class="card">
                     <h1 id="m-nombre">Cargando...</h1>
                     <div class="grid-perfil">
                         <div>
-                            <h3>Datos</h3>
+                            <h3>Datos de Contacto</h3>
                             <p id="m-mail"></p>
                             <p id="m-tel"></p>
-                            <h3>Trayectoria</h3>
+                            <div id="m-acciones">
+                                <a id="btn-wapp" class="btn-action" style="background:#25D366;">WhatsApp</a>
+                                <a id="btn-email" class="btn-action" style="background:#007bff;">Email</a>
+                                <a id="btn-linkedin" class="btn-action" style="background:#0077b5;">LinkedIn</a>
+                            </div>
+                            <h3>Trayectoria y Perfil</h3>
                             <div id="m-trayectoria"></div>
                         </div>
                         <div>
                             <div id="m-foto" class="photo"></div>
-                            <div id="m-acciones">
-                                <a id="btn-wapp" class="btn-action" style="background:#25D366; color:white;">WhatsApp</a>
-                                <a id="btn-mail" class="btn-action" style="background:#007bff; color:white;">Email</a>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -43,7 +42,6 @@
         </div>
     </div>
 
-    <!-- Solo el módulo de auth necesario para la sesión -->
     <script src="../auth-module.js"></script>
     <script src="perfil.js" defer></script>
 </body>
