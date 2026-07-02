@@ -1,62 +1,48 @@
 /**
- * perfil.js
- * Lógica estricta de renderizado.
- * Contrato de datos: Esperamos un objeto con claves !perfil, !trayectoria, !analisis, !irina.
+ * perfil.js - Renderizado con mapeo de llaves exacto
  */
 
 async function initPerfil() {
     console.log("1. Iniciando perfil.js...");
-
+    
     let intentos = 0;
     while (!window.sbClient && intentos < 20) {
         await new Promise(r => setTimeout(r, 500));
         intentos++;
     }
-
     if (!window.sbClient) return;
 
     const params = new URLSearchParams(window.location.search);
     const ownerId = params.get('owner_id');
     const jobId = params.get('job_id');
 
-    // Consulta específica: pedimos la fila completa.
-    // El motor de Supabase nos entrega el JSON parseado si la columna es de tipo JSONB.
     const { data, error } = await window.sbClient
         .from('habitat')
-        .select('data') // Pedimos explícitamente el objeto data
+        .select('data')
         .eq('owner_id', ownerId)
         .eq('metadata->>!tipo', '!postulacion')
         .contains('metadata', { "!vinculos": { "oferta_id": [jobId] } })
         .single();
 
-    if (error || !data) {
-        console.error("Error crítico: No se recibieron datos del candidato.");
-        return;
-    }
+    if (error || !data) return;
 
-    // A partir de aquí, data.data ES nuestro objeto de trabajo.
-    // No especulamos con que sea un string, tratamos a data.data como el objeto raíz.
-    const d = data.data; 
-    
-    console.log("Datos recibidos y validados:", d);
-    renderizarPerfilCompleto(d);
+    // Usamos el objeto directo, ya está parseado por Supabase
+    renderizarPerfilCompleto(data.data);
 }
 
 function renderizarPerfilCompleto(d) {
-    // Desmenuzamos llave por llave con validación estricta
-    const perfil = d["!perfil"] || {};
-    const tray = d["!trayectoria"] || {};
-    const analisis = d["!analisis"] || {};
-    const irina = d["!irina"] || {};
+    console.log("Renderizando con llaves validadas:", d);
 
-    // 1. Datos Básicos (Mapeo estricto)
-    document.getElementById('m-nombre').innerText = perfil["perfil-base"]?.nombre || "Sin nombre";
-    document.getElementById('m-mail').innerText = "Email: " + (perfil["perfil-contacto"]?.email || "N/A");
-    document.getElementById('m-tel').innerText = "Tel: " + (perfil["perfil-contacto"]?.telefono || "N/A");
-    document.getElementById('m-foto').style.backgroundImage = `url('${perfil["perfil-base"]?.foto_url || ""}')`;
+    // 1. Datos Básicos
+    const base = d["!perfil"]["perfil-base"];
+    const contacto = d["!perfil"]["perfil-contacto"];
+    
+    document.getElementById('m-nombre').innerText = base.nombre || "Sin nombre";
+    document.getElementById('m-mail').innerText = "Email: " + (contacto.email || "N/A");
+    document.getElementById('m-tel').innerText = "Tel: " + (contacto.telefono || "N/A");
+    document.getElementById('m-foto').style.backgroundImage = `url('${base.foto_url || ""}')`;
 
-    // 2. Botones y LinkedIn (Acceso directo a la llave de contacto)
-    const contacto = perfil["perfil-contacto"] || {};
+    // 2. LinkedIn (Con protocolo)
     if (contacto.linkedin) {
         const btnLnk = document.createElement('a');
         btnLnk.href = contacto.linkedin.startsWith('http') ? contacto.linkedin : 'https://' + contacto.linkedin;
@@ -65,44 +51,35 @@ function renderizarPerfilCompleto(d) {
         btnLnk.className = "btn-action";
         btnLnk.style.background = "#0e76a8";
         btnLnk.style.color = "white";
-        
-        const acciones = document.getElementById('m-acciones');
-        if (!document.querySelector('.btn-action[href*="linkedin"]')) {
-            acciones.appendChild(btnLnk);
-        }
+        document.getElementById('m-acciones').appendChild(btnLnk);
     }
 
-    document.getElementById('btn-wapp').href = `https://wa.me/${contacto.telefono?.replace(/\D/g, '') || ''}`;
-    document.getElementById('btn-wapp').target = "_blank";
-    
-    document.getElementById('btn-mail').onclick = (e) => {
-        e.preventDefault();
-        console.log("Acción: Abrir modal Resend para:", contacto.email);
-    };
-
-    // 3. Trayectoria (Acceso directo a !trayectoria.experiencia)
-    const exp = tray.experiencia || [];
-    const trayEl = document.getElementById('m-trayectoria');
-    trayEl.innerHTML = exp.map(e => `
+    // 3. Trayectoria - Usando la llave exacta 'experiencia'
+    const exp = d["!trayectoria"].experiencia || [];
+    document.getElementById('m-trayectoria').innerHTML = exp.map(e => `
         <div style="margin-bottom:12px;">
-            <strong>${e.puesto}</strong><br>
-            <span>${e.empresa}</span>
+            <strong>${e.puesto || 'Puesto'}</strong><br>
+            <span>${e.empresa || 'Empresa'}</span>
         </div>
     `).join('');
 
-    // 4. Análisis y Evaluación (Acceso directo a las llaves)
+    // 4. Análisis Profesional, Habilidades y Evaluación
     const card = document.querySelector('.card');
     const divInfo = document.createElement('div');
+    
     divInfo.innerHTML = `
-        <hr>
+        <hr style="margin: 30px 0;">
         <h3>Análisis Profesional</h3>
-        <p>${analisis.analisis_general || "Sin datos."}</p>
+        <p>${d["!psicometrico"]["!analisis_final"] || "Sin análisis disponible."}</p>
+        
         <h3>Habilidades</h3>
-        <p>${(analisis.habilidades || []).join(', ')}</p>
-        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px;">
+        <p><strong>Blandas:</strong> ${(d["!habilidades"].blandas || []).join(', ')}</p>
+        <p><strong>Técnicas:</strong> ${(d["!habilidades"].tecnicas || []).join(', ')}</p>
+        
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-top: 20px;">
             <h3>Evaluación Irina Hire</h3>
-            <p style="font-size: 20px; font-weight: bold;">Score: ${irina.evaluacion?.score_general || 0}%</p>
-            <p>${irina.evaluacion?.conclusion || ""}</p>
+            <p style="font-size: 20px; font-weight: bold;">Score: ${d["!irina"].evaluacion?.score_general || 0}%</p>
+            <p>${d["!irina"].evaluacion?.conclusion || ""}</p>
         </div>
     `;
     card.appendChild(divInfo);
