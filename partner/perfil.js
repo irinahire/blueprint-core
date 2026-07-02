@@ -1,101 +1,78 @@
 /**
- * perfil.js - Renderizado Total y Detallado
- * Objetivo: Desplegar cada llave del objeto data sin omitir información.
+ * perfil.js - Renderizado directo en contenedores existentes
  */
 
 async function initPerfil() {
+    console.log("1. Iniciando consulta de datos...");
+    
+    // ... (Tu lógica de Supabase se mantiene igual)
     const params = new URLSearchParams(window.location.search);
-    const ownerId = params.get('owner_id');
-    const jobId = params.get('job_id');
-
     const { data, error } = await window.sbClient
         .from('habitat')
         .select('data')
-        .eq('owner_id', ownerId)
+        .eq('owner_id', params.get('owner_id'))
         .eq('metadata->>!tipo', '!postulacion')
-        .contains('metadata', { "!vinculos": { "oferta_id": [jobId] } })
+        .contains('metadata', { "!vinculos": { "oferta_id": [params.get('job_id')] } })
         .single();
 
-    if (error || !data) return;
+    if (error || !data) {
+        console.error("No se encontraron datos.");
+        return;
+    }
+
+    const d = data.data; // Aquí está todo tu objeto JSON
+    console.log("Desmenuzando objeto:", d);
     
-    // El objeto d es la fuente única de verdad
-    renderizarTodo(data.data);
+    renderizarDatos(d);
 }
 
-function renderizarTodo(d) {
-    const contenedor = document.getElementById('app-perfil');
-    contenedor.innerHTML = ""; // Limpiar antes de renderizar
+function renderizarDatos(d) {
+    // 1. Datos personales (llave !perfil)
+    document.getElementById('m-nombre').innerText = d["!perfil"]["perfil-base"].nombre;
+    document.getElementById('m-mail').innerText = "Email: " + d["!perfil"]["perfil-contacto"].email;
+    document.getElementById('m-tel').innerText = "Tel: " + d["!perfil"]["perfil-contacto"].telefono;
 
-    // 1. PERFIL BASE
-    const p = d["!perfil"];
-    contenedor.innerHTML += `
-        <section id="perfil-info">
-            <img src="${p["perfil-base"].foto_url}" style="width:150px; border-radius:50%;">
-            <h1>${p["perfil-base"].nombre}</h1>
-            <p>Email: ${p["perfil-contacto"].email}</p>
-            <p>Tel: ${p["perfil-contacto"].telefono}</p>
-            <a href="https://linkedin.com/in/${p["perfil-contacto"].linkedin}" target="_blank">LinkedIn</a>
-        </section>
+    // 2. LinkedIn (Corrección de URL)
+    const lnk = d["!perfil"]["perfil-contacto"].linkedin;
+    const btnLnk = document.createElement('a');
+    btnLnk.href = lnk.startsWith('http') ? lnk : 'https://www.linkedin.com/in/' + lnk;
+    btnLnk.target = "_blank";
+    btnLnk.innerText = "Ver LinkedIn";
+    // Si tu botón de LinkedIn ya existe, solo le cambiamos el href
+    const btnExistente = document.querySelector('a[href*="linkedin"]'); 
+    if(btnExistente) btnExistente.href = btnLnk.href;
+
+    // 3. Trayectoria (llave !trayectoria)
+    const trayEl = document.getElementById('m-trayectoria');
+    trayEl.innerHTML = `
+        <h4>Educación</h4>
+        ${d["!trayectoria"].educacion.map(e => `<p>${e.descripcion}</p>`).join('')}
+        <h4>Experiencia</h4>
+        ${d["!trayectoria"].experiencia.map(e => `<p>${e.descripcion}</p>`).join('')}
     `;
 
-    // 2. TRAYECTORIA
-    const t = d["!trayectoria"];
-    contenedor.innerHTML += `
-        <section id="trayectoria">
-            <h2>Trayectoria</h2>
-            <h3>Educación</h3>
-            ${t.educacion.map(e => `<p>${e.descripcion}</p>`).join('')}
-            <h3>Experiencia</h3>
-            ${t.experiencia.map(e => `<p>${e.descripcion}</p>`).join('')}
-        </section>
-    `;
-
-    // 3. HABILIDADES
-    const h = d["!habilidades"];
-    contenedor.innerHTML += `
-        <section id="habilidades">
-            <h2>Habilidades</h2>
-            <p><strong>Blandas:</strong> ${h.blandas.join(', ')}</p>
-            <p><strong>Técnicas:</strong> ${h.tecnicas.join(', ')}</p>
-        </section>
-    `;
-
-    // 4. ANÁLISIS PSICOMÉTRICO (Las 3 llaves)
+    // 4. Psicometría (llave !psicometrico) - ¡Aquí está todo lo que pediste!
     const psi = d["!psicometrico"];
-    contenedor.innerHTML += `
-        <section id="psicometrico">
-            <h2>Análisis Psicométrico</h2>
-            <p>${psi["!analisis_final"]}</p>
-            <img src="${psi.url_big_five_radar}" alt="Gráfico Radar">
-            <div>
-                <p><strong>Lógica:</strong> ${psi.LOG_ABS.analisis}</p>
-                <p><strong>Situacional:</strong> ${psi.SIT_EST.analisis}</p>
-                <p><strong>Big Five:</strong> ${psi.BIG_FIVE.analisis}</p>
-            </div>
-        </section>
+    const card = document.querySelector('.card');
+    const divPsi = document.createElement('div');
+    divPsi.innerHTML = `
+        <hr><h3>Análisis Psicométrico</h3>
+        <p>${psi["!analisis_final"]}</p>
+        <img src="${psi.url_big_five_radar}" style="width:100%">
+        <p><strong>Lógica:</strong> ${psi.LOG_ABS.analisis}</p>
+        <p><strong>Situacional:</strong> ${psi.SIT_EST.analisis}</p>
+        <p><strong>Big Five:</strong> ${psi.BIG_FIVE.analisis}</p>
     `;
+    card.appendChild(divPsi);
 
-    // 5. EVALUACIÓN IRINA
-    const irina = d["!irina"];
-    contenedor.innerHTML += `
-        <section id="evaluacion-irina">
-            <h2>Evaluación Irina Hire</h2>
-            <p>Score General: ${irina.evaluacion.score_general}%</p>
-            <p>${irina.evaluacion.resumen}</p>
-        </section>
+    // 5. Habilidades (llave !habilidades)
+    const divHab = document.createElement('div');
+    divHab.innerHTML = `
+        <h3>Habilidades</h3>
+        <p><strong>Blandas:</strong> ${d["!habilidades"].blandas.join(', ')}</p>
+        <p><strong>Técnicas:</strong> ${d["!habilidades"].tecnicas.join(', ')}</p>
     `;
-
-    // 6. ENTREVISTA VAPI
-    const ent = d["!entrevista"];
-    contenedor.innerHTML += `
-        <section id="entrevista">
-            <h2>Detalle de Entrevista</h2>
-            <p>Decision: ${ent.evaluacion.decision}</p>
-            <ul>
-                ${ent.evaluacion.evidencias.map(ev => `<li><strong>${ev.tipo}</strong>: ${ev.detalle} - ${ev.impacto}</li>`).join('')}
-            </ul>
-        </section>
-    `;
+    card.appendChild(divHab);
 }
 
 document.addEventListener('DOMContentLoaded', initPerfil);
