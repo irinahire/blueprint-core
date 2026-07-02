@@ -1,6 +1,6 @@
 /**
- * perfil.js - Renderizado Integral (Versión Completa)
- * Este script mapea el 100% de la estructura del objeto 'data' recibido de Supabase.
+ * perfil.js - Renderizado Integral Robusto
+ * Corregido: Verificación de elementos para evitar el error de "null"
  */
 
 async function initPerfil() {
@@ -9,7 +9,6 @@ async function initPerfil() {
     const ownerId = params.get('owner_id');
     const jobId = params.get('job_id');
 
-    // Consulta robusta: traemos la data del candidato según los parámetros
     const { data, error } = await window.sbClient
         .from('habitat')
         .select('data')
@@ -19,24 +18,22 @@ async function initPerfil() {
         .single();
 
     if (error || !data) {
-        console.error("Error crítico en la consulta:", error);
+        console.error("Error en la consulta:", error);
         return;
     }
 
-    console.log("Datos recibidos para renderizado total:", data.data);
     renderizarPerfilCompleto(data.data);
 }
 
 function renderizarPerfilCompleto(d) {
-    // --- 1. SECCIÓN: DATOS BÁSICOS, FOTO Y CONTACTO ---
+    // 1. DATOS BÁSICOS
     const base = d["!perfil"]["perfil-base"];
     const contacto = d["!perfil"]["perfil-contacto"];
 
-    document.getElementById('m-nombre').innerText = base.nombre || "Sin nombre";
-    document.getElementById('m-mail').innerText = "Email: " + (contacto.email || "N/A");
-    document.getElementById('m-tel').innerText = "Tel: " + (contacto.telefono || "N/A");
+    if(document.getElementById('m-nombre')) document.getElementById('m-nombre').innerText = base.nombre || "Sin nombre";
+    if(document.getElementById('m-mail')) document.getElementById('m-mail').innerText = "Email: " + (contacto.email || "N/A");
+    if(document.getElementById('m-tel')) document.getElementById('m-tel').innerText = "Tel: " + (contacto.telefono || "N/A");
     
-    // Asignación de foto con estilo
     const foto = document.getElementById('m-foto');
     if (foto) {
         foto.style.backgroundImage = `url('${base.foto_url}')`;
@@ -44,74 +41,60 @@ function renderizarPerfilCompleto(d) {
         foto.style.backgroundPosition = "center";
     }
 
-    // --- 2. SECCIÓN: BOTONES DE ACCIÓN (WhatsApp, Email, LinkedIn) ---
+    // 2. BOTONES (Con seguridad para evitar el error null)
     const btnWapp = document.getElementById('btn-wapp');
-    btnWapp.href = `https://wa.me/${contacto.telefono.replace(/\D/g, '')}`;
-    btnWapp.target = "_blank";
+    if (btnWapp) {
+        btnWapp.href = `https://wa.me/${contacto.telefono?.replace(/\D/g, '')}`;
+        btnWapp.target = "_blank";
+    }
 
     const btnEmail = document.getElementById('btn-email');
-    btnEmail.onclick = () => window.location.href = `mailto:${contacto.email}`;
-
-    // Re-creación del botón LinkedIn para asegurar que exista
-    let btnLnk = document.getElementById('btn-linkedin');
-    if (!btnLnk) {
-        btnLnk = document.createElement('a');
-        btnLnk.id = 'btn-linkedin';
-        btnLnk.className = "btn-action";
-        document.getElementById('m-acciones').appendChild(btnLnk);
+    if (btnEmail) {
+        btnEmail.onclick = () => window.location.href = `mailto:${contacto.email}`;
     }
-    btnLnk.href = contacto.linkedin.startsWith('http') ? contacto.linkedin : 'https://www.linkedin.com/in/' + contacto.linkedin;
-    btnLnk.target = "_blank";
-    btnLnk.innerText = "Ver LinkedIn";
 
-    // --- 3. SECCIÓN: TRAYECTORIA Y CV (Llaves !trayectoria y !documento) ---
+    // 3. TRAYECTORIA
     const trayEl = document.getElementById('m-trayectoria');
-    trayEl.innerHTML = `
-        <h3>Educación</h3>
-        ${d["!trayectoria"].educacion.map(e => `<p><strong>${e.descripcion}</strong></p>`).join('')}
-        <h3>Experiencia Laboral</h3>
-        ${d["!trayectoria"].experiencia.map(e => `<p>${e.descripcion}</p>`).join('')}
-        <br>
-        <a href="${d["!documento"].url}" target="_blank" class="btn-download">Descargar ${d["!documento"].nombre_archivo}</a>
-    `;
+    if (trayEl) {
+        trayEl.innerHTML = `
+            <h3>Educación</h3>
+            ${d["!trayectoria"].educacion.map(e => `<p><strong>${e.descripcion}</strong></p>`).join('')}
+            <h3>Experiencia Laboral</h3>
+            ${d["!trayectoria"].experiencia.map(e => `<p>${e.descripcion}</p>`).join('')}
+            <br>
+            <a href="${d["!documento"].url}" target="_blank" class="btn-download">Descargar ${d["!documento"].nombre_archivo}</a>
+        `;
+    }
 
-    // --- 4. SECCIÓN: ANÁLISIS INTEGRAL (Irina, Psicométrico, Entrevista) ---
+    // 4. ANÁLISIS COMPLETO (Renderizado en .card)
     const card = document.querySelector('.card');
-    const divInfo = document.createElement('div');
-    divInfo.id = "seccion-analisis-completo";
-    
-    divInfo.innerHTML = `
-        <hr style="margin: 30px 0;">
-        
-        <h3>Evaluación Irina Hire</h3>
-        <p><strong>Score General:</strong> ${d["!irina"].evaluacion.score_general}%</p>
-        <p>${d["!irina"].evaluacion.resumen}</p>
-        
-        <h3>Análisis Profesional (Puntos Clave)</h3>
-        <ul>${d["!analisis"].puntos.map(p => `<li>${p}</li>`).join('')}</ul>
+    if (card) {
+        const divInfo = document.createElement('div');
+        divInfo.innerHTML = `
+            <hr><h3>Evaluación Irina Hire</h3>
+            <p><strong>Score:</strong> ${d["!irina"].evaluacion.score_general}%</p>
+            <p>${d["!irina"].evaluacion.resumen}</p>
+            
+            <h3>Puntos Clave</h3>
+            <ul>${d["!analisis"].puntos.map(p => `<li>${p}</li>`).join('')}</ul>
 
-        <h3>Psicometría Detallada</h3>
-        <p>${d["!psicometrico"]["!analisis_final"]}</p>
-        <img src="${d["!psicometrico"].url_big_five_radar}" style="width:100%; max-width:500px; border:1px solid #ccc;">
-        <p><strong>Lógica y Abstracción:</strong> ${d["!psicometrico"].LOG_ABS.analisis}</p>
-        <p><strong>Situacional:</strong> ${d["!psicometrico"].SIT_EST.analisis}</p>
-        <p><strong>Big Five (Personalidad):</strong> ${d["!psicometrico"].BIG_FIVE.analisis}</p>
+            <h3>Psicometría Detallada</h3>
+            <p>${d["!psicometrico"]["!analisis_final"]}</p>
+            <img src="${d["!psicometrico"].url_big_five_radar}" style="width:100%; max-width:500px;">
+            <p><strong>Lógica:</strong> ${d["!psicometrico"].LOG_ABS.analisis}</p>
+            <p><strong>Situacional:</strong> ${d["!psicometrico"].SIT_EST.analisis}</p>
+            <p><strong>Big Five:</strong> ${d["!psicometrico"].BIG_FIVE.analisis}</p>
 
-        <h3>Análisis de Entrevista (Vapi)</h3>
-        <p><strong>Decisión:</strong> ${d["!entrevista"].evaluacion.decision}</p>
-        <p><strong>Evidencias:</strong> ${d["!entrevista"].evaluacion.evidencias.map(e => e.enunciado).join(', ')}</p>
+            <h3>Entrevista</h3>
+            <p><strong>Decisión:</strong> ${d["!entrevista"].evaluacion.decision}</p>
+            <p><strong>Evidencias:</strong> ${d["!entrevista"].evaluacion.evidencias.map(e => e.enunciado).join(', ')}</p>
 
-        <h3>Habilidades</h3>
-        <p><strong>Blandas:</strong> ${d["!habilidades"].blandas.join(', ')}</p>
-        <p><strong>Técnicas:</strong> ${d["!habilidades"].tecnicas.join(', ')}</p>
-    `;
-    
-    // Evitar duplicados si se llama a la función varias veces
-    const oldDiv = document.getElementById("seccion-analisis-completo");
-    if(oldDiv) oldDiv.remove();
-    card.appendChild(divInfo);
-    
-    console.log("Renderizado finalizado: Todos los campos cargados.");
+            <h3>Habilidades</h3>
+            <p><strong>Blandas:</strong> ${d["!habilidades"].blandas.join(', ')}</p>
+            <p><strong>Técnicas:</strong> ${d["!habilidades"].tecnicas.join(', ')}</p>
+        `;
+        card.appendChild(divInfo);
+    }
 }
 
 document.addEventListener('DOMContentLoaded', initPerfil);
