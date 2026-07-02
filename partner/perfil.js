@@ -1,16 +1,14 @@
 /**
  * perfil.js
- * Lógica para renderizado de Ficha Técnica Completa
+ * Lógica completa para renderizado de Ficha Técnica
  */
 
-// Función principal que se dispara al cargar el DOM
 async function initPerfil() {
     console.log("1. Iniciando perfil.js...");
 
-    // Esperar a que el cliente de Supabase esté listo (proporcionado por auth-module.js)
+    // Esperar cliente Supabase (inicializado en auth-module.js)
     let intentos = 0;
     while (!window.sbClient && intentos < 20) {
-        console.log("Esperando inicialización de Supabase...");
         await new Promise(r => setTimeout(r, 500));
         intentos++;
     }
@@ -25,14 +23,12 @@ async function initPerfil() {
     const ownerId = params.get('owner_id');
     const jobId = params.get('job_id');
 
-    console.log("2. Parámetros recibidos:", { ownerId, jobId });
-
     if (!ownerId || !jobId) {
-        document.getElementById('m-nombre').innerText = "Error: Faltan parámetros en la URL";
+        document.body.innerHTML = "<h1>Error: Faltan parámetros en la URL</h1>";
         return;
     }
 
-    // 3. Realizar la búsqueda quirúrgica en Supabase
+    // 3. Consulta de búsqueda precisa
     console.log("3. Ejecutando consulta en Supabase...");
     const { data, error } = await window.sbClient
         .from('habitat')
@@ -42,64 +38,75 @@ async function initPerfil() {
         .contains('metadata', { "!vinculos": { "oferta_id": [jobId] } })
         .single();
 
-    if (error) {
+    if (error || !data) {
         console.error("4. Error en la consulta:", error);
-        document.getElementById('m-nombre').innerText = "Error al cargar datos del candidato";
-        return;
-    }
-
-    if (!data) {
         document.getElementById('m-nombre').innerText = "Candidato no encontrado";
         return;
     }
 
-    console.log("5. Datos recibidos exitosamente:", data);
-
-    // 6. Renderizar los datos usando los IDs de tu perfil.html
-    renderizarPerfil(data);
+    console.log("5. Datos recibidos:", data);
+    renderizarPerfilCompleto(data);
 }
 
-function renderizarPerfil(row) {
-    console.log("6. Renderizando perfil...");
+function renderizarPerfilCompleto(row) {
+    console.log("6. Iniciando renderizado completo...");
     
-    // Parseo de los datos
+    // Parseo seguro de los datos
     const d = typeof row.data === 'string' ? JSON.parse(row.data) : row.data;
+    
+    // Extracción de objetos según la jerarquía del registro
     const perfil = d["!perfil"] || {};
     const base = perfil["perfil-base"] || {};
     const contacto = perfil["perfil-contacto"] || {};
     const trayectoria = d["!trayectoria"] || {};
+    const analisis = d["!analisis"] || {};
+    const irina = d["!irina"] || {};
 
-    // Mapeo a los IDs definidos en perfil.html
-    const nombreEl = document.getElementById('m-nombre');
-    const mailEl = document.getElementById('m-mail');
-    const telEl = document.getElementById('m-tel');
-    const fotoEl = document.getElementById('m-foto');
-    const trayEl = document.getElementById('m-trayectoria');
-    const btnWapp = document.getElementById('btn-wapp');
-    const btnMail = document.getElementById('btn-mail');
+    // A. Datos Básicos y Contacto (IDs existentes en tu HTML)
+    document.getElementById('m-nombre').innerText = base.nombre || "Sin nombre";
+    document.getElementById('m-mail').innerText = "Email: " + (contacto.email || "N/A");
+    document.getElementById('m-tel').innerText = "Tel: " + (contacto.telefono || "N/A");
+    document.getElementById('m-foto').style.backgroundImage = `url('${base.foto_url || ""}')`;
 
-    // Inyección de datos
-    if (nombreEl) nombreEl.innerText = base.nombre || "Sin nombre";
-    if (mailEl) mailEl.innerText = "Email: " + (contacto.email || "N/A");
-    if (telEl) telEl.innerText = "Tel: " + (contacto.telefono || "N/A");
-    
-    if (fotoEl) {
-        fotoEl.style.backgroundImage = `url('${base.foto_url || ""}')`;
+    // B. LinkedIn (tomado de perfil-contacto como pediste)
+    if (contacto.linkedin) {
+        const linkLnk = document.createElement('a');
+        linkLnk.href = contacto.linkedin;
+        linkLnk.innerText = "Ver LinkedIn";
+        linkLnk.className = "btn-action";
+        linkLnk.style.background = "#0e76a8";
+        linkLnk.style.color = "white";
+        document.getElementById('m-acciones').appendChild(linkLnk);
     }
 
-    if (trayEl) {
-        const exp = trayectoria.experiencia || [];
-        trayEl.innerHTML = exp.length > 0 
-            ? exp.map(e => `<p>• ${e.puesto} en ${e.empresa}</p>`).join('') 
-            : "Sin trayectoria registrada.";
-    }
+    // C. Botones Acción
+    document.getElementById('btn-wapp').href = `https://wa.me/${contacto.telefono?.replace(/\D/g, '') || ''}`;
+    document.getElementById('btn-mail').href = `mailto:${contacto.email || ''}`;
 
-    // Botones de acción
-    if (btnWapp) btnWapp.href = `https://wa.me/${contacto.telefono?.replace(/\D/g, '') || ''}`;
-    if (btnMail) btnMail.href = `mailto:${contacto.email || ''}`;
+    // D. Trayectoria
+    const exp = trayectoria.experiencia || [];
+    document.getElementById('m-trayectoria').innerHTML = exp.length > 0 
+        ? exp.map(e => `<div style="margin-bottom:10px;"><strong>${e.puesto || 'Puesto'}</strong><br>${e.empresa || 'Empresa'}</div>`).join('') 
+        : "Sin información.";
 
-    console.log("Renderizado completo.");
+    // E. Creación de secciones adicionales (Psicometría y Evaluación)
+    const card = document.querySelector('.card');
+    const divInfo = document.createElement('div');
+    divInfo.innerHTML = `
+        <hr style="margin: 30px 0;">
+        <h3>Análisis Profesional</h3>
+        <p>${analisis.resumen || "Sin análisis disponible."}</p>
+        <h3>Habilidades</h3>
+        <p>${(analisis.skills || []).join(', ') || "No especificadas"}</p>
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-top: 20px;">
+            <h3>Evaluación Irina Hire</h3>
+            <p style="font-size: 20px; font-weight: bold;">Score: ${irina.evaluacion?.score_general || 0}%</p>
+            <p>${irina.evaluacion?.conclusion || ""}</p>
+        </div>
+    `;
+    card.appendChild(divInfo);
+
+    console.log("Renderizado finalizado con éxito.");
 }
 
-// Inicialización
 document.addEventListener('DOMContentLoaded', initPerfil);
