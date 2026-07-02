@@ -2,15 +2,40 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Perfil de Candidato | Irina Hire</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <title>Ficha Técnica de Candidato | Irina Hire</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        .photo { width: 100%; height: 300px; background-size: cover; background-position: center; border-radius: 15px; border: 1px solid #ddd; margin-bottom: 20px; }
-        .btn-action { display: inline-block; padding: 10px 20px; margin-right: 10px; text-decoration: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: white !important; }
-        .card { background: white; width: 900px; margin: 20px auto; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .grid-perfil { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        .card { background: white; width: 1000px; margin: 20px auto; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); font-family: 'Inter', sans-serif; color: #333; }
+        
+        /* Fila Superior */
+        .ficha-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 20px; }
+        .header-izquierda h1 { margin: 0; font-size: 32px; font-weight: 800; color: #111; }
+        .header-izquierda .puesto-aplica { margin: 5px 0 0 0; font-size: 18px; color: #666; font-weight: 600; }
+        .header-derecha { text-align: right; }
+        .header-derecha .score-blic { font-size: 32px; font-weight: 800; color: #bc8abf; margin: 0; }
+        
+        /* Fila Media: Resumen vs Imágenes */
+        .ficha-medio { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; margin-bottom: 30px; }
+        .resumen-profesional h3 { margin-top: 0; }
+        .imagenes-contenedor { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
+        /* Ajuste de imágenes solicitado */
+        .photo-mini { width: 100%; height: 180px; background-size: cover; background-position: center; border-radius: 12px; border: 1px solid #ddd; }
+        .radar-mini { width: 100%; height: 180px; object-fit: contain; border-radius: 12px; border: 1px solid #ddd; background: #fdfdfd; }
+        
+        /* Bloques de Botones */
+        .grupo-botones { display: flex; gap: 12px; margin-bottom: 15px; flex-wrap: wrap; }
+        .grupo-descargas { display: flex; gap: 12px; margin-bottom: 35px; border-bottom: 2px solid #eee; padding-bottom: 25px; flex-wrap: wrap; }
+        
+        .btn-action { display: inline-flex; align-items: center; justify-content: center; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: white !important; min-width: 140px; font-size: 14px; text-align: center; }
+        .btn-download { display: inline-flex; align-items: center; justify-content: center; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: #555 !important; background: #f0f0f0; border: 1px solid #ccc; font-size: 14px; min-width: 180px; text-align: center; }
+        .btn-download:hover { background: #e5e5e5; }
+        
+        /* Contenido inferior */
+        .ficha-inferior { line-height: 1.6; }
+        .ficha-inferior h3 { border-left: 4px solid #bc8abf; padding-left: 10px; margin-top: 30px; color: #222; }
     </style>
 </head>
 <body>
@@ -18,26 +43,56 @@
         <div class="app-container">
             <div id="blue-header"></div>
             <div class="dashboard-content">
+                
                 <div class="card">
-                    <h1 id="m-nombre">Cargando...</h1>
-                    <div class="grid-perfil">
-                        <div>
-                            <h3>Datos de Contacto</h3>
-                            <p id="m-mail"></p>
-                            <p id="m-tel"></p>
-                            <div id="m-acciones">
-                                <a id="btn-wapp" class="btn-action" style="background:#25D366;">WhatsApp</a>
-                                <a id="btn-email" class="btn-action" style="background:#007bff;">Email</a>
-                                <a id="btn-linkedin" class="btn-action" style="background:#0077b5;">LinkedIn</a>
-                            </div>
-                            <h3>Trayectoria y Perfil</h3>
-                            <div id="m-trayectoria"></div>
+                    <!-- 1. Header de la Ficha -->
+                    <div class="ficha-header">
+                        <div class="header-izquierda">
+                            <h1 id="m-nombre">Cargando...</h1>
+                            <p id="m-puesto" class="puesto-aplica">Buscando postulación...</p>
                         </div>
-                        <div>
-                            <div id="m-foto" class="photo"></div>
+                        <div class="header-derecha">
+                            <p id="m-score-blic" class="score-blic">--</p>
                         </div>
                     </div>
+
+                    <!-- 2. Bloque Medio -->
+                    <div class="ficha-medio">
+                        <div class="resumen-profesional">
+                            <h3>Resumen del Perfil Profesional</h3>
+                            <p id="m-resumen">Cargando análisis de perfil ejecutivo...</p>
+                            <p id="m-mail" style="margin: 15px 0 5px 0; font-size: 14px; color: #555;"></p>
+                            <p id="m-tel" style="margin: 5px 0; font-size: 14px; font-weight: 600; color: #555;"></p>
+                        </div>
+                        <div class="imagenes-contenedor">
+                            <!-- Foto del candidato optimizada en tamaño -->
+                            <div id="m-foto" class="photo-mini"></div>
+                            <!-- Gráfico de Telaraña/Radar -->
+                            <img id="m-radar" class="radar-mini" alt="Radar Psicométrico" src="">
+                        </div>
+                    </div>
+
+                    <!-- 3. Bloques de Acciones (Botones) -->
+                    <!-- Fila 1: Contacto -->
+                    <div class="grupo-botones">
+                        <a id="btn-wapp" class="btn-action" style="background:#25D366;">WhatsApp</a>
+                        <a id="btn-email" class="btn-action" style="background:#007bff;">Email</a>
+                        <a id="btn-linkedin" class="btn-action" style="background:#0077b5;">LinkedIn</a>
+                    </div>
+                    
+                    <!-- Fila 2: Descargas -->
+                    <div class="grupo-descargas">
+                        <a id="btn-cv" class="btn-download">Descargar CV Original</a>
+                        <a id="btn-audio" class="btn-download">Descargar Audio Vapi</a>
+                        <a id="btn-pdf" class="btn-download" style="background: #bc8abf; color: white !important; border: none;">Descargar Resumen PDF</a>
+                    </div>
+
+                    <!-- 4. Resto del Detalle -->
+                    <div class="ficha-inferior">
+                        <div id="m-detalles-resto"></div>
+                    </div>
                 </div>
+
             </div>
         </div>
     </div>
