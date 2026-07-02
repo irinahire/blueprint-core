@@ -1,6 +1,5 @@
 /**
- * perfil.js - Renderizado Integral Robusto
- * Corregido: Verificación de elementos para evitar el error de "null"
+ * perfil.js - Renderizado Integral Completo
  */
 
 async function initPerfil() {
@@ -11,7 +10,7 @@ async function initPerfil() {
 
     const { data, error } = await window.sbClient
         .from('habitat')
-        .select('data')
+        .select('data, metadata')
         .eq('owner_id', ownerId)
         .eq('metadata->>!tipo', '!postulacion')
         .contains('metadata', { "!vinculos": { "oferta_id": [jobId] } })
@@ -22,78 +21,86 @@ async function initPerfil() {
         return;
     }
 
-    renderizarPerfilCompleto(data.data);
+    renderizarFichaTecnica(data.data, data.metadata);
 }
 
-function renderizarPerfilCompleto(d) {
+function renderizarFichaTecnica(d, meta) {
     // 1. DATOS BÁSICOS
     const base = d["!perfil"]["perfil-base"];
     const contacto = d["!perfil"]["perfil-contacto"];
 
-    if(document.getElementById('m-nombre')) document.getElementById('m-nombre').innerText = base.nombre || "Sin nombre";
-    if(document.getElementById('m-mail')) document.getElementById('m-mail').innerText = "Email: " + (contacto.email || "N/A");
-    if(document.getElementById('m-tel')) document.getElementById('m-tel').innerText = "Tel: " + (contacto.telefono || "N/A");
+    document.getElementById('m-nombre').innerText = base.nombre || "Sin nombre";
+    document.getElementById('m-puesto').innerText = "Postulación a: " + (meta?.["!vinculos"]?.nombre_oferta || "Oferta");
+    document.getElementById('m-score-blic').innerText = `Score: ${d["!irina"]?.evaluacion?.score_general || 0}%`;
     
-    const foto = document.getElementById('m-foto');
-    if (foto) {
-        foto.style.backgroundImage = `url('${base.foto_url}')`;
-        foto.style.backgroundSize = "cover";
-        foto.style.backgroundPosition = "center";
-    }
+    document.getElementById('m-resumen').innerText = d["!irina"]?.evaluacion?.resumen || "Sin resumen.";
+    document.getElementById('m-mail').innerText = "Email: " + (contacto.email || "N/A");
+    document.getElementById('m-tel').innerText = "Tel: " + (contacto.telefono || "N/A");
 
-    // 2. BOTONES (Con seguridad para evitar el error null)
+    // 2. FOTOS Y RADAR
+    const foto = document.getElementById('m-foto');
+    if (foto) foto.style.backgroundImage = `url('${base.foto_url}')`;
+
+    const radar = document.getElementById('m-radar');
+    if (radar) radar.style.backgroundImage = `url('${d["!psicometrico"]?.url_big_five_radar || ''}')`;
+
+    // 3. BOTONES DE CONTACTO
     const btnWapp = document.getElementById('btn-wapp');
-    if (btnWapp) {
-        btnWapp.href = `https://wa.me/${contacto.telefono?.replace(/\D/g, '')}`;
-        btnWapp.target = "_blank";
-    }
+    if (btnWapp) btnWapp.href = `https://wa.me/${contacto.telefono?.replace(/\D/g, '')}`;
 
     const btnEmail = document.getElementById('btn-email');
-    if (btnEmail) {
-        btnEmail.onclick = () => window.location.href = `mailto:${contacto.email}`;
-    }
+    if (btnEmail) btnEmail.onclick = () => window.location.href = `mailto:${contacto.email}`;
 
-    // 3. TRAYECTORIA
+    const btnLinkedIn = document.getElementById('btn-linkedin');
+    if (btnLinkedIn) btnLinkedIn.href = contacto.linkedin?.startsWith('http') ? contacto.linkedin : 'https://www.linkedin.com/in/' + contacto.linkedin;
+
+    // 4. BOTONES DE DESCARGA
+    const btnCv = document.getElementById('btn-cv');
+    if (btnCv) btnCv.href = d["!documento"]?.url || "#";
+
+    const btnAudio = document.getElementById('btn-audio');
+    if (btnAudio) btnAudio.href = d["!entrevista"]?.url_audio || "#";
+
+    const btnPdf = document.getElementById('btn-pdf');
+    if (btnPdf) btnPdf.onclick = () => window.print();
+
+    // 5. SECCIONES DE DETALLE (Inyección completa)
     const trayEl = document.getElementById('m-trayectoria');
     if (trayEl) {
         trayEl.innerHTML = `
-            <h3>Educación</h3>
-            ${d["!trayectoria"].educacion.map(e => `<p><strong>${e.descripcion}</strong></p>`).join('')}
-            <h3>Experiencia Laboral</h3>
-            ${d["!trayectoria"].experiencia.map(e => `<p>${e.descripcion}</p>`).join('')}
-            <br>
-            <a href="${d["!documento"].url}" target="_blank" class="btn-download">Descargar ${d["!documento"].nombre_archivo}</a>
+            <p><strong>Educación:</strong> ${d["!trayectoria"].educacion.map(e => e.descripcion).join(', ')}</p>
+            <p><strong>Experiencia:</strong> ${d["!trayectoria"].experiencia.map(e => e.descripcion).join('<br>')}</p>
         `;
     }
 
-    // 4. ANÁLISIS COMPLETO (Renderizado en .card)
-    const card = document.querySelector('.card');
-    if (card) {
-        const divInfo = document.createElement('div');
-        divInfo.innerHTML = `
-            <hr><h3>Evaluación Irina Hire</h3>
-            <p><strong>Score:</strong> ${d["!irina"].evaluacion.score_general}%</p>
-            <p>${d["!irina"].evaluacion.resumen}</p>
-            
-            <h3>Puntos Clave</h3>
-            <ul>${d["!analisis"].puntos.map(p => `<li>${p}</li>`).join('')}</ul>
+    const analEl = document.getElementById('m-analisis');
+    if (analEl) {
+        analEl.innerHTML = `<ul>${d["!analisis"].puntos.map(p => `<li>${p}</li>`).join('')}</ul>`;
+    }
 
-            <h3>Psicometría Detallada</h3>
-            <p>${d["!psicometrico"]["!analisis_final"]}</p>
-            <img src="${d["!psicometrico"].url_big_five_radar}" style="width:100%; max-width:500px;">
-            <p><strong>Lógica:</strong> ${d["!psicometrico"].LOG_ABS.analisis}</p>
-            <p><strong>Situacional:</strong> ${d["!psicometrico"].SIT_EST.analisis}</p>
-            <p><strong>Big Five:</strong> ${d["!psicometrico"].BIG_FIVE.analisis}</p>
+    const psicEl = document.getElementById('m-psicometria');
+    if (psicEl) {
+        psicEl.innerHTML = `
+            <p>${d["!psicometrico"]?.["!analisis_final"] || ""}</p>
+            <p><strong>Lógica:</strong> ${d["!psicometrico"]?.LOG_ABS?.analisis || ""}</p>
+            <p><strong>Situacional:</strong> ${d["!psicometrico"]?.SIT_EST?.analisis || ""}</p>
+        `;
+    }
 
-            <h3>Entrevista</h3>
-            <p><strong>Decisión:</strong> ${d["!entrevista"].evaluacion.decision}</p>
-            <p><strong>Evidencias:</strong> ${d["!entrevista"].evaluacion.evidencias.map(e => e.enunciado).join(', ')}</p>
+    const entrEl = document.getElementById('m-entrevista');
+    if (entrEl) {
+        entrEl.innerHTML = `
+            <p><strong>Decisión:</strong> ${d["!entrevista"]?.evaluacion?.decision || "N/A"}</p>
+            <p><strong>Evidencias:</strong> ${d["!entrevista"]?.evaluacion?.evidencias?.map(e => e.enunciado).join(', ') || ""}</p>
+        `;
+    }
 
-            <h3>Habilidades</h3>
+    const habEl = document.getElementById('m-habilidades');
+    if (habEl) {
+        habEl.innerHTML = `
             <p><strong>Blandas:</strong> ${d["!habilidades"].blandas.join(', ')}</p>
             <p><strong>Técnicas:</strong> ${d["!habilidades"].tecnicas.join(', ')}</p>
         `;
-        card.appendChild(divInfo);
     }
 }
 
