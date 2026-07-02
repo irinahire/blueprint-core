@@ -1,17 +1,9 @@
 /**
- * perfil.js - Renderizado con mapeo de llaves exacto
+ * perfil.js - Renderizado Total y Detallado
+ * Objetivo: Desplegar cada llave del objeto data sin omitir información.
  */
 
 async function initPerfil() {
-    console.log("1. Iniciando perfil.js...");
-    
-    let intentos = 0;
-    while (!window.sbClient && intentos < 20) {
-        await new Promise(r => setTimeout(r, 500));
-        intentos++;
-    }
-    if (!window.sbClient) return;
-
     const params = new URLSearchParams(window.location.search);
     const ownerId = params.get('owner_id');
     const jobId = params.get('job_id');
@@ -25,64 +17,85 @@ async function initPerfil() {
         .single();
 
     if (error || !data) return;
-
-    // Usamos el objeto directo, ya está parseado por Supabase
-    renderizarPerfilCompleto(data.data);
+    
+    // El objeto d es la fuente única de verdad
+    renderizarTodo(data.data);
 }
 
-function renderizarPerfilCompleto(d) {
-    console.log("Renderizando con llaves validadas:", d);
+function renderizarTodo(d) {
+    const contenedor = document.getElementById('app-perfil');
+    contenedor.innerHTML = ""; // Limpiar antes de renderizar
 
-    // 1. Datos Básicos
-    const base = d["!perfil"]["perfil-base"];
-    const contacto = d["!perfil"]["perfil-contacto"];
-    
-    document.getElementById('m-nombre').innerText = base.nombre || "Sin nombre";
-    document.getElementById('m-mail').innerText = "Email: " + (contacto.email || "N/A");
-    document.getElementById('m-tel').innerText = "Tel: " + (contacto.telefono || "N/A");
-    document.getElementById('m-foto').style.backgroundImage = `url('${base.foto_url || ""}')`;
-
-    // 2. LinkedIn (Con protocolo)
-    if (contacto.linkedin) {
-        const btnLnk = document.createElement('a');
-        btnLnk.href = contacto.linkedin.startsWith('http') ? contacto.linkedin : 'https://' + contacto.linkedin;
-        btnLnk.target = "_blank";
-        btnLnk.innerText = "Ver LinkedIn";
-        btnLnk.className = "btn-action";
-        btnLnk.style.background = "#0e76a8";
-        btnLnk.style.color = "white";
-        document.getElementById('m-acciones').appendChild(btnLnk);
-    }
-
-    // 3. Trayectoria - Usando la llave exacta 'experiencia'
-    const exp = d["!trayectoria"].experiencia || [];
-    document.getElementById('m-trayectoria').innerHTML = exp.map(e => `
-        <div style="margin-bottom:12px;">
-            <strong>${e.puesto || 'Puesto'}</strong><br>
-            <span>${e.empresa || 'Empresa'}</span>
-        </div>
-    `).join('');
-
-    // 4. Análisis Profesional, Habilidades y Evaluación
-    const card = document.querySelector('.card');
-    const divInfo = document.createElement('div');
-    
-    divInfo.innerHTML = `
-        <hr style="margin: 30px 0;">
-        <h3>Análisis Profesional</h3>
-        <p>${d["!psicometrico"]["!analisis_final"] || "Sin análisis disponible."}</p>
-        
-        <h3>Habilidades</h3>
-        <p><strong>Blandas:</strong> ${(d["!habilidades"].blandas || []).join(', ')}</p>
-        <p><strong>Técnicas:</strong> ${(d["!habilidades"].tecnicas || []).join(', ')}</p>
-        
-        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-top: 20px;">
-            <h3>Evaluación Irina Hire</h3>
-            <p style="font-size: 20px; font-weight: bold;">Score: ${d["!irina"].evaluacion?.score_general || 0}%</p>
-            <p>${d["!irina"].evaluacion?.conclusion || ""}</p>
-        </div>
+    // 1. PERFIL BASE
+    const p = d["!perfil"];
+    contenedor.innerHTML += `
+        <section id="perfil-info">
+            <img src="${p["perfil-base"].foto_url}" style="width:150px; border-radius:50%;">
+            <h1>${p["perfil-base"].nombre}</h1>
+            <p>Email: ${p["perfil-contacto"].email}</p>
+            <p>Tel: ${p["perfil-contacto"].telefono}</p>
+            <a href="https://linkedin.com/in/${p["perfil-contacto"].linkedin}" target="_blank">LinkedIn</a>
+        </section>
     `;
-    card.appendChild(divInfo);
+
+    // 2. TRAYECTORIA
+    const t = d["!trayectoria"];
+    contenedor.innerHTML += `
+        <section id="trayectoria">
+            <h2>Trayectoria</h2>
+            <h3>Educación</h3>
+            ${t.educacion.map(e => `<p>${e.descripcion}</p>`).join('')}
+            <h3>Experiencia</h3>
+            ${t.experiencia.map(e => `<p>${e.descripcion}</p>`).join('')}
+        </section>
+    `;
+
+    // 3. HABILIDADES
+    const h = d["!habilidades"];
+    contenedor.innerHTML += `
+        <section id="habilidades">
+            <h2>Habilidades</h2>
+            <p><strong>Blandas:</strong> ${h.blandas.join(', ')}</p>
+            <p><strong>Técnicas:</strong> ${h.tecnicas.join(', ')}</p>
+        </section>
+    `;
+
+    // 4. ANÁLISIS PSICOMÉTRICO (Las 3 llaves)
+    const psi = d["!psicometrico"];
+    contenedor.innerHTML += `
+        <section id="psicometrico">
+            <h2>Análisis Psicométrico</h2>
+            <p>${psi["!analisis_final"]}</p>
+            <img src="${psi.url_big_five_radar}" alt="Gráfico Radar">
+            <div>
+                <p><strong>Lógica:</strong> ${psi.LOG_ABS.analisis}</p>
+                <p><strong>Situacional:</strong> ${psi.SIT_EST.analisis}</p>
+                <p><strong>Big Five:</strong> ${psi.BIG_FIVE.analisis}</p>
+            </div>
+        </section>
+    `;
+
+    // 5. EVALUACIÓN IRINA
+    const irina = d["!irina"];
+    contenedor.innerHTML += `
+        <section id="evaluacion-irina">
+            <h2>Evaluación Irina Hire</h2>
+            <p>Score General: ${irina.evaluacion.score_general}%</p>
+            <p>${irina.evaluacion.resumen}</p>
+        </section>
+    `;
+
+    // 6. ENTREVISTA VAPI
+    const ent = d["!entrevista"];
+    contenedor.innerHTML += `
+        <section id="entrevista">
+            <h2>Detalle de Entrevista</h2>
+            <p>Decision: ${ent.evaluacion.decision}</p>
+            <ul>
+                ${ent.evaluacion.evidencias.map(ev => `<li><strong>${ev.tipo}</strong>: ${ev.detalle} - ${ev.impacto}</li>`).join('')}
+            </ul>
+        </section>
+    `;
 }
 
 document.addEventListener('DOMContentLoaded', initPerfil);
