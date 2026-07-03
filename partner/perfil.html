@@ -7,11 +7,13 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-.card { background: white; width: 1000px; margin: 20px auto; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); font-family: 'Inter', sans-serif; color: #333; }
-.ficha-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 20px; }
-.header-izquierda h1 { margin: 0; font-size: 32px; font-weight: 800; color: #111; }
-.header-derecha { font-size: 30px !important; font-weight: 800 !important; color: #bc8abf !important; }
-.puesto-aplica { margin: 5px 0 0 0; font-size: 18px; color: #666; font-weight: 600; }
+        .card { background: white; width: 1000px; margin: 20px auto; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); font-family: 'Inter', sans-serif; color: #333; }
+        .ficha-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 20px; }
+        .header-izquierda h1 { margin: 0; font-size: 32px; font-weight: 800; color: #111; }
+        .header-derecha { font-size: 30px !important; font-weight: 800 !important; color: #bc8abf !important; }
+        .puesto-aplica { margin: 5px 0 0 0; font-size: 18px; color: #666; font-weight: 600; }
+        .contenedor-botones { display: flex; gap: 10px; margin-bottom: 35px; border-bottom: 2px solid #eee; padding-bottom: 25px; flex-wrap: wrap; }
+        .btn-uniforme { display: inline-flex; align-items: center; justify-content: center; flex: 1; padding: 12px 10px; text-decoration: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: white !important; min-width: 140px; box-sizing: border-box; }
         
         .ficha-medio { display: grid; grid-template-columns: 1fr auto; gap: 40px; margin-bottom: 30px; align-items: start; }
         .bloque-visual { display: flex; gap: 20px; justify-content: flex-end; }
@@ -60,17 +62,15 @@
                         </div>
                     </div>
 
-                    <div class="grupo-botones">
-                        <a id="btn-wapp" class="btn-action" style="background:#25D366;" target="_blank">WhatsApp</a>
-                        <a id="btn-email" class="btn-action" style="background:#007bff;">Email</a>
-                        <a id="btn-linkedin" class="btn-action" style="background:#0077b5;" target="_blank">LinkedIn</a>
-                    </div>
-                    
-                    <div class="grupo-descargas">
-                        <a id="btn-cv" class="btn-download" target="_blank">Descargar CV</a>
-                        <a id="btn-audio" class="btn-download" target="_blank">Descargar Audio</a>
-                        <a id="btn-pdf" class="btn-download" style="background: #bc8abf; color: white;">Descargar PDF</a>
-                    </div>
+<!-- Reemplaza el grupo de botones y el de descargas por este bloque único -->
+<div class="contenedor-botones">
+    <a id="btn-wapp" class="btn-uniforme" style="background:#25D366;" target="_blank">WhatsApp</a>
+    <a id="btn-email" class="btn-uniforme" style="background:#007bff;">Email</a>
+    <a id="btn-linkedin" class="btn-uniforme" style="background:#0077b5;" target="_blank">LinkedIn</a>
+    <a id="btn-cv" class="btn-uniforme" style="background:#f0f0f0; color:#555 !important; border:1px solid #ccc;">CV</a>
+    <a id="btn-audio" class="btn-uniforme" style="background:#f0f0f0; color:#555 !important; border:1px solid #ccc;">Audio</a>
+    <a id="btn-pdf" class="btn-uniforme" style="background:#bc8abf;">PDF</a>
+</div>
 
                     <div class="seccion-texto">
                         <h3>Detalle de Oferta Laboral</h3>
