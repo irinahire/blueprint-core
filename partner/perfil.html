@@ -7,6 +7,30 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
+
+        .btn-uniforme { 
+    display: inline-flex; 
+    align-items: center; 
+    justify-content: center; 
+    flex: 1; 
+    padding: 12px 10px; 
+    text-decoration: none; 
+    border-radius: 8px; 
+    font-weight: bold; 
+    cursor: pointer; 
+    color: white !important; 
+    min-width: 140px; 
+    box-sizing: border-box;
+    /* Degradado exacto solicitado */
+    background: linear-gradient(90deg, #bc8abf 0%, #96e8da 100%); 
+    border: none;
+    transition: opacity 0.3s ease;
+}
+
+.btn-uniforme:hover {
+    opacity: 0.9;
+}
+        
         .card { background: white; width: 1000px; margin: 20px auto; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); font-family: 'Inter', sans-serif; color: #333; }
         .ficha-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 20px; }
         .header-izquierda h1 { margin: 0; font-size: 32px; font-weight: 800; color: #111; }
