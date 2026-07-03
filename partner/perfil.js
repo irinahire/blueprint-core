@@ -1,32 +1,40 @@
 /**
- * perfil.js - Renderizado Integral con consulta quirúrgica
+ * perfil.js - Renderizado Integral Completo
  */
 
 async function initPerfil() {
-    console.log("1. Iniciando carga quirúrgica de perfil y oferta...");
+    console.log("1. Iniciando carga completa de perfil...");
     const params = new URLSearchParams(window.location.search);
     const ownerId = params.get('owner_id');
     const jobId = params.get('job_id');
 
-    // Consulta: Traemos la postulación exacta y la oferta ligada
-    const { data, error } = await window.sbClient
+    // Consulta 1: Traer la postulación exacta (Sigue la lógica que ya funcionaba)
+    // Buscamos por owner, tipo y el ID de la oferta dentro del array de vínculos
+    const { data: postulacionData, error: errorPost } = await window.sbClient
         .from('habitat')
         .select('id, data, metadata')
-        .or(`and(owner_id.eq.${ownerId},metadata->>!tipo.eq.!postulacion,data->!vinculos->oferta_id.cs.{${jobId}}),id.eq.${jobId}`);
+        .eq('owner_id', ownerId)
+        .eq('metadata->>!tipo', '!postulacion')
+        .contains('metadata', { "!vinculos": { "oferta_id": [jobId] } });
 
-    if (error || !data) {
-        console.error("Error en la consulta:", error);
+    if (errorPost || !postulacionData || postulacionData.length === 0) {
+        console.error("Error crítico: No se localizó la postulación única.", errorPost);
         return;
     }
 
-    const postulacion = data.find(item => item.metadata["!tipo"] === "!postulacion");
-    const oferta = data.find(item => item.id === jobId);
+    // Consulta 2: Traer la oferta laboral por ID (Unívoco)
+    const { data: ofertaData, error: errorOferta } = await window.sbClient
+        .from('habitat')
+        .select('id, data, metadata')
+        .eq('id', jobId)
+        .single();
 
-    if (postulacion) {
-        renderizarFichaTecnica(postulacion.data, oferta?.data);
-    } else {
-        console.error("No se encontró la postulación específica.");
+    if (errorOferta) {
+        console.error("Error al traer la oferta:", errorOferta);
     }
+
+    console.log("Datos recuperados quirúrgicamente.");
+    renderizarFichaTecnica(postulacionData[0].data, ofertaData?.data);
 }
 
 function renderizarFichaTecnica(d, ofertaData) {
@@ -34,7 +42,7 @@ function renderizarFichaTecnica(d, ofertaData) {
     const contacto = d["!perfil"]["perfil-contacto"];
 
     // 1. HEADER Y BLIC ID
-    // Buscamos la llave blic_id; si no existe, usamos el valor de error acordado
+    // Si no existe la llave, inyectamos BLIC#ERROR para identificarlo visualmente
     const blicId = d.blic_id || "BLIC#ERROR";
     document.getElementById('m-blic').innerText = blicId;
     
@@ -43,11 +51,11 @@ function renderizarFichaTecnica(d, ofertaData) {
     document.getElementById('m-score-blic').innerText = `Score: ${d["!irina"]?.evaluacion?.score_general || 0}%`;
     
     // 2. RESUMEN Y CONTACTO
-    document.getElementById('m-resumen').innerText = d["!irina"]?.evaluacion?.resumen || "Sin resumen.";
+    document.getElementById('m-resumen').innerText = d["!irina"]?.evaluacion?.resumen || "Sin resumen disponible.";
     document.getElementById('m-mail').innerText = "Email: " + (contacto.email || "N/A");
     document.getElementById('m-tel').innerText = "Tel: " + (contacto.telefono || "N/A");
 
-    // 3. IMÁGENES (250px definidos en CSS)
+    // 3. FOTO Y RADAR (250px según CSS)
     const foto = document.getElementById('m-foto');
     if (foto) foto.style.backgroundImage = `url('${base.foto_url}')`;
 
@@ -65,14 +73,17 @@ function renderizarFichaTecnica(d, ofertaData) {
         `;
     }
 
-    // 5. BOTONES Y SECCIONES (Logs mantenidos para troubleshooting)
+    // 5. BOTONES DE ACCIÓN
     document.getElementById('btn-wapp').href = `https://wa.me/${contacto.telefono?.replace(/\D/g, '')}`;
     document.getElementById('btn-email').onclick = () => window.location.href = `mailto:${contacto.email}`;
     document.getElementById('btn-linkedin').href = contacto.linkedin?.startsWith('http') ? contacto.linkedin : 'https://www.linkedin.com/in/' + contacto.linkedin;
+    
+    // 6. DESCARGAS
     document.getElementById('btn-cv').href = d["!documento"]?.url || "#";
     document.getElementById('btn-audio').href = d["!entrevista"]?.url_audio || "#";
     document.getElementById('btn-pdf').onclick = () => window.print();
 
+    // 7. SECCIONES DE CONTENIDO
     document.getElementById('m-trayectoria').innerHTML = `<p><strong>Educación:</strong> ${d["!trayectoria"].educacion.map(e => e.descripcion).join(', ')}</p><p><strong>Experiencia:</strong> ${d["!trayectoria"].experiencia.map(e => e.descripcion).join('<br>')}</p>`;
     document.getElementById('m-analisis').innerHTML = `<ul>${d["!analisis"].puntos.map(p => `<li>${p}</li>`).join('')}</ul>`;
     document.getElementById('m-psicometria').innerHTML = `<p>${d["!psicometrico"]?.["!analisis_final"] || ""}</p><p><strong>Lógica:</strong> ${d["!psicometrico"]?.LOG_ABS?.analisis || ""}</p><p><strong>Situacional:</strong> ${d["!psicometrico"]?.SIT_EST?.analisis || ""}</p>`;
