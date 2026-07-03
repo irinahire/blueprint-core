@@ -8,8 +8,7 @@ async function initPerfil() {
     const ownerId = params.get('owner_id');
     const jobId = params.get('job_id');
 
-    // Consulta 1: Traer la postulación exacta (Sigue la lógica que ya funcionaba)
-    // Buscamos por owner, tipo y el ID de la oferta dentro del array de vínculos
+    // Consulta 1: Traer la postulación exacta
     const { data: postulacionData, error: errorPost } = await window.sbClient
         .from('habitat')
         .select('id, data, metadata')
@@ -22,7 +21,7 @@ async function initPerfil() {
         return;
     }
 
-    // Consulta 2: Traer la oferta laboral por ID (Unívoco)
+    // Consulta 2: Traer la oferta laboral por ID
     const { data: ofertaData, error: errorOferta } = await window.sbClient
         .from('habitat')
         .select('id, data, metadata')
@@ -41,21 +40,20 @@ function renderizarFichaTecnica(d, ofertaData) {
     const base = d["!perfil"]["perfil-base"];
     const contacto = d["!perfil"]["perfil-contacto"];
 
-    // 1. HEADER Y BLIC ID
-    // Si no existe la llave, inyectamos BLIC#ERROR para identificarlo visualmente
-    const blicId = d.blic_id || "BLIC#ERROR";
-    document.getElementById('m-blic').innerText = blicId;
+    // 1. HEADER (Limpio y con tamaños unificados)
+    // El tamaño y estilo se controlarán desde el HTML para mantener consistencia
+    document.getElementById('m-blic').innerText = d.blic_id || "BLIC#ERROR";
+    document.getElementById('m-score-blic').innerText = `SCORE: ${d["!irina"]?.evaluacion?.score_general || 0}%`;
     
     document.getElementById('m-nombre').innerText = base.nombre || "Sin nombre";
-    document.getElementById('m-puesto').innerText = ofertaData?.titulo || "Cargando puesto...";
-    document.getElementById('m-score-blic').innerText = `Score: ${d["!irina"]?.evaluacion?.score_general || 0}%`;
+    document.getElementById('m-puesto').innerText = ofertaData?.titulo || "Oferta laboral";
     
     // 2. RESUMEN Y CONTACTO
     document.getElementById('m-resumen').innerText = d["!irina"]?.evaluacion?.resumen || "Sin resumen disponible.";
     document.getElementById('m-mail').innerText = "Email: " + (contacto.email || "N/A");
     document.getElementById('m-tel').innerText = "Tel: " + (contacto.telefono || "N/A");
 
-    // 3. FOTO Y RADAR (250px según CSS)
+    // 3. FOTO Y RADAR
     const foto = document.getElementById('m-foto');
     if (foto) foto.style.backgroundImage = `url('${base.foto_url}')`;
 
