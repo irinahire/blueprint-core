@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
 
-        .btn-uniforme { 
+  .btn-uniforme { 
     display: inline-flex; 
     align-items: center; 
     justify-content: center; 
@@ -21,14 +21,34 @@
     color: white !important; 
     min-width: 140px; 
     box-sizing: border-box;
-    /* Degradado exacto solicitado */
-    background: linear-gradient(90deg, #bc8abf 0%, #96e8da 100%); 
+    background: linear-gradient(45deg, #bc8abf 0%, #96e8da 100%); 
     border: none;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease;
+}
+
+.btn-uniforme::before {
+    content: '';
+    position: absolute;
+    top: -2px; left: -2px; right: -2px; bottom: -2px;
+    border-radius: 10px;
+    background: linear-gradient(45deg, #96e8da, #bc8abf, #96e8da, #bc8abf);
+    background-size: 400%;
+    z-index: -1;
+    opacity: 0;
     transition: opacity 0.3s ease;
 }
 
-.btn-uniforme:hover {
-    opacity: 0.9;
+.btn-uniforme:hover::before {
+    opacity: 1;
+    animation: neon-border 10s linear infinite;
+}
+
+@keyframes neon-border {
+    0% { background-position: 0 0; }
+    50% { background-position: 400% 0; }
+    100% { background-position: 0 0; }
 }
         
         .card { background: white; width: 1000px; margin: 20px auto; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); font-family: 'Inter', sans-serif; color: #333; }
