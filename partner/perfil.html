@@ -24,8 +24,7 @@
     background: linear-gradient(45deg, #bc8abf 0%, #96e8da 100%); 
     border: none;
     position: relative;
-    overflow: hidden;
-    transition: transform 0.2s ease;
+    z-index: 1;
 }
 
 .btn-uniforme::before {
@@ -38,17 +37,18 @@
     z-index: -1;
     opacity: 0;
     transition: opacity 0.3s ease;
+    pointer-events: none; /* Esto permite que el clic pase a través del efecto hacia el botón */
 }
 
 .btn-uniforme:hover::before {
     opacity: 1;
-    animation: neon-border 10s linear infinite;
+    animation: neon-border 3s linear infinite;
 }
 
 @keyframes neon-border {
-    0% { background-position: 0 0; }
-    50% { background-position: 400% 0; }
-    100% { background-position: 0 0; }
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
         
         .card { background: white; width: 1000px; margin: 20px auto; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); font-family: 'Inter', sans-serif; color: #333; }
