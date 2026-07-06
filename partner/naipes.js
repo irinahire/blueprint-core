@@ -50,6 +50,7 @@ async function cargarDatos() {
         const card = document.createElement('div');
         card.className = "blic-card " + clase;
         card.dataset.oferta = jobId;
+        card.dataset.score = score; // Guardamos el score oculto en el HTML para poder ordenarlo
         
         // Navegación a perfil.html pasando parámetros para la consulta de perfil.js
         card.onclick = () => {
