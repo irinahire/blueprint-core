@@ -61,28 +61,29 @@ const MenuPartner = {
             </div>
 
 <div id="modal-filtros" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
-                <div class="modal-content" style="background:white; padding:30px; width:600px; position:relative; border: 2px solid #bc8abf; border-radius:15px;">
+                <div class="modal-content" style="background:white; padding:30px; width:600px; position:relative; border: 2px solid #bc8abf; border-radius:15px; display: flex; flex-direction: column; gap: 15px;">
                     <span style="position:absolute; top:15px; right:20px; cursor:pointer; font-size:24px; color:#bc8abf;" 
                           onclick="document.getElementById('modal-filtros').style.display='none'">×</span>
                     
-                    <h3 style="color:#bc8abf; margin-top:0; text-align:center;">Seleccionar ofertas</h3>
+                    <h3 style="color:#bc8abf; margin: 0; text-align: center;">Seleccionar ofertas</h3>
                     
-                    <select id="filtro-ofertas" multiple style="width:100%; height:200px; border:2px solid #bc8abf; padding:10px; margin-bottom:15px;">
+                    <select id="filtro-ofertas" multiple style="width:100%; height:200px; border:2px solid #bc8abf; padding:10px; border-radius: 5px;">
                         ${ofertas.map(o => `<option value="${o.id}">${o.titulo}</option>`).join('')}
                     </select>
                     
-                    <div style="display: flex; gap: 10px;">
-                        <button style="flex:1; background:#bc8abf; color:white; border:none; padding:12px; cursor:pointer; border-radius:5px;" 
+                    <div style="display: flex; gap: 10px; justify-content: center;">
+                        <button style="width: 48%; background:#bc8abf; color:white; border:none; padding:10px 0; cursor:pointer; border-radius:5px; font-weight: bold;" 
                                 onclick="MenuPartner.aplicarFiltros(); document.getElementById('modal-filtros').style.display='none'">
                             Aplicar Filtros
                         </button>
-                        <button style="flex:1; background:#f0f0f0; color:#666; border:none; padding:12px; cursor:pointer; border-radius:5px;" 
+                        <button style="width: 48%; background:#f0f0f0; color:#666; border:none; padding:10px 0; cursor:pointer; border-radius:5px; font-weight: bold;" 
                                 onclick="MenuPartner.limpiarFiltros(); document.getElementById('modal-filtros').style.display='none'">
                             Limpiar Filtros
                         </button>
                     </div>
                 </div>
             </div>
+            
             `;
     },
 
