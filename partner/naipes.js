@@ -36,6 +36,7 @@ async function cargarDatos() {
         // Extracción exacta de IDs
         const ownerId = row.owner_id; // Columna directa raíz
         const jobId = metadata?.["!vinculos"]?.oferta_id?.[0] || "sin-oferta";
+        const fechaCreacion = row.created_at || '1970-01-01'; // Fecha para ordenamiento
         
         // Obtención de la URL del radar
         const radarUrl = d?.["!psicometrico"]?.url_big_five_radar || "";
@@ -50,7 +51,8 @@ async function cargarDatos() {
         const card = document.createElement('div');
         card.className = "blic-card " + clase;
         card.dataset.oferta = jobId;
-        card.dataset.score = score; // Guardamos el score oculto en el HTML para poder ordenarlo
+        card.dataset.score = score; // Guardamos para ordenar
+        card.dataset.fecha = fechaCreacion; // Guardamos para ordenar
         
         // Navegación a perfil.html pasando parámetros para la consulta de perfil.js
         card.onclick = () => {
