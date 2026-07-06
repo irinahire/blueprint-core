@@ -40,7 +40,7 @@ const MenuPartner = {
     // Renderizado del HTML con la estructura solicitada
     render: function(container, ofertas) {
         container.innerHTML = `
-            <div class="menu-control">
+            <div class="menu-control" style="display: flex; align-items: center; gap: 10px;">
                 <a href="https://www.bluelab.online/jobs" target="_blank" class="btn-primary" style="text-decoration: none; display: inline-flex; align-items: center;">
                     + Nueva Oferta Laboral
                 </a>
@@ -49,19 +49,19 @@ const MenuPartner = {
                     Filtrar por ofertas
                 </button>
 
-                <select class="btn-filter" onchange="MenuPartner.ordenarNaipes(this.value)">
-                    <option value="">Ordenar por...</option>
-                    <option value="score-desc">Score (Mayor a menor)</option>
-                    <option value="score-asc">Score (Menor a mayor)</option>
-                </select>
-
                 <input type="text" class="semantic-search" placeholder="Búsqueda semántica...">
+                
+                <select class="btn-filter" style="padding: 5px 10px; font-size: 12px; height: 35px;" onchange="MenuPartner.ordenarNaipes(this.value)">
+                    <option value="">Ordenar</option>
+                    <option value="score-desc">Score: Mayor a menor</option>
+                    <option value="score-asc">Score: Menor a mayor</option>
+                    <option value="fecha-desc">Más reciente</option>
+                    <option value="fecha-asc">Más antiguo</option>
+                </select>
             </div>
 
-            <!-- Modal de selección de ofertas -->
             <div id="modal-filtros" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
                 <div class="modal-content" style="background:white; padding:20px; width:300px; position:relative; border: 2px solid #bc8abf;">
-                    <!-- Botón X para cerrar -->
                     <span style="position:absolute; top:5px; right:10px; cursor:pointer; font-size:20px; color:#bc8abf;" 
                           onclick="document.getElementById('modal-filtros').style.display='none'">×</span>
                     
@@ -102,7 +102,7 @@ const MenuPartner = {
         });
     },
 
-    // Lógica para ordenar visualmente los naipes por Score
+    // Lógica para ordenar visualmente los naipes (blic-cards)
     ordenarNaipes: function(criterio) {
         const grid = document.getElementById('dashboard');
         const naipes = Array.from(grid.querySelectorAll('.blic-card'));
@@ -110,13 +110,17 @@ const MenuPartner = {
         naipes.sort((a, b) => {
             const scoreA = parseFloat(a.dataset.score) || 0;
             const scoreB = parseFloat(b.dataset.score) || 0;
+            const fechaA = new Date(a.dataset.fecha);
+            const fechaB = new Date(b.dataset.fecha);
             
             if (criterio === 'score-desc') return scoreB - scoreA;
             if (criterio === 'score-asc') return scoreA - scoreB;
+            if (criterio === 'fecha-desc') return fechaB - fechaA;
+            if (criterio === 'fecha-asc') return fechaA - fechaB;
             return 0;
         });
 
-        // Re-renderizamos en el nuevo orden
+        // Reinsertamos los elementos ordenados en el contenedor
         naipes.forEach(naipe => grid.appendChild(naipe));
     }
 };
