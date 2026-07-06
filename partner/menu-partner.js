@@ -40,20 +40,23 @@ const MenuPartner = {
     // Renderizado del HTML con la estructura solicitada
     render: function(container, ofertas) {
         container.innerHTML = `
+            <div class="menu-control">
+                <a href="https://www.bluelab.online/jobs" target="_blank" class="btn-primary" style="text-decoration: none; display: inline-flex; align-items: center;">
+                    + Nueva Oferta Laboral
+                </a>
+                
+                <button class="btn-filter" onclick="document.getElementById('modal-filtros').style.display='flex'">
+                    Filtrar por ofertas
+                </button>
 
-<div class="menu-control">
+                <select class="btn-filter" onchange="MenuPartner.ordenarNaipes(this.value)">
+                    <option value="">Ordenar por...</option>
+                    <option value="score-desc">Score (Mayor a menor)</option>
+                    <option value="score-asc">Score (Menor a mayor)</option>
+                </select>
 
-<a href="https://www.bluelab.online/jobs" target="_blank" class="btn-primary" style="text-decoration: none; display: inline-flex; align-items: center;">
-    + Nueva Oferta Laboral
-</a>
-    
-    <button class="btn-filter" onclick="document.getElementById('modal-filtros').style.display='flex'">
-        Filtrar por ofertas
-    </button>
-
-    <input type="text" class="semantic-search" placeholder="Búsqueda semántica...">
-</div>
-
+                <input type="text" class="semantic-search" placeholder="Búsqueda semántica...">
+            </div>
 
             <!-- Modal de selección de ofertas -->
             <div id="modal-filtros" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
@@ -97,6 +100,24 @@ const MenuPartner = {
             const match = selectedIds.length === 0 || selectedIds.includes(card.dataset.oferta);
             card.style.display = match ? 'flex' : 'none';
         });
+    },
+
+    // Lógica para ordenar visualmente los naipes por Score
+    ordenarNaipes: function(criterio) {
+        const grid = document.getElementById('dashboard');
+        const naipes = Array.from(grid.querySelectorAll('.blic-card'));
+
+        naipes.sort((a, b) => {
+            const scoreA = parseFloat(a.dataset.score) || 0;
+            const scoreB = parseFloat(b.dataset.score) || 0;
+            
+            if (criterio === 'score-desc') return scoreB - scoreA;
+            if (criterio === 'score-asc') return scoreA - scoreB;
+            return 0;
+        });
+
+        // Re-renderizamos en el nuevo orden
+        naipes.forEach(naipe => grid.appendChild(naipe));
     }
 };
 
