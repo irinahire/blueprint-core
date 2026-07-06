@@ -61,7 +61,7 @@ const MenuPartner = {
             </div>
 
             <div id="modal-filtros" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
-                <div class="modal-content" style="background:white; padding:20px; width:300px; position:relative; border: 2px solid #bc8abf;">
+                <div class="modal-content" style="background:white; padding:20px; width:500px; position:relative; border: 2px solid #bc8abf;">
                     <span style="position:absolute; top:5px; right:10px; cursor:pointer; font-size:20px; color:#bc8abf;" 
                           onclick="document.getElementById('modal-filtros').style.display='none'">×</span>
                     
