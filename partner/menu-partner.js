@@ -49,7 +49,7 @@ const MenuPartner = {
                     Filtrar por ofertas
                 </button>
 
-                <input type="text" class="semantic-search" placeholder="Búsqueda semántica...">
+                <input type="text" class="semantic-search" placeholder="Búsqueda semántica..." oninput="MenuPartner.handleSearch(this.value)">
                 
                 <select class="btn-filter" style="padding: 5px 10px; font-size: 12px; height: 35px;" onchange="MenuPartner.ordenarNaipes(this.value)">
                     <option value="">Ordenar</option>
@@ -60,7 +60,7 @@ const MenuPartner = {
                 </select>
             </div>
 
-<div id="modal-filtros" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
+            <div id="modal-filtros" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
                 <div class="modal-content" style="background:white; padding:30px; width:600px; position:relative; border: 2px solid #bc8abf; border-radius:15px; display: flex; flex-direction: column; gap: 15px;">
                     <span style="position:absolute; top:15px; right:20px; cursor:pointer; font-size:24px; color:#bc8abf;" 
                           onclick="document.getElementById('modal-filtros').style.display='none'">×</span>
@@ -83,8 +83,6 @@ const MenuPartner = {
                     </div>
                 </div>
             </div>
-            
-            
             `;
     },
 
@@ -108,6 +106,19 @@ const MenuPartner = {
             const match = selectedIds.length === 0 || selectedIds.includes(card.dataset.oferta);
             card.style.display = match ? 'flex' : 'none';
         });
+    },
+
+    // Nueva lógica para limpiar los filtros
+    limpiarFiltros: function() {
+        console.log("Limpiando filtros, mostrando todos los naipes.");
+        const cards = document.querySelectorAll('.blic-card');
+        cards.forEach(card => card.style.display = 'flex');
+        
+        // Deseleccionamos los elementos del select
+        const select = document.getElementById('filtro-ofertas');
+        if(select) {
+            Array.from(select.options).forEach(opt => opt.selected = false);
+        }
     },
 
     // Lógica para ordenar visualmente los naipes (blic-cards)
