@@ -40,20 +40,19 @@ const MenuPartner = {
     // Renderizado del HTML con la estructura solicitada
     render: function(container, ofertas) {
         container.innerHTML = `
-            <div class="menu-control">
-                <!-- Botón de Acción Principal -->
-                <button class="btn-primary" onclick="alert('Funcionalidad Crear Oferta Laboral en desarrollo')">
-                    + Nueva Oferta Laboral
-                </button>
-                
-                <!-- Botón para abrir el modal de filtros -->
-                <button class="btn-filter" onclick="document.getElementById('modal-filtros').style.display='flex'">
-                    Filtrar por ofertas
-                </button>
 
-                <!-- Cuadro de búsqueda semántica (alineado a la derecha) -->
-                <input type="text" class="semantic-search" placeholder="Búsqueda semántica...">
-            </div>
+<div class="menu-control">
+    <a href="https://www.bluelab.online/jobs" target="_blank" class="btn-uniforme" style="text-decoration: none;">
+        + Nueva Oferta Laboral
+    </a>
+    
+    <button class="btn-filter" onclick="document.getElementById('modal-filtros').style.display='flex'">
+        Filtrar por ofertas
+    </button>
+
+    <input type="text" class="semantic-search" placeholder="Búsqueda semántica...">
+</div>
+
 
             <!-- Modal de selección de ofertas -->
             <div id="modal-filtros" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
