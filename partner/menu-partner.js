@@ -42,9 +42,10 @@ const MenuPartner = {
         container.innerHTML = `
 
 <div class="menu-control">
-    <a href="https://www.bluelab.online/jobs" target="_blank" class="btn-uniforme" style="text-decoration: none;">
-        + Nueva Oferta Laboral
-    </a>
+// En partner/menu-partner.js, cambia la línea del botón por esta:
+<a href="https://www.bluelab.online/jobs" target="_blank" class="btn-primary" style="text-decoration: none; display: inline-flex; align-items: center;">
+    + Nueva Oferta Laboral
+</a>
     
     <button class="btn-filter" onclick="document.getElementById('modal-filtros').style.display='flex'">
         Filtrar por ofertas
