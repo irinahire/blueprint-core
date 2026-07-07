@@ -41,6 +41,10 @@ async function cargarDatos() {
         // Obtención de la URL del radar
         const radarUrl = d?.["!psicometrico"]?.url_big_five_radar || "";
         
+        // Lógica de colores semáforo para el ADN (6 pilares)
+        const idoneidad = irinaData?.idoneidad || { tec: 0, exp: 0, for: 0, ada: 0, res: 0, cul: 0 };
+        const getColor = (val) => val >= 75 ? '#28a745' : (val >= 50 ? '#ffc107' : '#dc3545');
+
         // Asignación de clases CSS
         const clase = score >= 98 ? 'bg-irina-animado' : 
                       (score >= 90 ? 'bg-emerald-metal' : 
@@ -54,21 +58,33 @@ async function cargarDatos() {
         card.dataset.score = score; // Guardamos para ordenar
         card.dataset.fecha = fechaCreacion; // Guardamos para ordenar
         
-        // Navegación a perfil.html pasando parámetros para la consulta de perfil.js
+        // Navegación a perfil.html
         card.onclick = () => {
             window.open(`partner/perfil.html?owner_id=${ownerId}&job_id=${jobId}`, '_blank');
         };
         
+        // Renderizado visual con la nueva estructura
         card.innerHTML = `
-            <div style="font-weight:900;">SCORE: ${score}</div>
-            <div class="radar-container">
-                ${radarUrl ? `<img src="${radarUrl}" style="width:100%; height:auto;" alt="Radar">` : `<canvas id="radar-${index}"></canvas>`}
+            <div style="display:flex; justify-content:space-between; font-weight:900; margin-bottom:5px;">
+                <span>ID: ${ownerId.substring(0,6)}</span>
+                <span>SCORE: ${score}</span>
             </div>
-            <div class="icons-grid">${['🚀', '🛡️', '🧠', '🔗'].map(i => `<div class="icon-box">${i}</div>`).join('')}</div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:5px; margin-top:5px;">
-                <button class="btn-card">CV</button>
-                <button class="btn-card">AUDIO</button>
-                <button class="btn-card">REPORT</button>
+            <div class="radar-container" style="height:150px;">
+                ${radarUrl ? `<img src="${radarUrl}" style="width:100%; height:100%;" alt="Radar">` : `<canvas id="radar-${index}"></canvas>`}
+            </div>
+            
+            <!-- ADN DE 6 PILARES -->
+            <div style="display:grid; grid-template-columns: repeat(6, 1fr); gap:2px; margin:10px 0;">
+                ${Object.entries(idoneidad).map(([key, val]) => `
+                    <div style="text-align:center;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="${getColor(val)}"><circle cx="12" cy="12" r="10"/></svg>
+                        <div style="font-size:8px;">${key.toUpperCase()}</div>
+                    </div>
+                `).join('')}
+            </div>
+            
+            <div style="text-align:center; font-size:11px; font-weight:bold; margin-top:5px;">
+                ${d?.titulo_puesto || "POSTULACIÓN"}
             </div>
         `;
         grid.appendChild(card);
@@ -93,7 +109,7 @@ async function cargarDatos() {
                         r: { 
                             min: 0, max: 100, ticks: { display: false }, 
                             grid: { color: 'rgba(255,255,255,0.2)' }, 
-                            pointLabels: { color: '#fff', font: { size: 10 } } 
+                            pointLabels: { color: '#fff', font: { size: 12, weight: 'bold' } } 
                         } 
                     }
                 } 
