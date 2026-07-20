@@ -1,3 +1,7 @@
+/**
+ * auth-module.js - MODIFICADO PARA MIGRACIÓN A NEXT.JS
+ * Se han desactivado la inicialización automática y la persistencia en localStorage.
+ */
 window.BlueAuth = {
     init: function() {
         if (typeof supabase === 'undefined') {
@@ -88,7 +92,10 @@ window.BlueAuth = {
         if (window.sbClient && window.sbClient.auth) {
             await window.sbClient.auth.signInWithOAuth({ 
                 provider: 'google', 
-                options: { redirectTo: window.location.href } 
+                options: { 
+                    // Redirección fija al sistema de Next.js
+                    redirectTo: 'https://bluelab.online/auth/callback' 
+                } 
             });
         }
     },
@@ -100,7 +107,7 @@ window.BlueAuth = {
         const avatarImg = document.getElementById('userAvatar');
 
         if (session) {
-            localStorage.setItem('applicantId', session.user.id);
+            // Desactivado: localStorage.setItem('applicantId', session.user.id);
             if(loginBtn) loginBtn.style.display = 'none';
             if(userZone) {
                 userZone.style.display = 'flex';
@@ -108,11 +115,12 @@ window.BlueAuth = {
                 if(nameSpan) nameSpan.innerText = session.user.user_metadata.full_name || '';
             }
         } else {
-            localStorage.removeItem('applicantId');
+            // Desactivado: localStorage.removeItem('applicantId');
             if(loginBtn) loginBtn.style.display = 'block';
             if(userZone) userZone.style.display = 'none';
         }
     }
 };
 
-window.BlueAuth.init();
+// INICIALIZACIÓN DESACTIVADA PARA EVITAR CONFLICTOS CON NEXT.JS
+// window.BlueAuth.init();
