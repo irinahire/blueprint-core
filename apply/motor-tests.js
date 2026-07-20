@@ -1,3 +1,5 @@
+/* // --- SCRIPT DESACTIVADO PARA MIGRACIÓN A NEXT.JS ---
+// Todo el código original ha sido preservado abajo para referencia.
 // motor-tests.js - Versión Final Completa y Robusta
 const testData = {
     "bienvenida": { 
@@ -184,3 +186,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (params.get('jobId')) localStorage.setItem('jobId', params.get('jobId'));
     cargarTest(secuencia[0]);
 });
+
+
+*/
+
+// SCRIPT NEUTRALIZADO: No se ejecutará nada arriba porque está comentado.
+console.log("Motor de tests desactivado para migración.");
