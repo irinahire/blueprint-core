@@ -1,12 +1,15 @@
 /**
  * hbt_migracion_id.js 
- * Este script se encarga de:
- * 1. Extraer el applicantId de la URL (el puente).
- * 2. Obtener el ID de la cuenta de Google desde la sesión activa (el destino).
- * 3. Enviar ambos a la función Edge para actualizar el owner_id en la base de datos.
+ * SCRIPT DESACTIVADO: La lógica de migración de IDs ya no se ejecuta.
+ * Todo el código original ha sido comentado para referencia.
  */
 
 async function verificarYMigrarApplicantId(sesionForzada = null) {
+    console.log("--- [HBT_MIGRACION] SCRIPT DESACTIVADO: No se ejecutará ninguna lógica ---");
+    return;
+
+    /* // --- CÓDIGO ORIGINAL COMENTADO PARA REFERENCIA ---
+    
     console.log("--- [HBT_MIGRACION] Inicio del proceso ---");
 
     // Paso 1: Identificar la sesión del usuario (quién se logueó)
@@ -66,4 +69,5 @@ async function verificarYMigrarApplicantId(sesionForzada = null) {
         // Manejo de errores de conexión o ejecución
         console.error("--- [HBT_MIGRACION] Error crítico en la ejecución del script:", err);
     }
+    */
 }
